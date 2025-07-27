@@ -1,0 +1,45 @@
+{
+    "version": "0.2.0",
+    "inputs": [
+        {
+            "id": "targetProject",
+            "type": "pickString",
+            "description": "DEBUG: Choose project to debug...",
+            "options": [
+                "ch02",
+                "ch03",
+                "ch04",
+                "ch05",
+                "ch06",
+                "ch07",
+                "ch08",
+                "ch09",
+                "ch10",
+                "ch11",
+                "ch12",
+                "ch13",
+                "ch14",
+                "ch15",
+            ],
+            "default": "ch02"
+        }
+    ],
+    "configurations": [
+        {
+            "name": "Launch",
+            "type": "cppvsdbg", // for Windows
+            // "type": "lldb", // for Linux | macOs
+            "request": "launch",
+            "program": "${workspaceFolder}/lispy-zig/${input:targetProject}/zig-out/bin/${input:targetProject}",
+            "args": [
+                "prelude.lspy"
+            ],
+            "cwd": "${workspaceFolder}/lispy-zig/${input:targetProject}",
+            // "stopAtEntry": false,
+            // "environment": [],
+            "internalConsoleOptions": "openOnSessionStart",
+            "preLaunchTask": "build",
+            "console": "integratedTerminal"
+        }
+    ],
+}

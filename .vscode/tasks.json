@@ -1,0 +1,42 @@
+{
+    "version": "2.0.0",
+    "inputs": [
+        {
+            "id": "targetProject",
+            "type": "pickString",
+            "description": "DEBUG: Choose project to debug...",
+            "options": [
+                "ch02",
+                "ch03",
+                "ch04",
+                "ch05",
+                "ch06",
+                "ch07",
+                "ch08",
+                "ch09",
+                "ch10",
+                "ch11",
+                "ch12",
+                "ch13",
+                "ch14",
+                "ch15",
+            ],
+            "default": "ch02"
+        }
+    ],
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "zig build",
+            "options": {
+                "cwd": "${workspaceFolder}/lispy-zig/${input:targetProject}",
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
