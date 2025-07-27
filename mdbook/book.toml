@@ -1,0 +1,12 @@
+[book]
+title = "buildyourownlisp-by-zig"
+description = "buildyourownlisp by zig"
+language = "ko"
+src = "src"
+
+[output.html]
+no-section-label = true
+site-url = "/buildyourownlisp-by-zig/"
+git-repository-url = "https://github.com/netpyoung/buildyourownlisp-by-zig"
+git-repository-icon = "fa-github"
+edit-url-template = "https://github.com/netpyoung/buildyourownlisp-by-zig/edit/main/{path}"
