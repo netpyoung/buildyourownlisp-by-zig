@@ -18,7 +18,7 @@ fn readLine(prompt: [:0]const u8) [*c]u8 {
 
     std.debug.print("{s}", .{prompt});
 
-    var stdin = std.io.getStdIn().reader();
+    const stdin = std.io.getStdIn().reader();
 
     var buffer: [1024]u8 = undefined;
     const line = (stdin.readUntilDelimiterOrEof(&buffer, '\n') catch unreachable).?;
