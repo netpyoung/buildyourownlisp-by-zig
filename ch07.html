@@ -1,0 +1,438 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>ch07 - buildyourownlisp-by-zig</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- #region: Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-855BJNV9VD"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'G-855BJNV9VD');
+        </script>
+        <!-- #endregion: Google tag (gtag.js) -->
+        <meta name="description" content="buildyourownlisp by zig">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">buildyourownlisp-by-zig</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/netpyoung/buildyourownlisp-by-zig" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/netpyoung/buildyourownlisp-by-zig/edit/main/src/ch07.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="ch07"><a class="header" href="#ch07">ch07</a></h1>
+<ul>
+<li>
+<p><a href="https://www.buildyourownlisp.com/chapter7_evaluation">origin</a></p>
+<ul>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/evaluation.c">evaluation.c</a></li>
+</ul>
+<p>string to int
+string compare
+index of string</p>
+<ul>
+<li>Chapter 7 • Evaluation</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-c">typedef struct mpc_ast_t {
+  char* tag;                   // 특정 항목을 구문 분석하는 데 사용된 모든 규칙의 목록을 포함하는 문자열이었습니다. 예를 들어 expr|number|regex.
+  char* contents;              // 가지의 경우 이 필드가 비어 있지만, 잎의 경우 연산자나 숫자를 찾는 데 사용할 수 있습니다.'*''(''5'
+  mpc_state_t state;           // 이 프로그램에서는 이 정보를 사용하지 않습니다. // 파서가 이 노드를 발견했을 때 어떤 상태에 있었는지에 대한 정보(행 번호, 열 번호 등)가 포함됩니다.
+  int children_num;            // 노드의 자식 노드 수
+  struct mpc_ast_t** children; // 자식 노드들의 배열
+} mpc_ast_t;
+</code></pre>
+<p>t-&gt;children
+0 :
+1 : operator
+2... :</p>
+<h2 id="srcch07zig"><a class="header" href="#srcch07zig">src/ch07.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+const module_builtin = @import("builtin");
+
+const c_libedit = if (module_builtin.os.tag != .windows) @cImport({
+    // https://salsa.debian.org/debian/libedit/-/blob/master/src/editline/readline.h
+    @cInclude("editline/readline.h");
+}) else struct {};
+
+const c_mpc = @cImport({
+    @cInclude("mpc.h");
+});
+
+fn readLine(prompt: [:0]const u8) [*c]u8 {
+    if (module_builtin.os.tag != .windows) {
+        const input: [*c]u8 = c_libedit.readline(prompt);
+        return input;
+    }
+
+    std.debug.print("{s}", .{prompt});
+
+    const stdin = std.io.getStdIn().reader();
+
+    var buffer: [1024]u8 = undefined;
+    const line = (stdin.readUntilDelimiterOrEof(&amp;buffer, '\n') catch unreachable).?;
+
+    const len = line.len;
+    const total_len = len + 1; // +1 for null terminator
+
+    const mem = std.c.malloc(total_len).?;
+    const out: [*c]u8 = @ptrCast(mem);
+
+    @memcpy(out[0..len], line);
+    out[len] = 0; // null terminator
+
+    return out;
+}
+
+fn addHistory(input: [*c]u8) void {
+    if (module_builtin.os.tag != .windows) {
+        _ = c_libedit.add_history(input);
+    }
+}
+
+fn eval_op(x: i64, op: [*:0]const u8, y: i64) i64 {
+    if (std.mem.eql(u8, std.mem.span(op), "+")) {
+        return x + y;
+    }
+    if (std.mem.eql(u8, std.mem.span(op), "-")) {
+        return x - y;
+    }
+    if (std.mem.eql(u8, std.mem.span(op), "*")) {
+        return x * y;
+    }
+    if (std.mem.eql(u8, std.mem.span(op), "/")) {
+        return @divTrunc(x, y);
+    }
+    return 0;
+}
+
+pub fn eval(t: *c_mpc.mpc_ast_t) i64 {
+    // number 노드인 경우 바로 값 반환
+    if (std.mem.indexOf(u8, std.mem.span(t.tag), "number") != null) {
+        return std.fmt.parseInt(i64, std.mem.span(t.contents), 10) catch 0;
+    }
+
+    // 연산자(op)는 두 번째 자식의 contents
+    const op = t.children[1].*.contents;
+
+    // 세 번째 자식을 먼저 계산
+    var x = eval(t.children[2]);
+
+    // 나머지 자식 노드를 반복하며 계산
+    var i: usize = 3;
+    while (i &lt; t.children_num and std.mem.indexOf(u8, std.mem.span(t.children[i].*.tag), "expr") != null) {
+        const right = eval(t.children[i]);
+        x = eval_op(x, op, right);
+        i += 1;
+    }
+
+    return x;
+}
+
+pub fn main() void {
+    const Number = c_mpc.mpc_new("number");
+    const Operator = c_mpc.mpc_new("operator");
+    const Expr = c_mpc.mpc_new("expr");
+    const Lispy = c_mpc.mpc_new("lispy");
+    defer c_mpc.mpc_cleanup(4, Number, Operator, Expr, Lispy);
+
+    const lang =
+        \\ number   : /-?[0-9]+/ ;
+        \\ operator : '+' | '-' | '*' | '/' ;
+        \\ expr     : &lt;number&gt; | '(' &lt;operator&gt; &lt;expr&gt;+ ')' ;
+        \\ lispy    : /^/ &lt;operator&gt; &lt;expr&gt;+ /$/ ;
+    ;
+
+    if (c_mpc.mpca_lang(c_mpc.MPCA_LANG_DEFAULT, lang, Number, Operator, Expr, Lispy) != 0) {
+        std.debug.print("Failed to define grammar\n", .{});
+        return;
+    }
+
+    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
+    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
+
+    while (true) {
+        const input = readLine("lispy&gt; ");
+        defer std.c.free(input);
+
+        // Prepare result struct
+        var result: c_mpc.mpc_result_t = undefined;
+
+        if (c_mpc.mpc_parse("&lt;stdin&gt;", input, Lispy, &amp;result) != 0) {
+            const output: *c_mpc.mpc_ast_t = @ptrCast(@alignCast(result.output));
+            defer c_mpc.mpc_ast_delete(output);
+
+            const x = eval(output);
+            std.debug.print("{d}\n", .{x});
+        } else {
+            c_mpc.mpc_err_print(result.@"error");
+            c_mpc.mpc_err_delete(result.@"error");
+        }
+    }
+}
+</code></pre>
+<h2 id="buildzig"><a class="header" href="#buildzig">build.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const exe = b.addExecutable(.{
+        .name = "ch07",
+        .root_source_file = b.path("src/ch07.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    { // library: editline
+        if (target.result.os.tag != .windows) {
+            if (target.result.os.tag == .linux) {
+                exe.addIncludePath(.{ .cwd_relative = "/usr/include/" });
+            } else if (target.result.os.tag == .macos) {
+                exe.addIncludePath(.{ .cwd_relative = "/opt/homebrew/include" });
+                exe.addLibraryPath(.{ .cwd_relative = "/opt/homebrew/lib" });
+            }
+            exe.linkSystemLibrary("edit");
+        }
+    }
+    { // library: mpc
+        exe.addIncludePath(.{ .cwd_relative = "../mpc/" });
+        exe.addCSourceFile(.{ .file = b.path("../mpc/mpc.c") });
+        exe.linkLibC();
+    }
+    exe.linkLibC();
+
+    // zig-out/bin/ 아래에 실행파일을 복사해 줌.
+    b.installArtifact(exe);
+
+    // zig build &lt;원하는 스탭이름&gt;을 하면 바이너리를 실행함.
+    const run_cmd = b.addRunArtifact(exe);
+    const run_step = b.step("run", "Run the application");
+    run_step.dependOn(&amp;run_cmd.step);
+}
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch06.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch08.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch06.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch08.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

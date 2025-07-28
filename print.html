@@ -1,0 +1,3197 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>buildyourownlisp-by-zig</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+        <!-- #region: Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-855BJNV9VD"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'G-855BJNV9VD');
+        </script>
+        <!-- #endregion: Google tag (gtag.js) -->
+        <meta name="description" content="buildyourownlisp by zig">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">buildyourownlisp-by-zig</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/netpyoung/buildyourownlisp-by-zig" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="ch01"><a class="header" href="#ch01">ch01</a></h1>
+<ul>
+<li>
+<p><a href="https://www.buildyourownlisp.com/chapter1_introduction">origin</a></p>
+</li>
+<li>
+<p><a href="https://www.buildyourownlisp.com/">Build Your Own Lisp - Learn C and build your own programming language in 1000 lines of code!</a></p>
+<ul>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/tree/master/src">src</a></li>
+<li><a href="https://hn.algolia.com/?q=buildyourownlisp">https://hn.algolia.com/?q=buildyourownlisp</a></li>
+<li>Don’t Build Your Own Lisp
+<ul>
+<li><a href="https://gist.github.com/no-defun-allowed/7e3e238c959e27d4919bb4272487d7ad">https://gist.github.com/no-defun-allowed/7e3e238c959e27d4919bb4272487d7ad</a></li>
+<li><a href="https://news.ycombinator.com/item?id=27598424">https://news.ycombinator.com/item?id=27598424</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>chapter1_introduction
+목적
+c를 알고, lisp를 안다
+zig를 한번 테스트겸 lisp를 작성</p>
+<p>https://discord.com/invite/zig
+https://zig.guide/getting-started/running-tests
+https://zig.news/pm/zig-multi-project-workflow-in-vs-code-with-dynamic-debugbuild-and-one-tasksjson-to-rule-them-all-ka7</p>
+<p>:TODO console output test는 어떻게하지?</p>
+<p>https://rust-lang.github.io/mdBook/format/mdbook.html#including-files</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ch02"><a class="header" href="#ch02">ch02</a></h1>
+<ul>
+<li><a href="https://www.buildyourownlisp.com/chapter2_installation">origin</a>
+<ul>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/hello_world.c">hello_world.c</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="zig-설치"><a class="header" href="#zig-설치">Zig 설치</a></h2>
+<ul>
+<li><a href="https://github.com/ziglang/zig/wiki/Install-Zig-from-a-Package-Manager#windows-winget">Window - winget</a></li>
+</ul>
+<h2 id="vscode"><a class="header" href="#vscode">vscode</a></h2>
+<ul>
+<li>플러그인
+<ul>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=ziglang.vscode-zig">ziglang.vscode-zig</a>
+<ul>
+<li><a href="https://zigtools.org/zls/editors/vscode/">https://zigtools.org/zls/editors/vscode/</a></li>
+</ul>
+</li>
+<li>Window라면
+<ul>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools">ms-vscode.cpptools</a></li>
+</ul>
+</li>
+<li>Linux 혹은 macOs
+<ul>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb">vadimcn.vscode-lldb</a>
+<ul>
+<li><a href="https://github.com/vadimcn/codelldb/wiki/Windows">https://github.com/vadimcn/codelldb/wiki/Windows</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="vscode-1"><a class="header" href="#vscode-1">.vscode/</a></h3>
+<pre><code class="language-json">// file: .vscode/extensions.json
+{
+    "recommendations": [
+        "ziglang.vscode-zig",
+        "vadimcn.vscode-lldb",
+        "ms-vscode.cpptools",
+    ]
+}
+</code></pre>
+<pre><code class="language-json">// file: .vscode/launch.json
+{
+    "version": "0.2.0",
+    "inputs": [
+        {
+            "id": "targetProject",
+            "type": "pickString",
+            "description": "DEBUG: Choose project to debug...",
+            "options": [
+                "ch02",
+                "ch03",
+                "ch04",
+                "ch05",
+                "ch06",
+                "ch07",
+                "ch08",
+                "ch09",
+                "ch10",
+                "ch11",
+                "ch12",
+                "ch13",
+                "ch14",
+                "ch15",
+            ],
+            "default": "ch02"
+        }
+    ],
+    "configurations": [
+        {
+            "name": "Launch",
+            // "type": "cppvsdbg", // for Windows
+            "type": "lldb", // for Linux | macOs
+            "request": "launch",
+            "program": "${workspaceFolder}/lispy-zig/${input:targetProject}/zig-out/bin/${input:targetProject}",
+            "args": [
+                "prelude.lspy"
+            ],
+            "cwd": "${workspaceFolder}/lispy-zig/${input:targetProject}",
+            // "stopAtEntry": false,
+            // "environment": [],
+            "internalConsoleOptions": "openOnSessionStart",
+            "preLaunchTask": "build",
+            "console": "integratedTerminal",
+        }
+    ],
+}
+</code></pre>
+<pre><code class="language-json">// file: .vscode/settings.json
+{
+    "zig.zls.enabled": "on"
+}
+</code></pre>
+<pre><code class="language-json">// file: .vscode/tasks.json
+{
+    "version": "2.0.0",
+    "inputs": [
+        {
+            "id": "targetProject",
+            "type": "pickString",
+            "description": "DEBUG: Choose project to debug...",
+            "options": [
+                "ch02",
+                "ch03",
+                "ch04",
+                "ch05",
+                "ch06",
+                "ch07",
+                "ch08",
+                "ch09",
+                "ch10",
+                "ch11",
+                "ch12",
+                "ch13",
+                "ch14",
+                "ch15",
+            ],
+            "default": "ch02"
+        }
+    ],
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "zig build",
+            "options": {
+                "cwd": "${workspaceFolder}/lispy-zig/${input:targetProject}",
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
+</code></pre>
+<h2 id="xxx"><a class="header" href="#xxx">xxx</a></h2>
+<p>zig
+https://pedropark99.github.io/zig-book/Chapters/01-zig-weird.html
+https://ziglang.org/learn/getting-started/</p>
+<p>build.zig
+build.zig.zon</p>
+<p>zon - Zig Object Notation
+json - JavaScript Object Notation</p>
+<p>"Hello World!"
+컴파일 방법 build.zig</p>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn main() void {
+    std.debug.print("Hello, {s}!\n", .{"World"});
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ch03"><a class="header" href="#ch03">ch03</a></h1>
+<ul>
+<li><a href="https://www.buildyourownlisp.com/chapter3_basics">origin</a></li>
+</ul>
+<p>chapter3_basics
+기본 타입들</p>
+<p>https://ziglang.org/documentation/master/#toc-Primitive-Types</p>
+<h2 id="srcch03zig"><a class="header" href="#srcch03zig">src/ch03.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn main() void {
+    std.debug.print(
+        \\ Lispy Version 0.0.0.0.1
+        \\ Press Ctrl+c to Exit
+        \\
+    , .{});
+}
+</code></pre>
+<h2 id="buildzig"><a class="header" href="#buildzig">build.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const exe = b.addExecutable(.{
+        .name = "ch03",
+        .root_source_file = b.path("src/ch03.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    // zig-out/bin/ 아래에 실행파일을 복사해 줌.
+    b.installArtifact(exe);
+
+    // zig build &lt;원하는 스탭이름&gt;을 하면 바이너리를 실행함.
+    const run_cmd = b.addRunArtifact(exe);
+    const run_step = b.step("run", "Run the application");
+    run_step.dependOn(&amp;run_cmd.step);
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ch04"><a class="header" href="#ch04">ch04</a></h1>
+<ul>
+<li><a href="https://www.buildyourownlisp.com/chapter4_interactive_prompt">origin</a>
+<ul>
+<li>
+<p><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/prompt.c">prompt.c</a></p>
+</li>
+<li>
+<p>4장 <a href="https://github.com/orangeduck/mpc">mpc (Micro Parser Combinators)</a></p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Parser_combinator">wiki: Parser Combinator</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Greenspun%27s_tenth_rule">wiki: Greenspun's tenth rule</a></li>
+<li>Parser: 텍스트 =&gt; 파싱된 결과</li>
+<li>Parser Combinator: 파서들 =&gt; 새로운 파서</li>
+<li><a href="https://www.youtube.com/playlist?list=PLP29wDx6QmW5yfO1LAgO8kU3aQEj8SIrU">youtube: Parser Combinators From Scratch</a>
+<ul>
+<li>javascript로 작성</li>
+</ul>
+</li>
+<li>zig
+<ul>
+<li>https://devlog.hexops.com/2021/zig-parser-combinators-and-why-theyre-awesome/</li>
+<li>https://github.com/Hejsil/mecha</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="table-wrapper"><table><thead><tr><th>Zig 타입</th><th>C와의 대응</th><th>의미</th></tr></thead><tbody>
+<tr><td>u8</td><td>uint8_t 혹은 std::byte</td><td>unsigned 8-bit integer</td></tr>
+<tr><td><code>*u8</code></td><td><code>uint8_t*</code></td><td>단일 <code>u8</code>을 가리키는 포인터</td></tr>
+<tr><td><code>[]u8</code></td><td>C에는 직접 대응 없음 (Zig 슬라이스)</td><td>길이 포함한 슬라이스</td></tr>
+<tr><td><code>[*]u8</code></td><td>없음 (Zig 내부용)</td><td>길이 모르는 raw pointer</td></tr>
+<tr><td><code>[:0]u8</code></td><td><code>const char*</code></td><td>null-terminated C string (읽기 전용)</td></tr>
+<tr><td><code>[*c]u8</code></td><td><code>uint8_t*</code> 또는 <code>char*</code></td><td>C 호환 raw pointer</td></tr>
+<tr><td><code>*const [N]u8</code></td><td><code>const uint8_t[N]*</code></td><td>길이 고정된 배열의 포인터</td></tr>
+</tbody></table>
+</div>
+<ul>
+<li>3장 &lt;editline/readline.h&gt;를 사용한 <a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/prompt.c">prompt.c</a></li>
+</ul>
+<h2 id="libedit"><a class="header" href="#libedit">libedit</a></h2>
+<h3 id="ubuntu"><a class="header" href="#ubuntu">Ubuntu</a></h3>
+<pre><code class="language-sh">snap install zig --classic --beta
+sudo apt install libedit-dev
+</code></pre>
+<ul>
+<li>editline/readline.h 만 사용하면 됨.
+<ul>
+<li><a href="https://salsa.debian.org/debian/libedit/-/blob/master/src/editline/readline.h">https://salsa.debian.org/debian/libedit/-/blob/master/src/editline/readline.h</a></li>
+<li>/usr/include/editline/history.h -&gt; readline.h
+<ul>
+<li>이전에 있었던 editline/history.h가 editline/readline.h로 됨.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="macos"><a class="header" href="#macos">macOs</a></h3>
+<ul>
+<li>내장된 readline.h
+<ul>
+<li>/usr/local/include, /usr/local/lib로</li>
+</ul>
+</li>
+<li>brew install libedit
+<ul>
+<li><a href="https://formulae.brew.sh/formula/libedit">https://formulae.brew.sh/formula/libedit</a></li>
+<li><a href="https://thrysoee.dk/editline/">https://thrysoee.dk/editline/</a>
+<ul>
+<li>"editline/readline.h"</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>[*c]u8 []u8을 가리키는 *c c의 포인터</p>
+<h2 id="srcch04zig"><a class="header" href="#srcch04zig">src/ch04.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+const module_builtin = @import("builtin");
+
+const c_libedit = if (module_builtin.os.tag != .windows) @cImport({
+    // https://salsa.debian.org/debian/libedit/-/blob/master/src/editline/readline.h
+    @cInclude("editline/readline.h");
+}) else struct {};
+
+fn readLine(prompt: [:0]const u8) [*c]u8 {
+    if (module_builtin.os.tag != .windows) {
+        const input: [*c]u8 = c_libedit.readline(prompt);
+        return input;
+    }
+
+    std.debug.print("{s}", .{prompt});
+
+    const stdin = std.io.getStdIn().reader();
+
+    var buffer: [1024]u8 = undefined;
+    const line = (stdin.readUntilDelimiterOrEof(&amp;buffer, '\n') catch unreachable).?;
+
+    const len = line.len;
+    const total_len = len + 1; // +1 for null terminator
+
+    const mem = std.c.malloc(total_len).?;
+    const out: [*c]u8 = @ptrCast(mem);
+
+    @memcpy(out[0..len], line);
+    out[len] = 0; // null terminator
+
+    return out;
+}
+
+fn addHistory(input: [*c]u8) void {
+    if (module_builtin.os.tag != .windows) {
+        _ = c_libedit.add_history(input);
+    }
+}
+
+pub fn main() !void {
+    std.debug.print(
+        \\ Lispy Version 0.0.0.0.1
+        \\ Press Ctrl+c to Exit
+        \\
+    , .{});
+
+    while (true) {
+        const input = readLine("lispy&gt; ");
+        defer std.c.free(input);
+
+        addHistory(input);
+
+        std.debug.print("No you're a {s}\n", .{input});
+    }
+}
+
+test "string test" {
+    const expect = std.testing.expect;
+    const expectEqual = std.testing.expectEqual;
+    const expectEqualStrings = std.testing.expectEqualStrings;
+
+    const allocator = std.testing.allocator;
+
+    const z_str: []const u8 = "asdf";
+    const c_str: [:0]u8 = try allocator.dupeZ(u8, z_str);
+    defer allocator.free(c_str);
+
+    try expectEqual(4, z_str.len);
+    try expectEqual(4, c_str.len);
+    try expect(std.mem.eql(u8, z_str, c_str));
+
+    try expectEqual(0, c_str[4]);
+    // try expectEqual(0, z_str[4]); // error: index 4 outside slice of length 4
+    // try expectEqual(0, c_str[5]); // panic: index out of bounds: index 5, len 4
+
+    try expectEqualStrings(z_str, c_str);
+}
+</code></pre>
+<h2 id="buildzig-1"><a class="header" href="#buildzig-1">build.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const exe = b.addExecutable(.{
+        .name = "ch04",
+        .root_source_file = b.path("src/ch04.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    { // library: editline
+        if (target.result.os.tag != .windows) {
+            if (target.result.os.tag == .linux) {
+                exe.addIncludePath(.{ .cwd_relative = "/usr/include/" });
+            } else if (target.result.os.tag == .macos) {
+                exe.addIncludePath(.{ .cwd_relative = "/opt/homebrew/include" });
+                exe.addLibraryPath(.{ .cwd_relative = "/opt/homebrew/lib" });
+            }
+            exe.linkSystemLibrary("edit");
+        }
+    }
+    exe.linkLibC();
+
+    // zig-out/bin/ 아래에 실행파일을 복사해 줌.
+    b.installArtifact(exe);
+
+    // zig build &lt;원하는 스탭이름&gt;을 하면 바이너리를 실행함.
+    const run_cmd = b.addRunArtifact(exe);
+    const run_step = b.step("run", "Run the application");
+    run_step.dependOn(&amp;run_cmd.step);
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ch05"><a class="header" href="#ch05">ch05</a></h1>
+<ul>
+<li><a href="https://www.buildyourownlisp.com/chapter5_languages">origin</a>
+<ul>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/doge_code.c">doge_code.c</a></li>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/doge_grammar.c">doge_grammar.c</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="srcch05zig"><a class="header" href="#srcch05zig">src/ch05.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+
+const c_mpc = @cImport({
+    @cInclude("mpc.h");
+});
+
+const fpt_Free = *const fn (?*anyopaque) callconv(.C) void;
+
+fn doge_code() void {
+    const Adjective: ?*c_mpc.mpc_parser_t = c_mpc.mpc_or(
+        4,
+        c_mpc.mpc_sym("wow"),
+        c_mpc.mpc_sym("many"),
+        c_mpc.mpc_sym("so"),
+        c_mpc.mpc_sym("such"),
+    );
+    const Noun: ?*c_mpc.mpc_parser_t = c_mpc.mpc_or(
+        5,
+        c_mpc.mpc_sym("lisp"),
+        c_mpc.mpc_sym("language"),
+        c_mpc.mpc_sym("book"),
+        c_mpc.mpc_sym("build"),
+        c_mpc.mpc_sym("c"),
+    );
+
+    const free: fpt_Free = c_mpc.free;
+
+    const Phrase: ?*c_mpc.mpc_parser_t = c_mpc.mpc_and(
+        2,
+        c_mpc.mpcf_strfold,
+        Adjective,
+        Noun,
+        free,
+    );
+
+    const Doge: ?*c_mpc.mpc_parser_t = c_mpc.mpc_many(
+        c_mpc.mpcf_strfold,
+        Phrase,
+    );
+
+    // 여기서 파싱 작업 수행 가능
+
+    c_mpc.mpc_delete(Doge);
+}
+
+fn doge_grammar() void {
+    const Adjective = c_mpc.mpc_new("adjective");
+    const Noun = c_mpc.mpc_new("noun");
+    const Phrase = c_mpc.mpc_new("phrase");
+    const Doge = c_mpc.mpc_new("doge");
+
+    _ = c_mpc.mpca_lang(c_mpc.MPCA_LANG_DEFAULT,
+        \\ adjective : "wow" | "many"
+        \\           | "so" | "such";
+        \\ noun      : "lisp" | "language"
+        \\           | "book" | "build" | "c";
+        \\ phrase    : &lt;adjective&gt; &lt;noun&gt;;
+        \\ doge      : &lt;phrase&gt;*;
+    , Adjective, Noun, Phrase, Doge);
+
+    // 여기서 파싱 작업 수행 가능
+
+    _ = c_mpc.mpc_cleanup(4, Adjective, Noun, Phrase, Doge);
+}
+
+pub fn main() !void {
+    doge_code();
+    doge_grammar();
+}
+</code></pre>
+<h2 id="buildzig-2"><a class="header" href="#buildzig-2">build.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const exe = b.addExecutable(.{
+        .name = "ch05",
+        .root_source_file = b.path("src/ch05.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    { // library: mpc
+        exe.addIncludePath(.{ .cwd_relative = "../mpc" });
+        exe.addCSourceFile(.{ .file = b.path("../mpc/mpc.c") });
+    }
+
+    exe.linkLibC();
+
+    // zig-out/bin/ 아래에 실행파일을 복사해 줌.
+    b.installArtifact(exe);
+
+    // zig build &lt;원하는 스탭이름&gt;을 하면 바이너리를 실행함.
+    const run_cmd = b.addRunArtifact(exe);
+    const run_step = b.step("run", "Run the application");
+    run_step.dependOn(&amp;run_cmd.step);
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ch06"><a class="header" href="#ch06">ch06</a></h1>
+<ul>
+<li><a href="https://www.buildyourownlisp.com/chapter6_parsing">origin</a>
+<ul>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/parsing.c">parsing.c</a></li>
+</ul>
+</li>
+</ul>
+<p><a href="https://github.com/orangeduck/mpc">mpc (Micro Parser Combinators)</a></p>
+<ul>
+<li>6장 mpc_parse로 mpc_result_t 를 얻어 mpc_ast_print로 출력
+<ul>
+<li>mpc문법: 슬래시(/) 사이에 mpc정규 표현식을 넣어 작성</li>
+</ul>
+</li>
+</ul>
+<h2 id="srcch06zig"><a class="header" href="#srcch06zig">src/ch06.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+const module_builtin = @import("builtin");
+
+const c_libedit = if (module_builtin.os.tag != .windows) @cImport({
+    // https://salsa.debian.org/debian/libedit/-/blob/master/src/editline/readline.h
+    @cInclude("editline/readline.h");
+}) else struct {};
+
+const c_mpc = @cImport({
+    @cInclude("mpc.h");
+});
+
+fn readLine(prompt: [:0]const u8) [*c]u8 {
+    if (module_builtin.os.tag != .windows) {
+        const input: [*c]u8 = c_libedit.readline(prompt);
+        return input;
+    }
+
+    std.debug.print("{s}", .{prompt});
+
+    const stdin = std.io.getStdIn().reader();
+
+    var buffer: [1024]u8 = undefined;
+    const line = (stdin.readUntilDelimiterOrEof(&amp;buffer, '\n') catch unreachable).?;
+
+    const len = line.len;
+    const total_len = len + 1; // +1 for null terminator
+
+    const mem = std.c.malloc(total_len).?;
+    const out: [*c]u8 = @ptrCast(mem);
+
+    @memcpy(out[0..len], line);
+    out[len] = 0; // null terminator
+
+    return out;
+}
+
+fn addHistory(input: [*c]u8) void {
+    if (module_builtin.os.tag != .windows) {
+        _ = c_libedit.add_history(input);
+    }
+}
+
+pub fn main() !void {
+    const Number = c_mpc.mpc_new("number");
+    const Operator = c_mpc.mpc_new("operator");
+    const Expr = c_mpc.mpc_new("expr");
+    const Lispy = c_mpc.mpc_new("lispy");
+    defer c_mpc.mpc_cleanup(4, Number, Operator, Expr, Lispy);
+
+    const lang =
+        \\ number   : /-?[0-9]+/ ;
+        \\ operator : '+' | '-' | '*' | '/' ;
+        \\ expr     : &lt;number&gt; | '(' &lt;operator&gt; &lt;expr&gt;+ ')' ;
+        \\ lispy    : /^/ &lt;operator&gt; &lt;expr&gt;+ /$/ ;
+    ;
+
+    if (c_mpc.mpca_lang(c_mpc.MPCA_LANG_DEFAULT, lang, Number, Operator, Expr, Lispy) != 0) {
+        std.debug.print("Failed to define grammar\n", .{});
+        return;
+    }
+
+    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
+    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
+
+    while (true) {
+        const input = readLine("lispy&gt; ");
+        defer std.c.free(input);
+
+        addHistory(input);
+
+        var result: c_mpc.mpc_result_t = undefined;
+        if (c_mpc.mpc_parse("&lt;stdin&gt;", input, Lispy, &amp;result) != 0) {
+            const out: *c_mpc.mpc_ast_t = @ptrCast(@alignCast(result.output));
+            c_mpc.mpc_ast_print(out);
+            c_mpc.mpc_ast_delete(out);
+        } else {
+            c_mpc.mpc_err_print(result.@"error");
+            c_mpc.mpc_err_delete(result.@"error");
+        }
+    }
+}
+</code></pre>
+<h2 id="buildzig-3"><a class="header" href="#buildzig-3">build.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const exe = b.addExecutable(.{
+        .name = "ch06",
+        .root_source_file = b.path("src/ch06.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    { // library: editline
+        if (target.result.os.tag != .windows) {
+            if (target.result.os.tag == .linux) {
+                exe.addIncludePath(.{ .cwd_relative = "/usr/include/" });
+            } else if (target.result.os.tag == .macos) {
+                exe.addIncludePath(.{ .cwd_relative = "/opt/homebrew/include" });
+                exe.addLibraryPath(.{ .cwd_relative = "/opt/homebrew/lib" });
+            }
+            exe.linkSystemLibrary("edit");
+        }
+    }
+    { // library: mpc
+        exe.addIncludePath(.{ .cwd_relative = "../mpc/" });
+        exe.addCSourceFile(.{ .file = b.path("../mpc/mpc.c") });
+        exe.linkLibC();
+    }
+    exe.linkLibC();
+
+    // zig-out/bin/ 아래에 실행파일을 복사해 줌.
+    b.installArtifact(exe);
+
+    // zig build &lt;원하는 스탭이름&gt;을 하면 바이너리를 실행함.
+    const run_cmd = b.addRunArtifact(exe);
+    const run_step = b.step("run", "Run the application");
+    run_step.dependOn(&amp;run_cmd.step);
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ch07"><a class="header" href="#ch07">ch07</a></h1>
+<ul>
+<li>
+<p><a href="https://www.buildyourownlisp.com/chapter7_evaluation">origin</a></p>
+<ul>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/evaluation.c">evaluation.c</a></li>
+</ul>
+<p>string to int
+string compare
+index of string</p>
+<ul>
+<li>Chapter 7 • Evaluation</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-c">typedef struct mpc_ast_t {
+  char* tag;                   // 특정 항목을 구문 분석하는 데 사용된 모든 규칙의 목록을 포함하는 문자열이었습니다. 예를 들어 expr|number|regex.
+  char* contents;              // 가지의 경우 이 필드가 비어 있지만, 잎의 경우 연산자나 숫자를 찾는 데 사용할 수 있습니다.'*''(''5'
+  mpc_state_t state;           // 이 프로그램에서는 이 정보를 사용하지 않습니다. // 파서가 이 노드를 발견했을 때 어떤 상태에 있었는지에 대한 정보(행 번호, 열 번호 등)가 포함됩니다.
+  int children_num;            // 노드의 자식 노드 수
+  struct mpc_ast_t** children; // 자식 노드들의 배열
+} mpc_ast_t;
+</code></pre>
+<p>t-&gt;children
+0 :
+1 : operator
+2... :</p>
+<h2 id="srcch07zig"><a class="header" href="#srcch07zig">src/ch07.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+const module_builtin = @import("builtin");
+
+const c_libedit = if (module_builtin.os.tag != .windows) @cImport({
+    // https://salsa.debian.org/debian/libedit/-/blob/master/src/editline/readline.h
+    @cInclude("editline/readline.h");
+}) else struct {};
+
+const c_mpc = @cImport({
+    @cInclude("mpc.h");
+});
+
+fn readLine(prompt: [:0]const u8) [*c]u8 {
+    if (module_builtin.os.tag != .windows) {
+        const input: [*c]u8 = c_libedit.readline(prompt);
+        return input;
+    }
+
+    std.debug.print("{s}", .{prompt});
+
+    const stdin = std.io.getStdIn().reader();
+
+    var buffer: [1024]u8 = undefined;
+    const line = (stdin.readUntilDelimiterOrEof(&amp;buffer, '\n') catch unreachable).?;
+
+    const len = line.len;
+    const total_len = len + 1; // +1 for null terminator
+
+    const mem = std.c.malloc(total_len).?;
+    const out: [*c]u8 = @ptrCast(mem);
+
+    @memcpy(out[0..len], line);
+    out[len] = 0; // null terminator
+
+    return out;
+}
+
+fn addHistory(input: [*c]u8) void {
+    if (module_builtin.os.tag != .windows) {
+        _ = c_libedit.add_history(input);
+    }
+}
+
+fn eval_op(x: i64, op: [*:0]const u8, y: i64) i64 {
+    if (std.mem.eql(u8, std.mem.span(op), "+")) {
+        return x + y;
+    }
+    if (std.mem.eql(u8, std.mem.span(op), "-")) {
+        return x - y;
+    }
+    if (std.mem.eql(u8, std.mem.span(op), "*")) {
+        return x * y;
+    }
+    if (std.mem.eql(u8, std.mem.span(op), "/")) {
+        return @divTrunc(x, y);
+    }
+    return 0;
+}
+
+pub fn eval(t: *c_mpc.mpc_ast_t) i64 {
+    // number 노드인 경우 바로 값 반환
+    if (std.mem.indexOf(u8, std.mem.span(t.tag), "number") != null) {
+        return std.fmt.parseInt(i64, std.mem.span(t.contents), 10) catch 0;
+    }
+
+    // 연산자(op)는 두 번째 자식의 contents
+    const op = t.children[1].*.contents;
+
+    // 세 번째 자식을 먼저 계산
+    var x = eval(t.children[2]);
+
+    // 나머지 자식 노드를 반복하며 계산
+    var i: usize = 3;
+    while (i &lt; t.children_num and std.mem.indexOf(u8, std.mem.span(t.children[i].*.tag), "expr") != null) {
+        const right = eval(t.children[i]);
+        x = eval_op(x, op, right);
+        i += 1;
+    }
+
+    return x;
+}
+
+pub fn main() void {
+    const Number = c_mpc.mpc_new("number");
+    const Operator = c_mpc.mpc_new("operator");
+    const Expr = c_mpc.mpc_new("expr");
+    const Lispy = c_mpc.mpc_new("lispy");
+    defer c_mpc.mpc_cleanup(4, Number, Operator, Expr, Lispy);
+
+    const lang =
+        \\ number   : /-?[0-9]+/ ;
+        \\ operator : '+' | '-' | '*' | '/' ;
+        \\ expr     : &lt;number&gt; | '(' &lt;operator&gt; &lt;expr&gt;+ ')' ;
+        \\ lispy    : /^/ &lt;operator&gt; &lt;expr&gt;+ /$/ ;
+    ;
+
+    if (c_mpc.mpca_lang(c_mpc.MPCA_LANG_DEFAULT, lang, Number, Operator, Expr, Lispy) != 0) {
+        std.debug.print("Failed to define grammar\n", .{});
+        return;
+    }
+
+    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
+    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
+
+    while (true) {
+        const input = readLine("lispy&gt; ");
+        defer std.c.free(input);
+
+        // Prepare result struct
+        var result: c_mpc.mpc_result_t = undefined;
+
+        if (c_mpc.mpc_parse("&lt;stdin&gt;", input, Lispy, &amp;result) != 0) {
+            const output: *c_mpc.mpc_ast_t = @ptrCast(@alignCast(result.output));
+            defer c_mpc.mpc_ast_delete(output);
+
+            const x = eval(output);
+            std.debug.print("{d}\n", .{x});
+        } else {
+            c_mpc.mpc_err_print(result.@"error");
+            c_mpc.mpc_err_delete(result.@"error");
+        }
+    }
+}
+</code></pre>
+<h2 id="buildzig-4"><a class="header" href="#buildzig-4">build.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const exe = b.addExecutable(.{
+        .name = "ch07",
+        .root_source_file = b.path("src/ch07.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    { // library: editline
+        if (target.result.os.tag != .windows) {
+            if (target.result.os.tag == .linux) {
+                exe.addIncludePath(.{ .cwd_relative = "/usr/include/" });
+            } else if (target.result.os.tag == .macos) {
+                exe.addIncludePath(.{ .cwd_relative = "/opt/homebrew/include" });
+                exe.addLibraryPath(.{ .cwd_relative = "/opt/homebrew/lib" });
+            }
+            exe.linkSystemLibrary("edit");
+        }
+    }
+    { // library: mpc
+        exe.addIncludePath(.{ .cwd_relative = "../mpc/" });
+        exe.addCSourceFile(.{ .file = b.path("../mpc/mpc.c") });
+        exe.linkLibC();
+    }
+    exe.linkLibC();
+
+    // zig-out/bin/ 아래에 실행파일을 복사해 줌.
+    b.installArtifact(exe);
+
+    // zig build &lt;원하는 스탭이름&gt;을 하면 바이너리를 실행함.
+    const run_cmd = b.addRunArtifact(exe);
+    const run_step = b.step("run", "Run the application");
+    run_step.dependOn(&amp;run_cmd.step);
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ch08"><a class="header" href="#ch08">ch08</a></h1>
+<ul>
+<li><a href="https://www.buildyourownlisp.com/chapter8_error_handling">origin</a>
+<ul>
+<li>
+<p><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/error_handling.c">error_handling.c</a></p>
+<ul>
+<li>Lisp Value lval</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-c">/* Declare New lval Struct */
+typedef struct {
+  int type;
+  long num;
+  int err;
+} lval;
+</code></pre>
+<p>LVAL_ // value
+LERR_ // error</p>
+<h2 id="srcch08zig"><a class="header" href="#srcch08zig">src/ch08.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+const module_builtin = @import("builtin");
+
+const c_libedit = if (module_builtin.os.tag != .windows) @cImport({
+    // https://salsa.debian.org/debian/libedit/-/blob/master/src/editline/readline.h
+    @cInclude("editline/readline.h");
+}) else struct {};
+
+const c_mpc = @cImport({
+    @cInclude("mpc.h");
+});
+
+fn readLine(prompt: [:0]const u8) [*c]u8 {
+    if (module_builtin.os.tag != .windows) {
+        const input: [*c]u8 = c_libedit.readline(prompt);
+        return input;
+    }
+
+    std.debug.print("{s}", .{prompt});
+
+    const stdin = std.io.getStdIn().reader();
+
+    var buffer: [1024]u8 = undefined;
+    const line = (stdin.readUntilDelimiterOrEof(&amp;buffer, '\n') catch unreachable).?;
+
+    const len = line.len;
+    const total_len = len + 1; // +1 for null terminator
+
+    const mem = std.c.malloc(total_len).?;
+    const out: [*c]u8 = @ptrCast(mem);
+
+    @memcpy(out[0..len], line);
+    out[len] = 0; // null terminator
+
+    return out;
+}
+
+fn addHistory(input: [*c]u8) void {
+    if (module_builtin.os.tag != .windows) {
+        _ = c_libedit.add_history(input);
+    }
+}
+
+// ===================================================
+
+const E_LERR = enum {
+    DIV_ZERO,
+    BAD_OP,
+    BAD_NUM,
+
+    pub fn Print(t: E_LERR) void {
+        switch (t) {
+            .DIV_ZERO =&gt; {
+                std.debug.print("Error: Division By Zero!", .{});
+            },
+            .BAD_OP =&gt; {
+                std.debug.print("Error: Invalid Operator!", .{});
+            },
+            .BAD_NUM =&gt; {
+                std.debug.print("Error: Invalid Number!", .{});
+            },
+        }
+    }
+};
+
+const E_LVAL = enum {
+    NUM,
+    ERR,
+};
+
+const Lval = struct {
+    Type: E_LVAL,
+    Num: i64,
+    Err: E_LERR,
+
+    pub fn Print(val: Lval) void {
+        switch (val.Type) {
+            .NUM =&gt; {
+                std.debug.print("{d}", .{val.Num});
+            },
+            .ERR =&gt; {
+                val.Err.Print();
+            },
+        }
+    }
+
+    pub fn PrintLn(val: Lval) void {
+        val.Print();
+        std.debug.print("\n", .{});
+    }
+};
+
+fn lval_num(x: i64) Lval {
+    return Lval{ .Type = E_LVAL.NUM, .Num = x, .Err = undefined };
+}
+
+fn lval_err(e: E_LERR) Lval {
+    return Lval{ .Type = E_LVAL.ERR, .Num = undefined, .Err = e };
+}
+
+fn eval_op(x: Lval, op: [*:0]const u8, y: Lval) Lval {
+    if (x.Type == E_LVAL.ERR) {
+        return x;
+    }
+    if (y.Type == E_LVAL.ERR) {
+        return y;
+    }
+
+    const xs = x.Num;
+    const ys = y.Num;
+
+    if (std.mem.eql(u8, std.mem.span(op), "+")) {
+        return lval_num(xs + ys);
+    }
+    if (std.mem.eql(u8, std.mem.span(op), "-")) {
+        return lval_num(xs - ys);
+    }
+    if (std.mem.eql(u8, std.mem.span(op), "*")) {
+        return lval_num(xs * ys);
+    }
+    if (std.mem.eql(u8, std.mem.span(op), "/")) {
+        if (ys == 0) {
+            return lval_err(.DIV_ZERO);
+        }
+        return lval_num(@divTrunc(xs, ys));
+    }
+    return lval_err(.BAD_OP);
+}
+
+pub fn eval(t: *c_mpc.mpc_ast_t) Lval {
+    if (std.mem.indexOf(u8, std.mem.span(t.tag), "number") != null) {
+        const buf = std.mem.span(t.contents);
+        const result = std.fmt.parseInt(i64, buf, 10) catch {
+            return lval_err(.BAD_NUM);
+        };
+        return lval_num(result);
+    }
+
+    const op = t.children[1].*.contents;
+    var x = eval(t.children[2]);
+
+    var i: usize = 3;
+    while (i &lt; t.children_num and
+        std.mem.indexOf(u8, std.mem.span(t.children[i].*.tag), "expr") != null)
+    {
+        const right = eval(t.children[i]);
+        x = eval_op(x, op, right);
+        i += 1;
+    }
+
+    return x;
+}
+
+pub fn main() void {
+    const Number = c_mpc.mpc_new("number");
+    const Operator = c_mpc.mpc_new("operator");
+    const Expr = c_mpc.mpc_new("expr");
+    const Lispy = c_mpc.mpc_new("lispy");
+    defer c_mpc.mpc_cleanup(4, Number, Operator, Expr, Lispy);
+
+    const lang =
+        \\ number   : /-?[0-9]+/ ;
+        \\ operator : '+' | '-' | '*' | '/' ;
+        \\ expr     : &lt;number&gt; | '(' &lt;operator&gt; &lt;expr&gt;+ ')' ;
+        \\ lispy    : /^/ &lt;operator&gt; &lt;expr&gt;+ /$/ ;
+    ;
+
+    if (c_mpc.mpca_lang(c_mpc.MPCA_LANG_DEFAULT, lang, Number, Operator, Expr, Lispy) != 0) {
+        std.debug.print("Failed to define grammar\n", .{});
+        return;
+    }
+
+    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
+    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
+
+    while (true) {
+        const input = readLine("lispy&gt; ");
+        defer std.c.free(input);
+
+        var result: c_mpc.mpc_result_t = undefined;
+        if (c_mpc.mpc_parse("&lt;stdin&gt;", input, Lispy, &amp;result) != 0) {
+            const output: *c_mpc.mpc_ast_t = @ptrCast(@alignCast(result.output));
+            defer c_mpc.mpc_ast_delete(output);
+
+            const x = eval(output);
+            x.PrintLn();
+        } else {
+            c_mpc.mpc_err_print(result.@"error");
+            c_mpc.mpc_err_delete(result.@"error");
+        }
+    }
+}
+</code></pre>
+<h2 id="buildzig-5"><a class="header" href="#buildzig-5">build.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const exe = b.addExecutable(.{
+        .name = "ch08",
+        .root_source_file = b.path("src/ch08.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    { // library: editline
+        if (target.result.os.tag != .windows) {
+            if (target.result.os.tag == .linux) {
+                exe.addIncludePath(.{ .cwd_relative = "/usr/include/" });
+            } else if (target.result.os.tag == .macos) {
+                exe.addIncludePath(.{ .cwd_relative = "/opt/homebrew/include" });
+                exe.addLibraryPath(.{ .cwd_relative = "/opt/homebrew/lib" });
+            }
+            exe.linkSystemLibrary("edit");
+        }
+    }
+    { // library: mpc
+        exe.addIncludePath(.{ .cwd_relative = "../mpc/" });
+        exe.addCSourceFile(.{ .file = b.path("../mpc/mpc.c") });
+        exe.linkLibC();
+    }
+    exe.linkLibC();
+
+    // zig-out/bin/ 아래에 실행파일을 복사해 줌.
+    b.installArtifact(exe);
+
+    // zig build &lt;원하는 스탭이름&gt;을 하면 바이너리를 실행함.
+    const run_cmd = b.addRunArtifact(exe);
+    const run_step = b.step("run", "Run the application");
+    run_step.dependOn(&amp;run_cmd.step);
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ch09"><a class="header" href="#ch09">ch09</a></h1>
+<ul>
+<li><a href="https://www.buildyourownlisp.com/chapter9_s_expressions">origin</a>
+<ul>
+<li>
+<p><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/s_expressions.c">s_expressions.c</a></p>
+</li>
+<li>
+<p>Chapter 9 • S-Expressions - 난이도 상승</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>어렵네</p>
+<pre><code class="language-c">typedef struct lval {
+  int type;
+  long num;
+  /* Error and Symbol types have some string data */
+  char* err;
+  char* sym;
+  /* Count and Pointer to a list of /.'"lval*" */
+  int count;
+  struct lval** cell;
+} lval;
+
+mpca_lang(MPCA_LANG_DEFAULT,
+  "                                          \
+    number : /-?[0-9]+/ ;                    \
+    symbol : '+' | '-' | '*' | '/' ;         \
+    sexpr  : '(' &lt;expr&gt;* ')' ;               \
+    expr   : &lt;number&gt; | &lt;symbol&gt; | &lt;sexpr&gt; ; \
+    lispy  : /^/ &lt;expr&gt;* /$/ ;               \
+  ",
+  Number, Symbol, Sexpr, Expr, Lispy);
+</code></pre>
+<p>생성자 소멸자
+null terminated
+lval_take는 lval_pop하면서 자신을 삭제</p>
+<p>› 이 realloc함수는 무슨 역할을 하나요?
+› 이 memmove함수는 무슨 역할을 하나요?
+› 와 어떻게 memmove다른가요 memcpy?</p>
+<h2 id="srcch09zig"><a class="header" href="#srcch09zig">src/ch09.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+const module_builtin = @import("builtin");
+
+const c_libedit = if (module_builtin.os.tag != .windows) @cImport({
+    // https://salsa.debian.org/debian/libedit/-/blob/master/src/editline/readline.h
+    @cInclude("editline/readline.h");
+}) else struct {};
+
+const c_mpc = @cImport({
+    @cInclude("mpc.h");
+});
+
+const assert = std.debug.assert;
+
+fn readLine(prompt: [:0]const u8) [*c]u8 {
+    if (module_builtin.os.tag != .windows) {
+        const input: [*c]u8 = c_libedit.readline(prompt);
+        return input;
+    }
+
+    std.debug.print("{s}", .{prompt});
+
+    const stdin = std.io.getStdIn().reader();
+
+    var buffer: [1024]u8 = undefined;
+    const line = (stdin.readUntilDelimiterOrEof(&amp;buffer, '\n') catch unreachable).?;
+
+    const len = line.len;
+    const total_len = len + 1; // +1 for null terminator
+
+    const mem = std.c.malloc(total_len).?;
+    const out: [*c]u8 = @ptrCast(mem);
+
+    @memcpy(out[0..len], line);
+    out[len] = 0; // null terminator
+
+    return out;
+}
+
+fn addHistory(input: [*c]u8) void {
+    if (module_builtin.os.tag != .windows) {
+        _ = c_libedit.add_history(input);
+    }
+}
+
+// ===================================================
+
+fn zstr_Equal(a: []const u8, b: []const u8) bool {
+    return std.mem.eql(u8, a, b);
+}
+
+fn cstr_Equal(a: [*:0]const u8, b: [:0]const u8) bool {
+    return std.mem.orderZ(u8, a, b) == .eq;
+}
+
+fn cstr_Contains(a: [*:0]const u8, b: [:0]const u8) bool {
+    return std.mem.indexOf(u8, std.mem.span(a), b) != null;
+}
+
+// ===================================================
+
+const E_LVAL = enum(i32) {
+    ERR = 0,
+    NUM,
+    SYM,
+    SEXPR,
+};
+
+const Lval = struct {
+    Type: E_LVAL = E_LVAL.ERR,
+    Num: i64 = 0,
+    Err: []const u8 = undefined,
+    Sym: []const u8 = undefined,
+    Cell: std.ArrayList(*Lval) = undefined,
+
+    pub fn Dispose(v: *Lval) void {
+        const allocator = std.heap.page_allocator;
+
+        switch (v.Type) {
+            .NUM =&gt; {},
+            .ERR =&gt; {
+                allocator.free(v.Err);
+            },
+            .SYM =&gt; {
+                allocator.free(v.Sym);
+            },
+            .SEXPR =&gt; {},
+        }
+
+        for (v.Cell.items) |item| {
+            item.Dispose();
+        }
+        v.Cell.deinit();
+        allocator.destroy(v);
+    }
+
+    pub fn Print(val: *const Lval) void {
+        switch (val.Type) {
+            .NUM =&gt; {
+                std.debug.print("{d}", .{val.Num});
+            },
+            .ERR =&gt; {
+                std.debug.print("Error: {s}", .{val.Err});
+            },
+            .SYM =&gt; {
+                std.debug.print("{s}", .{val.Sym});
+            },
+            .SEXPR =&gt; {
+                lval_expr_print(val, '(', ')');
+            },
+        }
+    }
+
+    pub fn Println(val: *const Lval) void {
+        val.Print();
+        std.debug.print("\n", .{});
+    }
+
+    fn lval_expr_print(val: *const Lval, open: u8, close: u8) void {
+        std.debug.print("{c}", .{open});
+        for (val.Cell.items, 0..) |item, i| {
+            item.Print();
+            if (i != val.Cell.items.len - 1) {
+                std.debug.print(" ", .{});
+            }
+        }
+        std.debug.print("{c}", .{close});
+    }
+
+    fn Add(v: *Lval, x: *Lval) *Lval {
+        assert(v.Type == .SEXPR);
+
+        v.Cell.append(x) catch unreachable;
+        return v;
+    }
+
+    fn Pop(v: *Lval, i: usize) *Lval {
+        assert(v.Type == .SEXPR);
+
+        const ret = v.Cell.orderedRemove(i);
+        return ret;
+    }
+
+    fn Take(v: *Lval, i: usize) *Lval {
+        assert(v.Type == .SEXPR);
+
+        const x = Pop(v, i);
+        v.Dispose();
+        return x;
+    }
+};
+
+fn lval_num(x: i64) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .NUM;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    v.Num = x;
+    return v;
+}
+
+fn lval_err(msg: []const u8) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .ERR;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    v.Err = allocator.dupe(u8, msg) catch unreachable;
+    return v;
+}
+
+fn lval_sym(msg: []const u8) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch undefined;
+    v.Type = .SYM;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+
+    v.Sym = allocator.dupe(u8, msg) catch unreachable;
+    return v;
+}
+
+fn lval_sexpr() *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .SEXPR;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    return v;
+}
+
+fn builtin_op(a: *Lval, op: []const u8) *Lval {
+    defer a.Dispose();
+
+    for (a.Cell.items) |item| {
+        if (item.Type != .NUM) {
+            return lval_err("Cannot operate on non-number!");
+        }
+    }
+
+    const x = a.Pop(0);
+    if (zstr_Equal(op, "-") and a.Cell.items.len == 0) {
+        x.Num = -x.Num;
+    }
+
+    while (a.Cell.items.len &gt; 0) {
+        const y = a.Pop(0);
+        defer y.Dispose();
+
+        if (zstr_Equal(op, "+")) {
+            x.Num += y.Num;
+        } else if (zstr_Equal(op, "-")) {
+            x.Num -= y.Num;
+        } else if (zstr_Equal(op, "*")) {
+            x.Num *= y.Num;
+        } else if (zstr_Equal(op, "/")) {
+            if (y.Num == 0) {
+                return lval_err("Division By Zero.");
+            } else {
+                x.Num = @divTrunc(x.Num, y.Num);
+            }
+        }
+    }
+    return x;
+}
+
+fn lval_eval_sexpr(v: *Lval) *Lval {
+    for (0.., v.Cell.items) |i, item| {
+        const evaled = lval_eval(item);
+        v.Cell.items[i] = evaled;
+    }
+
+    for (0.., v.Cell.items) |i, item| {
+        if (item.Type == .ERR) {
+            return v.Take(i);
+        }
+    }
+
+    if (v.Cell.items.len == 0) {
+        return v;
+    }
+
+    if (v.Cell.items.len == 1) {
+        return v.Take(0);
+    }
+
+    const first = v.Pop(0);
+    defer first.Dispose();
+
+    if (first.Type != .SYM) {
+        v.Dispose();
+        return lval_err("S-expression Does not start with symbol.");
+    }
+
+    const result = builtin_op(v, first.Sym);
+    return result;
+}
+
+fn lval_eval(v: *Lval) *Lval {
+    if (v.Type == .SEXPR) {
+        return lval_eval_sexpr(v);
+    }
+    return v;
+}
+
+fn lval_read_num(t: *c_mpc.mpc_ast_t) *Lval {
+    const slice = std.mem.span(t.contents);
+
+    const parsed = std.fmt.parseInt(i64, slice, 10) catch {
+        return lval_err("invalid number");
+    };
+
+    return lval_num(parsed);
+}
+
+fn lval_read(t: *c_mpc.mpc_ast_t) *Lval {
+    if (cstr_Contains(t.tag, "number")) {
+        return lval_read_num(t);
+    }
+    if (cstr_Contains(t.tag, "symbol")) {
+        return lval_sym(std.mem.span(t.contents));
+    }
+
+    var x: *Lval = undefined;
+    if (cstr_Equal(t.tag, "&gt;")) {
+        x = lval_sexpr();
+    } else if (cstr_Contains(t.tag, "sexpr")) {
+        x = lval_sexpr();
+    }
+
+    for (0..@intCast(t.children_num), t.children) |_, child| {
+        if (cstr_Equal(child.*.contents, "(")) {
+            continue;
+        }
+        if (cstr_Equal(child.*.contents, ")")) {
+            continue;
+        }
+        if (cstr_Equal(child.*.tag, "regex")) {
+            continue;
+        }
+
+        const child_val = lval_read(child);
+        x = x.Add(child_val);
+    }
+
+    return x;
+}
+
+// ===================================================
+pub fn main() void {
+    const Number = c_mpc.mpc_new("number");
+    const Symbol = c_mpc.mpc_new("symbol");
+    const Sexpr = c_mpc.mpc_new("sexpr");
+    const Expr = c_mpc.mpc_new("expr");
+    const Lispy = c_mpc.mpc_new("lispy");
+    defer c_mpc.mpc_cleanup(5, Number, Symbol, Sexpr, Expr, Lispy);
+
+    const lang =
+        \\ number : /-?[0-9]+/ ;
+        \\ symbol : '+' | '-' | '*' | '/' ;
+        \\ sexpr  : '(' &lt;expr&gt;* ')' ;
+        \\ expr   : &lt;number&gt; | &lt;symbol&gt; | &lt;sexpr&gt; ;
+        \\ lispy  : /^/ &lt;expr&gt;* /$/ ;
+    ;
+
+    if (c_mpc.mpca_lang(c_mpc.MPCA_LANG_DEFAULT, lang, Number, Symbol, Sexpr, Expr, Lispy) != 0) {
+        std.debug.print("Failed to define grammar\n", .{});
+        return;
+    }
+
+    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
+    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
+
+    while (true) {
+        const input: [*c]u8 = readLine("lispy&gt; ");
+        defer std.c.free(input);
+
+        var result: c_mpc.mpc_result_t = undefined;
+        if (c_mpc.mpc_parse("&lt;stdin&gt;", input, Lispy, &amp;result) != 0) {
+            const output: *c_mpc.mpc_ast_t = @ptrCast(@alignCast(result.output));
+            defer c_mpc.mpc_ast_delete(output);
+
+            c_mpc.mpc_ast_print(output);
+
+            const r: *Lval = lval_read(output);
+            const e: *Lval = lval_eval(r);
+            e.Println();
+            e.Dispose();
+        } else {
+            c_mpc.mpc_err_print(result.@"error");
+            c_mpc.mpc_err_delete(result.@"error");
+        }
+    }
+}
+</code></pre>
+<h2 id="buildzig-6"><a class="header" href="#buildzig-6">build.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const exe = b.addExecutable(.{
+        .name = "ch09",
+        .root_source_file = b.path("src/ch09.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    { // library: editline
+        if (target.result.os.tag != .windows) {
+            if (target.result.os.tag == .linux) {
+                exe.addIncludePath(.{ .cwd_relative = "/usr/include/" });
+            } else if (target.result.os.tag == .macos) {
+                exe.addIncludePath(.{ .cwd_relative = "/opt/homebrew/include" });
+                exe.addLibraryPath(.{ .cwd_relative = "/opt/homebrew/lib" });
+            }
+            exe.linkSystemLibrary("edit");
+        }
+    }
+    { // library: mpc
+        exe.addIncludePath(.{ .cwd_relative = "../mpc/" });
+        exe.addCSourceFile(.{ .file = b.path("../mpc/mpc.c") });
+        exe.linkLibC();
+    }
+    exe.linkLibC();
+
+    // zig-out/bin/ 아래에 실행파일을 복사해 줌.
+    b.installArtifact(exe);
+
+    // zig build &lt;원하는 스탭이름&gt;을 하면 바이너리를 실행함.
+    const run_cmd = b.addRunArtifact(exe);
+    const run_step = b.step("run", "Run the application");
+    run_step.dependOn(&amp;run_cmd.step);
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ch10"><a class="header" href="#ch10">ch10</a></h1>
+<ul>
+<li>https://www.buildyourownlisp.com/chapter10_q_expressions
+<ul>
+<li>
+<p><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/q_expressions.c">q_expressions.c</a></p>
+</li>
+<li>
+<p>Chapter 10 • Q-Expressions</p>
+<ul>
+<li>인용된 표현식(quoted expression)을 의미하며 , 표준 Lisp 메커니즘으로 계산되지 않는 Lisp 표현식의 한 유형입니다
+()로 감싸는게 아닌 {} 로 감쌈</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>qexpr을 eval하면 그때서야 child에서 꺼내옴</p>
+<pre><code>        \\ symbol : "list" | "head" | "tail" | "eval" | "join"
+        \\        | '+' | '-' | '*' | '/' ;
+</code></pre>
+<h2 id="srcch10zig"><a class="header" href="#srcch10zig">src/ch10.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+const module_builtin = @import("builtin");
+
+const c_libedit = if (module_builtin.os.tag != .windows) @cImport({
+    // https://salsa.debian.org/debian/libedit/-/blob/master/src/editline/readline.h
+    @cInclude("editline/readline.h");
+}) else struct {};
+
+const c_mpc = @cImport({
+    @cInclude("mpc.h");
+});
+
+const assert = std.debug.assert;
+
+fn readLine(prompt: [:0]const u8) [*c]u8 {
+    if (module_builtin.os.tag != .windows) {
+        const input: [*c]u8 = c_libedit.readline(prompt);
+        return input;
+    }
+
+    std.debug.print("{s}", .{prompt});
+
+    const stdin = std.io.getStdIn().reader();
+
+    var buffer: [1024]u8 = undefined;
+    const line = (stdin.readUntilDelimiterOrEof(&amp;buffer, '\n') catch unreachable).?;
+
+    const len = line.len;
+    const total_len = len + 1; // +1 for null terminator
+
+    const mem = std.c.malloc(total_len).?;
+    const out: [*c]u8 = @ptrCast(mem);
+
+    @memcpy(out[0..len], line);
+    out[len] = 0; // null terminator
+
+    return out;
+}
+
+fn addHistory(input: [*c]u8) void {
+    if (module_builtin.os.tag != .windows) {
+        _ = c_libedit.add_history(input);
+    }
+}
+
+// ===================================================
+
+fn zstr_Equal(a: []const u8, b: []const u8) bool {
+    return std.mem.eql(u8, a, b);
+}
+
+fn zstr_Contains(a: []const u8, b: []const u8) bool {
+    return std.mem.indexOf(u8, a, b) != null;
+}
+
+fn cstr_Equal(a: [*:0]const u8, b: [:0]const u8) bool {
+    return std.mem.orderZ(u8, a, b) == .eq;
+}
+
+fn cstr_Contains(a: [*:0]const u8, b: [:0]const u8) bool {
+    return std.mem.indexOf(u8, std.mem.span(a), b) != null;
+}
+
+fn LASSERT(v: *Lval, condition: bool, comptime fmt: []const u8, args_fmt: anytype) ?*Lval {
+    if (condition) {
+        return null;
+    }
+
+    const err = lval_err_format(fmt, args_fmt);
+    v.Dispose();
+    return err;
+}
+
+// ===================================================
+
+const E_LVAL = enum(i32) {
+    ERR = 0,
+    NUM,
+    SYM,
+    SEXPR,
+    QEXPR,
+};
+
+const Lval = struct {
+    Type: E_LVAL = E_LVAL.ERR,
+    Num: i64 = 0,
+    Err: []const u8 = undefined,
+    Sym: []const u8 = undefined,
+    Cell: std.ArrayList(*Lval) = undefined,
+
+    pub fn Dispose(v: *Lval) void {
+        const allocator = std.heap.page_allocator;
+
+        switch (v.Type) {
+            .NUM =&gt; {},
+            .ERR =&gt; {
+                allocator.free(v.Err);
+            },
+            .SYM =&gt; {
+                allocator.free(v.Sym);
+            },
+            .SEXPR =&gt; {},
+            .QEXPR =&gt; {},
+        }
+
+        for (v.Cell.items) |item| {
+            item.Dispose();
+        }
+        v.Cell.deinit();
+        allocator.destroy(v);
+    }
+
+    pub fn Print(val: *const Lval) void {
+        switch (val.Type) {
+            .NUM =&gt; {
+                std.debug.print("{d}", .{val.Num});
+            },
+            .ERR =&gt; {
+                std.debug.print("Error: {s}", .{val.Err});
+            },
+            .SYM =&gt; {
+                std.debug.print("{s}", .{val.Sym});
+            },
+            .SEXPR =&gt; {
+                val.lval_expr_print('(', ')');
+            },
+            .QEXPR =&gt; {
+                val.lval_expr_print('{', '}');
+            },
+        }
+    }
+
+    pub fn Println(val: *const Lval) void {
+        val.Print();
+        std.debug.print("\n", .{});
+    }
+
+    fn lval_expr_print(val: *const Lval, open: u8, close: u8) void {
+        std.debug.print("{c}", .{open});
+        for (val.Cell.items, 0..) |item, i| {
+            item.Print();
+            if (i != val.Cell.items.len - 1) {
+                std.debug.print(" ", .{});
+            }
+        }
+        std.debug.print("{c}", .{close});
+    }
+
+    fn Add(v: *Lval, x: *Lval) *Lval {
+        assert(v.Type == .SEXPR or v.Type == .QEXPR);
+
+        v.Cell.append(x) catch unreachable;
+        return v;
+    }
+
+    fn Pop(v: *Lval, i: usize) *Lval {
+        assert(v.Type == .SEXPR or v.Type == .QEXPR);
+
+        const ret = v.Cell.orderedRemove(i);
+        return ret;
+    }
+
+    fn Take(v: *Lval, i: usize) *Lval {
+        assert(v.Type == .SEXPR or v.Type == .QEXPR);
+
+        const x = Pop(v, i);
+        v.Dispose();
+        return x;
+    }
+
+    fn Join(x: *Lval, y: *Lval) *Lval {
+        assert(x.Type == .SEXPR or x.Type == .QEXPR);
+
+        var ret: *Lval = x;
+        while (y.Cell.items.len &gt; 0) {
+            ret = ret.Join(y.Pop(0));
+        }
+        y.Dispose();
+        return ret;
+    }
+};
+
+fn lval_num(x: i64) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .NUM;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    v.Num = x;
+    return v;
+}
+
+fn lval_err(msg: []const u8) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .ERR;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    v.Err = allocator.dupe(u8, msg) catch unreachable;
+    return v;
+}
+
+fn lval_err_format(comptime fmt: []const u8, args_fmt: anytype) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .ERR;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    const formatted = std.fmt.allocPrint(allocator, fmt, args_fmt) catch unreachable;
+    v.Err = formatted;
+    return v;
+}
+
+fn lval_sym(msg: []const u8) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch undefined;
+    v.Type = .SYM;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+
+    v.Sym = allocator.dupe(u8, msg) catch unreachable;
+    return v;
+}
+
+fn lval_sexpr() *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .SEXPR;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    return v;
+}
+
+fn lval_qexpr() *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .QEXPR;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    return v;
+}
+
+// ===================================================
+fn builtin_list(a: *Lval) *Lval {
+    a.Type = .QEXPR;
+    return a;
+}
+
+fn builtin_head(a: *Lval) *Lval {
+    if (LASSERT(a, a.Cell.items.len == 1, "Function 'head' passed too many arguments!", .{})) |err| {
+        return err;
+    }
+    if (LASSERT(a, a.Cell.items[0].Type == .QEXPR, "Function 'head' passed incorrect types!", .{})) |err| {
+        return err;
+    }
+    if (LASSERT(a, a.Cell.items[0].Cell.items.len != 0, "Function 'head' passed {{}}!", .{})) |err| {
+        return err;
+    }
+
+    const v = a.Take(0);
+    while (v.Cell.items.len &gt; 1) {
+        v.Pop(1).Dispose();
+    }
+    return v;
+}
+
+fn builtin_tail(a: *Lval) *Lval {
+    if (LASSERT(a, a.Cell.items.len == 1, "Function 'tail' passed too many arguments!", .{})) |err| {
+        return err;
+    }
+    if (LASSERT(a, a.Cell.items[0].Type == .QEXPR, "Function 'tail' passed incorrect types!", .{})) |err| {
+        return err;
+    }
+    if (LASSERT(a, a.Cell.items[0].Cell.items.len != 0, "Function 'tail' passed {{}}!", .{})) |err| {
+        return err;
+    }
+
+    const v = a.Take(0);
+    v.Pop(0).Dispose();
+    return v;
+}
+
+fn builtin_join(a: *Lval) *Lval {
+    for (0..a.Cell.items.len) |i| {
+        if (LASSERT(a, a.Cell.items[i].Type == .QEXPR, "Function 'join' passed incorrect type.", .{})) |err| {
+            return err;
+        }
+    }
+
+    var x = a.Pop(0);
+    while (a.Cell.items.len &gt; 0) {
+        x = x.Join(a.Pop(0));
+    }
+    a.Dispose();
+    return x;
+}
+
+fn builtin_eval(a: *Lval) *Lval {
+    if (LASSERT(a, a.Cell.items.len == 1, "Function 'eval' passed too many arguments!", .{})) |err| {
+        return err;
+    }
+
+    if (LASSERT(a, a.Cell.items[0].Type == .QEXPR, "Function 'eval' passed incorrect type!", .{})) |err| {
+        return err;
+    }
+
+    const x = a.Take(0);
+    x.Type = .SEXPR;
+    return lval_eval(x);
+}
+
+fn builtin(a: *Lval, func: []const u8) *Lval {
+    if (zstr_Equal(func, "list")) {
+        return builtin_list(a);
+    }
+    if (zstr_Equal(func, "head")) {
+        return builtin_head(a);
+    }
+    if (zstr_Equal(func, "tail")) {
+        return builtin_tail(a);
+    }
+    if (zstr_Equal(func, "join")) {
+        return builtin_join(a);
+    }
+    if (zstr_Equal(func, "eval")) {
+        return builtin_eval(a);
+    }
+    if (zstr_Contains("+-/*", func)) {
+        return builtin_op(a, func);
+    }
+
+    a.Dispose();
+    return lval_err("Unknown Function!");
+}
+
+fn builtin_op(a: *Lval, op: []const u8) *Lval {
+    defer a.Dispose();
+
+    for (a.Cell.items) |item| {
+        if (item.Type != .NUM) {
+            return lval_err("Cannot operate on non-number!");
+        }
+    }
+
+    const x = a.Pop(0);
+    if (zstr_Equal(op, "-") and a.Cell.items.len == 0) {
+        x.Num = -x.Num;
+    }
+
+    while (a.Cell.items.len &gt; 0) {
+        const y = a.Pop(0);
+        defer y.Dispose();
+
+        if (zstr_Equal(op, "+")) {
+            x.Num += y.Num;
+        } else if (zstr_Equal(op, "-")) {
+            x.Num -= y.Num;
+        } else if (zstr_Equal(op, "*")) {
+            x.Num *= y.Num;
+        } else if (zstr_Equal(op, "/")) {
+            if (y.Num == 0) {
+                return lval_err("Division By Zero.");
+            } else {
+                x.Num = @divTrunc(x.Num, y.Num);
+            }
+        }
+    }
+    return x;
+}
+
+fn lval_eval_sexpr(v: *Lval) *Lval {
+    for (0.., v.Cell.items) |i, item| {
+        const evaled = lval_eval(item);
+        v.Cell.items[i] = evaled;
+    }
+
+    for (0.., v.Cell.items) |i, item| {
+        if (item.Type == .ERR) {
+            return v.Take(i);
+        }
+    }
+
+    if (v.Cell.items.len == 0) {
+        return v;
+    }
+
+    if (v.Cell.items.len == 1) {
+        return v.Take(0);
+    }
+
+    const first = v.Pop(0);
+    defer first.Dispose();
+
+    if (first.Type != .SYM) {
+        v.Dispose();
+        return lval_err("S-expression Does not start with symbol.");
+    }
+
+    const result = builtin(v, first.Sym);
+    return result;
+}
+
+fn lval_eval(v: *Lval) *Lval {
+    if (v.Type == .SEXPR) {
+        return lval_eval_sexpr(v);
+    }
+    return v;
+}
+
+fn lval_read_num(t: *c_mpc.mpc_ast_t) *Lval {
+    const slice = std.mem.span(t.contents);
+
+    const parsed = std.fmt.parseInt(i64, slice, 10) catch {
+        return lval_err("invalid number");
+    };
+
+    return lval_num(parsed);
+}
+
+fn lval_read(t: *c_mpc.mpc_ast_t) *Lval {
+    if (cstr_Contains(t.tag, "number")) {
+        return lval_read_num(t);
+    }
+    if (cstr_Contains(t.tag, "symbol")) {
+        return lval_sym(std.mem.span(t.contents));
+    }
+
+    var x: *Lval = undefined;
+    if (cstr_Equal(t.tag, "&gt;")) {
+        x = lval_sexpr();
+    } else if (cstr_Contains(t.tag, "sexpr")) {
+        x = lval_sexpr();
+    } else if (cstr_Contains(t.tag, "qexpr")) {
+        x = lval_qexpr();
+    }
+
+    for (0..@intCast(t.children_num), t.children) |_, child| {
+        if (cstr_Equal(child.*.contents, "(")) {
+            continue;
+        }
+        if (cstr_Equal(child.*.contents, ")")) {
+            continue;
+        }
+        if (cstr_Equal(child.*.contents, "{")) {
+            continue;
+        }
+        if (cstr_Equal(child.*.contents, "}")) {
+            continue;
+        }
+        if (cstr_Equal(child.*.tag, "regex")) {
+            continue;
+        }
+
+        const child_val = lval_read(child);
+        x = x.Add(child_val);
+    }
+
+    return x;
+}
+
+// ===================================================
+pub fn main() void {
+    const Number = c_mpc.mpc_new("number");
+    const Symbol = c_mpc.mpc_new("symbol");
+    const Sexpr = c_mpc.mpc_new("sexpr");
+    const Qexpr = c_mpc.mpc_new("qexpr");
+    const Expr = c_mpc.mpc_new("expr");
+    const Lispy = c_mpc.mpc_new("lispy");
+    defer c_mpc.mpc_cleanup(6, Number, Symbol, Sexpr, Qexpr, Expr, Lispy);
+
+    const lang =
+        \\ number : /-?[0-9]+/ ;
+        \\ symbol : "list" | "head" | "tail" | "eval" | "join"
+        \\        | '+' | '-' | '*' | '/' ;
+        \\ sexpr  : '(' &lt;expr&gt;* ')' ;
+        \\ qexpr  : '{' &lt;expr&gt;* '}' ;
+        \\ expr   : &lt;number&gt; | &lt;symbol&gt; | &lt;sexpr&gt; | &lt;qexpr&gt; ;
+        \\ lispy  : /^/ &lt;expr&gt;* /$/ ;
+    ;
+
+    if (c_mpc.mpca_lang(c_mpc.MPCA_LANG_DEFAULT, lang, Number, Symbol, Sexpr, Qexpr, Expr, Lispy) != 0) {
+        std.debug.print("Failed to define grammar\n", .{});
+        return;
+    }
+
+    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
+    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
+
+    while (true) {
+        const input: [*c]u8 = readLine("lispy&gt; ");
+        defer std.c.free(input);
+
+        var result: c_mpc.mpc_result_t = undefined;
+        if (c_mpc.mpc_parse("&lt;stdin&gt;", input, Lispy, &amp;result) != 0) {
+            const output: *c_mpc.mpc_ast_t = @ptrCast(@alignCast(result.output));
+            defer c_mpc.mpc_ast_delete(output);
+
+            c_mpc.mpc_ast_print(output);
+
+            const r: *Lval = lval_read(output);
+            const e: *Lval = lval_eval(r);
+            e.Println();
+            e.Dispose();
+        } else {
+            c_mpc.mpc_err_print(result.@"error");
+            c_mpc.mpc_err_delete(result.@"error");
+        }
+    }
+}
+</code></pre>
+<h2 id="buildzig-7"><a class="header" href="#buildzig-7">build.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const exe = b.addExecutable(.{
+        .name = "ch10",
+        .root_source_file = b.path("src/ch10.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    { // library: editline
+        if (target.result.os.tag != .windows) {
+            if (target.result.os.tag == .linux) {
+                exe.addIncludePath(.{ .cwd_relative = "/usr/include/" });
+            } else if (target.result.os.tag == .macos) {
+                exe.addIncludePath(.{ .cwd_relative = "/opt/homebrew/include" });
+                exe.addLibraryPath(.{ .cwd_relative = "/opt/homebrew/lib" });
+            }
+            exe.linkSystemLibrary("edit");
+        }
+    }
+    { // library: mpc
+        exe.addIncludePath(.{ .cwd_relative = "../mpc/" });
+        exe.addCSourceFile(.{ .file = b.path("../mpc/mpc.c") });
+        exe.linkLibC();
+    }
+    exe.linkLibC();
+
+    // zig-out/bin/ 아래에 실행파일을 복사해 줌.
+    b.installArtifact(exe);
+
+    // zig build &lt;원하는 스탭이름&gt;을 하면 바이너리를 실행함.
+    const run_cmd = b.addRunArtifact(exe);
+    const run_step = b.step("run", "Run the application");
+    run_step.dependOn(&amp;run_cmd.step);
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ch11"><a class="header" href="#ch11">ch11</a></h1>
+<ul>
+<li>https://www.buildyourownlisp.com/chapter11_variables
+<ul>
+<li>
+<p><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/variables.c">variables.c</a></p>
+</li>
+<li>
+<p>Chapter 11 • Variables</p>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>  symbol : /[a-zA-Z0-9_+\\-*\\/\\\\=&lt;&gt;!&amp;]+/ ;         \
+</code></pre>
+<pre><code>    \\ symbol : /[a-zA-Z0-9_+\-*\/\\=&lt;&gt;!&amp;]+/ ;
+</code></pre>
+<p>const lbuiltin = fn(env: *lenv, val: *lval) *lval;</p>
+<p>Fun: *const lbuiltin,</p>
+<h2 id="srcch11zig"><a class="header" href="#srcch11zig">src/ch11.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+const module_builtin = @import("builtin");
+
+const c_libedit = if (module_builtin.os.tag != .windows) @cImport({
+    // https://salsa.debian.org/debian/libedit/-/blob/master/src/editline/readline.h
+    @cInclude("editline/readline.h");
+}) else struct {};
+
+const c_mpc = @cImport({
+    @cInclude("mpc.h");
+});
+
+const assert = std.debug.assert;
+
+fn readLine(prompt: [:0]const u8) [*c]u8 {
+    if (module_builtin.os.tag != .windows) {
+        const input: [*c]u8 = c_libedit.readline(prompt);
+        return input;
+    }
+
+    std.debug.print("{s}", .{prompt});
+
+    const stdin = std.io.getStdIn().reader();
+
+    var buffer: [1024]u8 = undefined;
+    const line = (stdin.readUntilDelimiterOrEof(&amp;buffer, '\n') catch unreachable).?;
+
+    const len = line.len;
+    const total_len = len + 1; // +1 for null terminator
+
+    const mem = std.c.malloc(total_len).?;
+    const out: [*c]u8 = @ptrCast(mem);
+
+    @memcpy(out[0..len], line);
+    out[len] = 0; // null terminator
+
+    return out;
+}
+
+fn addHistory(input: [*c]u8) void {
+    if (module_builtin.os.tag != .windows) {
+        _ = c_libedit.add_history(input);
+    }
+}
+
+// ===================================================
+
+fn zstr_Equal(a: []const u8, b: []const u8) bool {
+    return std.mem.eql(u8, a, b);
+}
+
+fn zstr_Contains(a: []const u8, b: []const u8) bool {
+    return std.mem.indexOf(u8, a, b) != null;
+}
+
+fn cstr_Equal(a: [*:0]const u8, b: [:0]const u8) bool {
+    return std.mem.orderZ(u8, a, b) == .eq;
+}
+
+fn cstr_Contains(a: [*:0]const u8, b: [:0]const u8) bool {
+    return std.mem.indexOf(u8, std.mem.span(a), b) != null;
+}
+
+fn LASSERT(v: *Lval, condition: bool, comptime fmt: []const u8, args_fmt: anytype) ?*Lval {
+    if (condition) {
+        return null;
+    }
+
+    const err = lval_err_format(fmt, args_fmt);
+    v.Dispose();
+    return err;
+}
+
+fn LASSERT_TYPE(func: []const u8, v: *Lval, index: usize, expect: E_LVAL) ?*Lval {
+    return LASSERT(v, v.Cell.items[index].Type == expect, "Function '{s}' passed incorrect type for argument {d}. Got {s}, Expected {s}.", .{ func, index, v.Cell.items[index].Type.Name(), expect.Name() });
+}
+
+fn LASSERT_NUM(func: []const u8, v: *Lval, num: usize) ?*Lval {
+    return LASSERT(v, v.Cell.items.len == num, "Function '{s}' passed incorrect number of arguments. Got {d}, Expected {d}.", .{ func, v.Cell.items.len, num });
+}
+
+fn LASSERT_NOT_EMPTY(func: []const u8, v: *Lval, index: usize) ?*Lval {
+    return LASSERT(v, v.Cell.items[index].Cell.items.len != 0, "Function '{s}' passed {{}} for argument {d}.", .{ func, index });
+}
+
+// ===================================================
+
+const E_LVAL = enum(i32) {
+    ERR = 0,
+    NUM,
+    SYM,
+    SEXPR,
+    QEXPR,
+    FUN,
+
+    fn Name(t: E_LVAL) []const u8 {
+        switch (t) {
+            .FUN =&gt; return "Function",
+            .NUM =&gt; return "Number",
+            .ERR =&gt; return "Error",
+            .SYM =&gt; return "Symbol",
+            .SEXPR =&gt; return "S-Expression",
+            .QEXPR =&gt; return "Q-Expression",
+            // else =&gt; return "Unknown",
+        }
+    }
+};
+
+const Lval = struct {
+    Type: E_LVAL = E_LVAL.ERR,
+    Num: i64 = 0,
+    Err: []const u8 = undefined,
+    Sym: []const u8 = undefined,
+    Cell: std.ArrayList(*Lval) = undefined,
+    Fun: *const lbuiltin,
+
+    pub fn Dispose(v: *Lval) void {
+        const allocator = std.heap.page_allocator;
+
+        switch (v.Type) {
+            .NUM =&gt; {},
+            .ERR =&gt; {
+                allocator.free(v.Err);
+            },
+            .SYM =&gt; {
+                allocator.free(v.Sym);
+            },
+            .SEXPR =&gt; {},
+            .QEXPR =&gt; {},
+            .FUN =&gt; {},
+        }
+
+        for (v.Cell.items) |item| {
+            item.Dispose();
+        }
+        v.Cell.deinit();
+        allocator.destroy(v);
+    }
+
+    pub fn Clone(v: *Lval) *Lval {
+        const allocator = std.heap.page_allocator;
+
+        const x: *Lval = allocator.create(Lval) catch unreachable;
+        x.Type = v.Type;
+
+        switch (v.Type) {
+            .NUM =&gt; {
+                x.Num = v.Num;
+            },
+            .ERR =&gt; {
+                x.Err = allocator.dupe(u8, v.Err) catch unreachable;
+            },
+            .SYM =&gt; {
+                x.Sym = allocator.dupe(u8, v.Sym) catch unreachable;
+            },
+            .SEXPR, .QEXPR =&gt; {},
+            .FUN =&gt; {
+                x.Fun = v.Fun;
+            },
+        }
+        x.Cell = std.ArrayList(*Lval).init(allocator);
+        for (v.Cell.items) |item| {
+            const copied = item.Clone();
+            x.Cell.append(copied) catch unreachable;
+        }
+        return x;
+    }
+
+    pub fn Print(val: *const Lval) void {
+        switch (val.Type) {
+            .NUM =&gt; {
+                std.debug.print("{d}", .{val.Num});
+            },
+            .ERR =&gt; {
+                std.debug.print("Error: {s}", .{val.Err});
+            },
+            .SYM =&gt; {
+                std.debug.print("{s}", .{val.Sym});
+            },
+            .SEXPR =&gt; {
+                val.lval_expr_print('(', ')');
+            },
+            .QEXPR =&gt; {
+                val.lval_expr_print('{', '}');
+            },
+            .FUN =&gt; {
+                std.debug.print("&lt;function&gt;", .{});
+            },
+        }
+    }
+
+    pub fn Println(val: *const Lval) void {
+        val.Print();
+        std.debug.print("\n", .{});
+    }
+
+    fn lval_expr_print(val: *const Lval, open: u8, close: u8) void {
+        std.debug.print("{c}", .{open});
+        for (val.Cell.items, 0..) |item, i| {
+            item.Print();
+            if (i != val.Cell.items.len - 1) {
+                std.debug.print(" ", .{});
+            }
+        }
+        std.debug.print("{c}", .{close});
+    }
+
+    fn Add(v: *Lval, x: *Lval) *Lval {
+        assert(v.Type == .SEXPR or v.Type == .QEXPR);
+
+        v.Cell.append(x) catch unreachable;
+        return v;
+    }
+
+    fn Pop(v: *Lval, i: usize) *Lval {
+        assert(v.Type == .SEXPR or v.Type == .QEXPR);
+
+        const ret = v.Cell.orderedRemove(i);
+        return ret;
+    }
+
+    fn Take(v: *Lval, i: usize) *Lval {
+        assert(v.Type == .SEXPR or v.Type == .QEXPR);
+
+        const x = Pop(v, i);
+        v.Dispose();
+        return x;
+    }
+
+    fn Join(x: *Lval, y: *Lval) *Lval {
+        assert(x.Type == .SEXPR or x.Type == .QEXPR);
+
+        var ret: *Lval = x;
+        while (y.Cell.items.len &gt; 0) {
+            ret = ret.Join(y.Pop(0));
+        }
+        y.Dispose();
+        return ret;
+    }
+};
+
+fn lval_num(x: i64) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .NUM;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    v.Num = x;
+    return v;
+}
+
+fn lval_err(msg: []const u8) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .ERR;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    v.Err = allocator.dupe(u8, msg) catch unreachable;
+    return v;
+}
+
+fn lval_err_format(comptime fmt: []const u8, args_fmt: anytype) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .ERR;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    const formatted = std.fmt.allocPrint(allocator, fmt, args_fmt) catch unreachable;
+    v.Err = formatted;
+    return v;
+}
+
+fn lval_sym(msg: []const u8) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch undefined;
+    v.Type = .SYM;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+
+    v.Sym = allocator.dupe(u8, msg) catch unreachable;
+    return v;
+}
+
+fn lval_sexpr() *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .SEXPR;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    return v;
+}
+
+fn lval_qexpr() *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .QEXPR;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    return v;
+}
+
+fn lval_fun(func: *const lbuiltin) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .FUN;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    v.Fun = func;
+    return v;
+}
+
+// ===================================================
+const lbuiltin = fn (env: *Lenv, val: *Lval) *Lval;
+
+const Lenv = struct {
+    Syms: std.ArrayList([]const u8) = undefined,
+    Vals: std.ArrayList(*Lval) = undefined,
+
+    pub fn Init() *Lenv {
+        const allocator = std.heap.page_allocator;
+        const ret = allocator.create(Lenv) catch unreachable;
+        ret.Syms = std.ArrayList([]const u8).init(allocator);
+        ret.Vals = std.ArrayList(*Lval).init(allocator);
+        return ret;
+    }
+
+    pub fn Dispose(e: *Lenv) void {
+        const allocator = std.heap.page_allocator;
+
+        for (e.Syms.items) |item| {
+            allocator.free(item);
+        }
+        e.Syms.deinit();
+
+        for (e.Vals.items) |item| {
+            item.Dispose();
+        }
+        e.Vals.deinit();
+
+        allocator.destroy(e);
+    }
+
+    fn Get(e: *Lenv, k: *Lval) *Lval {
+        for (0.., e.Syms.items) |i, sym| {
+            if (std.mem.eql(u8, sym, k.Sym)) {
+                const val = e.Vals.items[i];
+                const copied = val.Clone();
+                return copied;
+            }
+        }
+
+        return lval_err("unbound symbol!");
+    }
+
+    fn Put(e: *Lenv, k: *Lval, v: *Lval) void {
+        const allocator = std.heap.page_allocator;
+
+        const newVal = v.Clone();
+
+        for (0.., e.Syms.items) |i, sym| {
+            // override
+            if (zstr_Equal(sym, k.Sym)) {
+                const oldVal = e.Vals.items[i];
+                oldVal.Dispose();
+                e.Vals.items[i] = newVal;
+                return;
+            }
+        }
+
+        const newSym = allocator.dupe(u8, k.Sym) catch unreachable;
+        e.Vals.append(newVal) catch unreachable;
+        e.Syms.append(newSym) catch unreachable;
+    }
+
+    fn Eval(e: *Lenv, v: *Lval) *Lval {
+        if (v.Type == .SYM) {
+            const x = e.Get(v);
+            v.Dispose();
+            return x;
+        }
+
+        if (v.Type == .SEXPR) {
+            return e.EvalSexpr(v);
+        }
+        return v;
+    }
+
+    fn EvalSexpr(e: *Lenv, v: *Lval) *Lval {
+        for (0.., v.Cell.items) |i, item| {
+            const evaled = e.Eval(item);
+            v.Cell.items[i] = evaled;
+        }
+
+        for (0.., v.Cell.items) |i, item| {
+            if (item.Type == .ERR) {
+                return v.Take(i);
+            }
+        }
+
+        if (v.Cell.items.len == 0) {
+            return v;
+        }
+
+        if (v.Cell.items.len == 1) {
+            return v.Take(0);
+        }
+
+        const first = v.Pop(0);
+        defer first.Dispose();
+
+        if (first.Type != .FUN) {
+            v.Dispose();
+            return lval_err_format("S-Expression starts with incorrect type. Got {s}, Expected {s}.", .{ first.Type.Name(), E_LVAL.FUN.Name() });
+        }
+
+        const result = first.Fun(e, v);
+        return result;
+    }
+
+    fn lenv_add_builtin(e: *Lenv, name: []const u8, func: lbuiltin) void {
+        const k = lval_sym(name);
+        const v = lval_fun(func);
+        e.Put(k, v);
+        k.Dispose();
+        v.Dispose();
+    }
+};
+
+// ===================================================
+
+fn lval_read_num(t: *c_mpc.mpc_ast_t) *Lval {
+    const slice = std.mem.span(t.contents);
+
+    const parsed = std.fmt.parseInt(i64, slice, 10) catch {
+        return lval_err("invalid number");
+    };
+
+    return lval_num(parsed);
+}
+
+fn lval_read(t: *c_mpc.mpc_ast_t) *Lval {
+    if (cstr_Contains(t.tag, "number")) {
+        return lval_read_num(t);
+    }
+    if (cstr_Contains(t.tag, "symbol")) {
+        return lval_sym(std.mem.span(t.contents));
+    }
+
+    var x: *Lval = undefined;
+    if (cstr_Equal(t.tag, "&gt;")) {
+        x = lval_sexpr();
+    } else if (cstr_Contains(t.tag, "sexpr")) {
+        x = lval_sexpr();
+    } else if (cstr_Contains(t.tag, "qexpr")) {
+        x = lval_qexpr();
+    }
+
+    for (0..@intCast(t.children_num), t.children) |_, child| {
+        if (cstr_Equal(child.*.contents, "(")) {
+            continue;
+        }
+        if (cstr_Equal(child.*.contents, ")")) {
+            continue;
+        }
+        if (cstr_Equal(child.*.contents, "{")) {
+            continue;
+        }
+        if (cstr_Equal(child.*.contents, "}")) {
+            continue;
+        }
+        if (cstr_Equal(child.*.tag, "regex")) {
+            continue;
+        }
+
+        const child_val = lval_read(child);
+        x = x.Add(child_val);
+    }
+
+    return x;
+}
+
+// ===================================================
+
+fn builtin_list(_: *Lenv, a: *Lval) *Lval {
+    a.Type = .QEXPR;
+    return a;
+}
+
+fn builtin_head(_: *Lenv, a: *Lval) *Lval {
+    if (LASSERT_NUM("head", a, 1)) |err| {
+        return err;
+    }
+    if (LASSERT_TYPE("head", a, 0, .QEXPR)) |err| {
+        return err;
+    }
+    if (LASSERT_NOT_EMPTY("head", a, 0)) |err| {
+        return err;
+    }
+
+    const v = a.Take(0);
+    while (v.Cell.items.len &gt; 1) {
+        v.Pop(1).Dispose();
+    }
+    return v;
+}
+
+fn builtin_tail(_: *Lenv, a: *Lval) *Lval {
+    if (LASSERT_NUM("tail", a, 1)) |err| {
+        return err;
+    }
+    if (LASSERT_TYPE("tail", a, 0, .QEXPR)) |err| {
+        return err;
+    }
+    if (LASSERT_NOT_EMPTY("tail", a, 0)) |err| {
+        return err;
+    }
+
+    const v = a.Take(0);
+    v.Pop(0).Dispose();
+    return v;
+}
+
+fn builtin_join(_: *Lenv, a: *Lval) *Lval {
+    for (0..a.Cell.items.len) |i| {
+        if (LASSERT_TYPE("join", a, i, .QEXPR)) |err| {
+            return err;
+        }
+    }
+
+    var x = a.Pop(0);
+    while (a.Cell.items.len &gt; 0) {
+        x = x.Join(a.Pop(0));
+    }
+    a.Dispose();
+    return x;
+}
+
+fn builtin_eval(e: *Lenv, a: *Lval) *Lval {
+    if (LASSERT_NUM("eval", a, 1)) |err| {
+        return err;
+    }
+
+    if (LASSERT_TYPE("eval", a, 0, .QEXPR)) |err| {
+        return err;
+    }
+
+    const x = a.Take(0);
+    x.Type = .SEXPR;
+    return e.Eval(x);
+}
+
+fn builtin_op(_: *Lenv, a: *Lval, op: []const u8) *Lval {
+    for (0..a.Cell.items.len) |i| {
+        if (LASSERT_TYPE(op, a, i, .NUM)) |err| {
+            return err;
+        }
+    }
+
+    const x = a.Pop(0);
+    if (zstr_Equal(op, "-") and a.Cell.items.len == 0) {
+        x.Num = -x.Num;
+    }
+
+    while (a.Cell.items.len &gt; 0) {
+        const y = a.Pop(0);
+        defer y.Dispose();
+
+        if (zstr_Equal(op, "+")) {
+            x.Num += y.Num;
+        } else if (zstr_Equal(op, "-")) {
+            x.Num -= y.Num;
+        } else if (zstr_Equal(op, "*")) {
+            x.Num *= y.Num;
+        } else if (zstr_Equal(op, "/")) {
+            if (y.Num == 0) {
+                return lval_err("Division By Zero.");
+            } else {
+                x.Num = @divTrunc(x.Num, y.Num);
+            }
+        }
+    }
+    a.Dispose();
+    return x;
+}
+
+fn builtin_def(e: *Lenv, a: *Lval) *Lval {
+    if (LASSERT_TYPE("def", a, 0, .QEXPR)) |err| {
+        return err;
+    }
+
+    const syms = a.Cell.items[0];
+
+    for (syms.Cell.items) |item| {
+        if (LASSERT(a, item.Type == .SYM, "Function 'def' cannot define non-symbol. Got {s}, Expected {s}.", .{ item.Type.Name(), E_LVAL.SYM.Name() })) |err| {
+            return err;
+        }
+    }
+
+    if (LASSERT(a, syms.Cell.items.len == a.Cell.items.len - 1, "Function 'def' passed too many arguments for symbols. Got {d}, Expected {d}.", .{ syms.Cell.items.len, a.Cell.items.len - 1 })) |err| {
+        return err;
+    }
+
+    for (0.., syms.Cell.items) |i, item| {
+        e.Put(item, a.Cell.items[i + 1]);
+    }
+
+    a.Dispose();
+    return lval_sexpr();
+}
+
+fn builtin_add(env: *Lenv, a: *Lval) *Lval {
+    return builtin_op(env, a, "+");
+}
+
+fn builtin_sub(env: *Lenv, a: *Lval) *Lval {
+    return builtin_op(env, a, "-");
+}
+
+fn builtin_mul(env: *Lenv, a: *Lval) *Lval {
+    return builtin_op(env, a, "*");
+}
+
+fn builtin_div(env: *Lenv, a: *Lval) *Lval {
+    return builtin_op(env, a, "/");
+}
+
+fn lenv_add_builtins(e: *Lenv) void {
+    e.lenv_add_builtin("def", builtin_def);
+
+    e.lenv_add_builtin("list", builtin_list);
+    e.lenv_add_builtin("head", builtin_head);
+    e.lenv_add_builtin("tail", builtin_tail);
+    e.lenv_add_builtin("eval", builtin_eval);
+    e.lenv_add_builtin("join", builtin_join);
+
+    e.lenv_add_builtin("+", builtin_add);
+    e.lenv_add_builtin("-", builtin_sub);
+    e.lenv_add_builtin("*", builtin_mul);
+    e.lenv_add_builtin("/", builtin_div);
+}
+
+// ===================================================
+
+pub fn main() void {
+    const Number = c_mpc.mpc_new("number");
+    const Symbol = c_mpc.mpc_new("symbol");
+    const Sexpr = c_mpc.mpc_new("sexpr");
+    const Qexpr = c_mpc.mpc_new("qexpr");
+    const Expr = c_mpc.mpc_new("expr");
+    const Lispy = c_mpc.mpc_new("lispy");
+    defer c_mpc.mpc_cleanup(6, Number, Symbol, Sexpr, Qexpr, Expr, Lispy);
+
+    const lang =
+        \\ number : /-?[0-9]+/ ;
+        \\ symbol : /[a-zA-Z0-9_+\-*\/\\=&lt;&gt;!&amp;]+/ ;
+        \\ sexpr  : '(' &lt;expr&gt;* ')' ;
+        \\ qexpr  : '{' &lt;expr&gt;* '}' ;
+        \\ expr   : &lt;number&gt; | &lt;symbol&gt; | &lt;sexpr&gt; | &lt;qexpr&gt; ;
+        \\ lispy  : /^/ &lt;expr&gt;* /$/ ;
+    ;
+
+    if (c_mpc.mpca_lang(c_mpc.MPCA_LANG_DEFAULT, lang, Number, Symbol, Sexpr, Qexpr, Expr, Lispy) != 0) {
+        std.debug.print("Failed to define grammar\n", .{});
+        return;
+    }
+
+    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
+    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
+
+    const env = Lenv.Init();
+    lenv_add_builtins(env);
+
+    while (true) {
+        const input: [*c]u8 = readLine("lispy&gt; ");
+        defer std.c.free(input);
+
+        var result: c_mpc.mpc_result_t = undefined;
+        if (c_mpc.mpc_parse("&lt;stdin&gt;", input, Lispy, &amp;result) != 0) {
+            const output: *c_mpc.mpc_ast_t = @ptrCast(@alignCast(result.output));
+            defer c_mpc.mpc_ast_delete(output);
+
+            c_mpc.mpc_ast_print(output);
+
+            const r: *Lval = lval_read(output);
+            const e: *Lval = env.Eval(r);
+            e.Println();
+            e.Dispose();
+        } else {
+            c_mpc.mpc_err_print(result.@"error");
+            c_mpc.mpc_err_delete(result.@"error");
+        }
+    }
+}
+</code></pre>
+<h2 id="buildzig-8"><a class="header" href="#buildzig-8">build.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const exe = b.addExecutable(.{
+        .name = "ch11",
+        .root_source_file = b.path("src/ch11.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    { // library: editline
+        if (target.result.os.tag != .windows) {
+            if (target.result.os.tag == .linux) {
+                exe.addIncludePath(.{ .cwd_relative = "/usr/include/" });
+            } else if (target.result.os.tag == .macos) {
+                exe.addIncludePath(.{ .cwd_relative = "/opt/homebrew/include" });
+                exe.addLibraryPath(.{ .cwd_relative = "/opt/homebrew/lib" });
+            }
+            exe.linkSystemLibrary("edit");
+        }
+    }
+    { // library: mpc
+        exe.addIncludePath(.{ .cwd_relative = "../mpc/" });
+        exe.addCSourceFile(.{ .file = b.path("../mpc/mpc.c") });
+        exe.linkLibC();
+    }
+    exe.linkLibC();
+
+    // zig-out/bin/ 아래에 실행파일을 복사해 줌.
+    b.installArtifact(exe);
+
+    // zig build &lt;원하는 스탭이름&gt;을 하면 바이너리를 실행함.
+    const run_cmd = b.addRunArtifact(exe);
+    const run_step = b.step("run", "Run the application");
+    run_step.dependOn(&amp;run_cmd.step);
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ch12"><a class="header" href="#ch12">ch12</a></h1>
+<ul>
+<li>https://www.buildyourownlisp.com/chapter12_functions
+<ul>
+<li>
+<p><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/functions.c">functions.c</a></p>
+</li>
+<li>
+<p>Chapter 12 • Functions</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>def {fun} (\ {args body} {def (head args) (\ (tail args) body)})
+fun {unpack f xs} {eval (join (list f) xs)}
+fun {pack f &amp; xs} {f xs}
+def {curry} unpack
+def {uncurry} pack</p>
+<p>curry + {5 6 7}
+uncurry head 5 6 7</p>
+<p>def {add-uncurried} +
+def {add-curried} (curry +)
+add-curried {5 6 7}
+add-uncurried 5 6 7</p>
+<h2 id="srcch12zig"><a class="header" href="#srcch12zig">src/ch12.zig</a></h2>
+<pre><code class="language-zig">{{#include ../../lispy-zig/ch12/src/ch12.zig}}
+</code></pre>
+<h2 id="buildzig-9"><a class="header" href="#buildzig-9">build.zig</a></h2>
+<pre><code class="language-zig">{{#include ../../lispy-zig/ch12/build.zig}}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ch13"><a class="header" href="#ch13">ch13</a></h1>
+<ul>
+<li>https://www.buildyourownlisp.com/chapter13_conditionals
+<ul>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/conditionals.c">conditionals.c</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="srcch13zig"><a class="header" href="#srcch13zig">src/ch13.zig</a></h2>
+<pre><code class="language-zig">{{#include ../../lispy-zig/ch13/src/ch13.zig}}
+</code></pre>
+<h2 id="buildzig-10"><a class="header" href="#buildzig-10">build.zig</a></h2>
+<pre><code class="language-zig">{{#include ../../lispy-zig/ch13/build.zig}}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ch14"><a class="header" href="#ch14">ch14</a></h1>
+<ul>
+<li>https://www.buildyourownlisp.com/chapter14_strings
+<ul>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/strings.c">strings.c</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="srcch14zig"><a class="header" href="#srcch14zig">src/ch14.zig</a></h2>
+<pre><code class="language-zig">{{#include ../../lispy-zig/ch14/src/ch14.zig}}
+</code></pre>
+<h2 id="buildzig-11"><a class="header" href="#buildzig-11">build.zig</a></h2>
+<pre><code class="language-zig">{{#include ../../lispy-zig/ch14/build.zig}}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ch15"><a class="header" href="#ch15">ch15</a></h1>
+<ul>
+<li><a href="https://www.buildyourownlisp.com/chapter15_standard_library">https://www.buildyourownlisp.com/chapter15_standard_library</a>
+<ul>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/prelude.lspy">prelude.lspy</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="srcch15zig"><a class="header" href="#srcch15zig">src/ch15.zig</a></h2>
+<pre><code class="language-zig">{{#include ../../lispy-zig/ch15/src/ch15.zig}}
+</code></pre>
+<h2 id="buildzig-12"><a class="header" href="#buildzig-12">build.zig</a></h2>
+<pre><code class="language-zig">{{#include ../../lispy-zig/ch15/build.zig}}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ch16"><a class="header" href="#ch16">ch16</a></h1>
+<ul>
+<li>https://www.buildyourownlisp.com/chapter16_bonus_projects</li>
+<li>https://www.buildyourownlisp.com/appendix_a_hand_rolled_parser
+<ul>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/hand_rolled_parser.c">hand_rolled_parser.c</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="srcch16zig"><a class="header" href="#srcch16zig">src/ch16.zig</a></h2>
+<pre><code class="language-zig">{{#include ../../lispy-zig/ch16/src/ch16.zig}}
+</code></pre>
+<h2 id="buildzig-13"><a class="header" href="#buildzig-13">build.zig</a></h2>
+<pre><code class="language-zig">{{#include ../../lispy-zig/ch16/build.zig}}
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+
+    </div>
+    </body>
+</html>

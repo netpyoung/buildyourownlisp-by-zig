@@ -1,8 +1,0 @@
-// file: .vscode/extensions.json
-{
-    "recommendations": [
-        "ziglang.vscode-zig",
-        "vadimcn.vscode-lldb",
-        "ms-vscode.cpptools",
-    ]
-}
