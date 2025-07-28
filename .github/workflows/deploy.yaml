@@ -10,6 +10,7 @@ on:
       - '.github/workflows/**'
       - 'mdbook/src/**'
       - 'mdbook/book.toml'
+      - 'lispy-zig/**'
   workflow_dispatch:
 
 jobs:
