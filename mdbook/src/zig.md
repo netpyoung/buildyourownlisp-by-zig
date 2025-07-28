@@ -598,5 +598,7 @@ https://www.youtube.com/@dudethebuilder/videos
 strstr
     if (std.mem.indexOf(u8, std.mem.span(t.tag), "number") != null) {
 
+
 strcmp == 0
     if (std.mem.eql(u8, std.mem.span(t.tag), ">")) {
+    std.mem.orderZ(u8, t.tag, t.tag) == .eq
