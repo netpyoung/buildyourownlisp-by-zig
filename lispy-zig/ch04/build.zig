@@ -11,7 +11,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
-    { // library
+    { // library: editline
         if (target.result.os.tag != .windows) {
             if (target.result.os.tag == .linux) {
                 exe.addIncludePath(.{ .cwd_relative = "/usr/include/" });
@@ -20,9 +20,9 @@ pub fn build(b: *std.Build) void {
                 exe.addLibraryPath(.{ .cwd_relative = "/opt/homebrew/lib" });
             }
             exe.linkSystemLibrary("edit");
-            exe.linkLibC();
         }
     }
+    exe.linkLibC();
 
     // zig-out/bin/ 아래에 실행파일을 복사해 줌.
     b.installArtifact(exe);

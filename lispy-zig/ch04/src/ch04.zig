@@ -6,7 +6,38 @@ const c_libedit = if (module_builtin.os.tag != .windows) @cImport({
     @cInclude("editline/readline.h");
 }) else struct {};
 
-pub fn main() void {
+fn readLine(prompt: [:0]const u8) [*c]u8 {
+    if (module_builtin.os.tag != .windows) {
+        const input: [*c]u8 = c_libedit.readline(prompt);
+        return input;
+    }
+
+    std.debug.print("{s}", .{prompt});
+
+    var stdin = std.io.getStdIn().reader();
+
+    var buffer: [1024]u8 = undefined;
+    const line = (stdin.readUntilDelimiterOrEof(&buffer, '\n') catch unreachable).?;
+
+    const len = line.len;
+    const total_len = len + 1; // +1 for null terminator
+
+    const mem = std.c.malloc(total_len).?;
+    const out: [*c]u8 = @ptrCast(mem);
+
+    @memcpy(out[0..len], line);
+    out[len] = 0; // null terminator
+
+    return out;
+}
+
+fn addHistory(input: [*c]u8) void {
+    if (module_builtin.os.tag != .windows) {
+        _ = c_libedit.add_history(input);
+    }
+}
+
+pub fn main() !void {
     std.debug.print(
         \\ Lispy Version 0.0.0.0.1
         \\ Press Ctrl+c to Exit
@@ -14,10 +45,10 @@ pub fn main() void {
     , .{});
 
     while (true) {
-        const input: [*c]u8 = c_libedit.readline("lispy> ");
+        const input = readLine("lispy> ");
         defer std.c.free(input);
 
-        _ = c_libedit.add_history(input);
+        addHistory(input);
 
         std.debug.print("No you're a {s}\n", .{input});
     }
