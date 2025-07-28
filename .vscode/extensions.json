@@ -1,3 +1,4 @@
+// file: .vscode/extensions.json
 {
     "recommendations": [
         "ziglang.vscode-zig",
