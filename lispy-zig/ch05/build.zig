@@ -11,11 +11,12 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
-    { // mpc
+    { // library: mpc
         exe.addIncludePath(.{ .cwd_relative = "../mpc" });
         exe.addCSourceFile(.{ .file = b.path("../mpc/mpc.c") });
-        exe.linkLibC();
     }
+
+    exe.linkLibC();
 
     // zig-out/bin/ 아래에 실행파일을 복사해 줌.
     b.installArtifact(exe);
