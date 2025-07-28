@@ -45,6 +45,20 @@ fn addHistory(input: [*c]u8) void {
 
 // ===================================================
 
+fn zstr_Equal(a: []const u8, b: []const u8) bool {
+    return std.mem.eql(u8, a, b);
+}
+
+fn cstr_Equal(a: [*:0]const u8, b: [:0]const u8) bool {
+    return std.mem.orderZ(u8, a, b) == .eq;
+}
+
+fn cstr_Contains(a: [*:0]const u8, b: [:0]const u8) bool {
+    return std.mem.indexOf(u8, std.mem.span(a), b) != null;
+}
+
+// ===================================================
+
 const E_LVAL = enum(i32) {
     ERR = 0,
     NUM,
@@ -182,7 +196,7 @@ fn builtin_op(a: *Lval, op: []const u8) *Lval {
     }
 
     const x = a.Pop(0);
-    if (std.mem.eql(u8, op, "-") and a.Cell.items.len == 0) {
+    if (zstr_Equal(op, "-") and a.Cell.items.len == 0) {
         x.Num = -x.Num;
     }
 
@@ -190,13 +204,13 @@ fn builtin_op(a: *Lval, op: []const u8) *Lval {
         const y = a.Pop(0);
         defer y.Dispose();
 
-        if (std.mem.eql(u8, op, "+")) {
+        if (zstr_Equal(op, "+")) {
             x.Num += y.Num;
-        } else if (std.mem.eql(u8, op, "-")) {
+        } else if (zstr_Equal(op, "-")) {
             x.Num -= y.Num;
-        } else if (std.mem.eql(u8, op, "*")) {
+        } else if (zstr_Equal(op, "*")) {
             x.Num *= y.Num;
-        } else if (std.mem.eql(u8, op, "/")) {
+        } else if (zstr_Equal(op, "/")) {
             if (y.Num == 0) {
                 return lval_err("Division By Zero.");
             } else {
@@ -209,9 +223,7 @@ fn builtin_op(a: *Lval, op: []const u8) *Lval {
 
 fn lval_eval_sexpr(v: *Lval) *Lval {
     for (0.., v.Cell.items) |i, item| {
-        const evaled = lval_eval(
-            item,
-        );
+        const evaled = lval_eval(item);
         v.Cell.items[i] = evaled;
     }
 
@@ -258,37 +270,29 @@ fn lval_read_num(t: *c_mpc.mpc_ast_t) *Lval {
     return lval_num(parsed);
 }
 
-fn str_Equal(a: [*:0]const u8, b: [:0]const u8) bool {
-    return std.mem.orderZ(u8, a, b) == .eq;
-}
-
-fn str_Contains(a: [*c]const u8, b: [:0]const u8) bool {
-    return std.mem.indexOf(u8, std.mem.span(a), b) != null;
-}
-
 fn lval_read(t: *c_mpc.mpc_ast_t) *Lval {
-    if (str_Contains(t.tag, "number")) {
+    if (cstr_Contains(t.tag, "number")) {
         return lval_read_num(t);
     }
-    if (str_Contains(t.tag, "symbol")) {
+    if (cstr_Contains(t.tag, "symbol")) {
         return lval_sym(std.mem.span(t.contents));
     }
 
     var x: *Lval = undefined;
-    if (str_Equal(t.tag, ">")) {
+    if (cstr_Equal(t.tag, ">")) {
         x = lval_sexpr();
-    } else if (str_Contains(t.tag, "sexpr")) {
+    } else if (cstr_Contains(t.tag, "sexpr")) {
         x = lval_sexpr();
     }
 
     for (0..@intCast(t.children_num), t.children) |_, child| {
-        if (str_Equal(child.*.contents, "(")) {
+        if (cstr_Equal(child.*.contents, "(")) {
             continue;
         }
-        if (str_Equal(child.*.contents, ")")) {
+        if (cstr_Equal(child.*.contents, ")")) {
             continue;
         }
-        if (str_Equal(child.*.tag, "regex")) {
+        if (cstr_Equal(child.*.tag, "regex")) {
             continue;
         }
 
