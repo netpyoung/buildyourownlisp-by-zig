@@ -43,65 +43,61 @@ fn addHistory(input: [*c]u8) void {
 
 // ===================================================
 
-// 오류 타입 열거형
 const E_LERR = enum {
     DIV_ZERO,
     BAD_OP,
     BAD_NUM,
+
+    pub fn Print(t: E_LERR) void {
+        switch (t) {
+            .DIV_ZERO => {
+                std.debug.print("Error: Division By Zero!", .{});
+            },
+            .BAD_OP => {
+                std.debug.print("Error: Invalid Operator!", .{});
+            },
+            .BAD_NUM => {
+                std.debug.print("Error: Invalid Number!", .{});
+            },
+        }
+    }
 };
 
-// lval 타입 열거형
 const E_LVAL = enum {
     NUM,
     ERR,
 };
 
-// 값 타입 정의
 const Lval = struct {
     Type: E_LVAL,
     Num: i64,
     Err: E_LERR,
+
+    pub fn Print(val: Lval) void {
+        switch (val.Type) {
+            .NUM => {
+                std.debug.print("{d}", .{val.Num});
+            },
+            .ERR => {
+                val.Err.Print();
+            },
+        }
+    }
+
+    pub fn PrintLn(val: Lval) void {
+        val.Print();
+        std.debug.print("\n", .{});
+    }
 };
 
-// 숫자 생성기
 fn lval_num(x: i64) Lval {
     return Lval{ .Type = E_LVAL.NUM, .Num = x, .Err = undefined };
 }
 
-// 에러 생성기
 fn lval_err(e: E_LERR) Lval {
     return Lval{ .Type = E_LVAL.ERR, .Num = undefined, .Err = e };
 }
 
-// 값 출력
-fn lval_print(val: Lval) void {
-    switch (val.Type) {
-        .NUM => {
-            std.debug.print("{d}", .{val.Num});
-        },
-        .ERR => {
-            switch (val.Err) {
-                .DIV_ZERO => {
-                    std.debug.print("Error: Division By Zero!", .{});
-                },
-                .BAD_OP => {
-                    std.debug.print("Error: Invalid Operator!", .{});
-                },
-                .BAD_NUM => {
-                    std.debug.print("Error: Invalid Number!", .{});
-                },
-            }
-        },
-    }
-}
-
-// 개행 포함 출력
-fn lval_println(val: Lval) void {
-    lval_print(val);
-    std.debug.print("\n", .{});
-}
-
-// 연산자 평가
 fn eval_op(x: Lval, op: [*:0]const u8, y: Lval) Lval {
     if (x.Type == E_LVAL.ERR) {
         return x;
@@ -131,7 +127,6 @@ fn eval_op(x: Lval, op: [*:0]const u8, y: Lval) Lval {
     return lval_err(.BAD_OP);
 }
 
-// AST 평가
 pub fn eval(t: *c_mpc.mpc_ast_t) Lval {
     if (std.mem.indexOf(u8, std.mem.span(t.tag), "number") != null) {
         const buf = std.mem.span(t.contents);
@@ -182,15 +177,13 @@ pub fn main() void {
         const input = readLine("lispy> ");
         defer std.c.free(input);
 
-        // Prepare result struct
         var result: c_mpc.mpc_result_t = undefined;
-
         if (c_mpc.mpc_parse("<stdin>", input, Lispy, &result) != 0) {
             const output: *c_mpc.mpc_ast_t = @ptrCast(@alignCast(result.output));
             defer c_mpc.mpc_ast_delete(output);
 
             const x = eval(output);
-            lval_println(x);
+            x.PrintLn();
         } else {
             c_mpc.mpc_err_print(result.@"error");
             c_mpc.mpc_err_delete(result.@"error");
