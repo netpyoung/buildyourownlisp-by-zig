@@ -112,7 +112,7 @@ const Lval = struct {
     Err: []const u8 = undefined,
     Sym: []const u8 = undefined,
     Cell: std.ArrayList(*Lval) = undefined,
-    Fun: *const lbuiltin,
+    BuiltinOrNull: ?*const lbuiltin = null,
 
     pub fn Dispose(v: *Lval) void {
         const allocator = std.heap.page_allocator;
@@ -155,7 +155,7 @@ const Lval = struct {
             },
             .SEXPR, .QEXPR => {},
             .FUN => {
-                x.Fun = v.Fun;
+                x.BuiltinOrNull = v.BuiltinOrNull;
             },
         }
         x.Cell = std.ArrayList(*Lval).init(allocator);
@@ -298,7 +298,7 @@ fn lval_fun(func: *const lbuiltin) *Lval {
     const v = allocator.create(Lval) catch unreachable;
     v.Type = .FUN;
     v.Cell = std.ArrayList(*Lval).init(allocator);
-    v.Fun = func;
+    v.BuiltinOrNull = func;
     return v;
 }
 
@@ -406,7 +406,7 @@ const Lenv = struct {
             return lval_err_format("S-Expression starts with incorrect type. Got {s}, Expected {s}.", .{ first.Type.Name(), E_LVAL.FUN.Name() });
         }
 
-        const result = first.Fun(e, v);
+        const result = first.BuiltinOrNull.?(e, v);
         return result;
     }
 
