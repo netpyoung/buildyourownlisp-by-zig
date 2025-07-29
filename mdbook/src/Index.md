@@ -1,0 +1,27 @@
+# 들어가며
+
+- [Build Your Own Lisp - Learn C and build your own programming language in 1000 lines of code!](https://www.buildyourownlisp.com/)
+  - [src](https://github.com/orangeduck/BuildYourOwnLisp/tree/master/src)
+  - <https://hn.algolia.com/?q=buildyourownlisp>
+  - Don’t Build Your Own Lisp
+    - <https://gist.github.com/no-defun-allowed/7e3e238c959e27d4919bb4272487d7ad>
+    - <https://news.ycombinator.com/item?id=27598424>
+
+
+c를 알고, lisp를 안다
+zig를 한번 테스트겸 lisp를 작성
+
+
+$ zig version
+0.14.1
+
+https://discord.com/invite/zig
+https://zig.guide/getting-started/running-tests
+https://zig.news/pm/zig-multi-project-workflow-in-vs-code-with-dynamic-debugbuild-and-one-tasksjson-to-rule-them-all-ka7
+
+
+
+:TODO console output test는 어떻게하지?
+
+https://rust-lang.github.io/mdBook/format/mdbook.html#including-files
+

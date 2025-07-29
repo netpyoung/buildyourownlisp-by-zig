@@ -266,6 +266,11 @@ allocator.create(T)의 반환 타입은 *T
 | 생성 /소멸 (초기화 O)                 | `allocator.create(T)` / `allocator.destroy(ptr)` |
 | 원시 메모리 블록 할당/해제 (초기화 X) | `allocator.alloc(u8, n)` / `allocator.free(ptr)` |
 
+
+
+const ret = allocator.create(Lenv) catch unreachable;
+ret.* = .{.A = 1}; // 디폴트 생성자 호출
+
 ## 배열
 
 v.Cell = std.ArrayList(*Lval).init(allocator);
@@ -592,6 +597,19 @@ https://www.openmymind.net/learning_zig/
   - https://faultnote.github.io/posts/learning-zig/
 https://www.youtube.com/@dudethebuilder/videos
 
+
+
+
+    // { // doc
+    //     const install_docs = b.addInstallDirectory(.{
+    //         .source_dir = exe.getEmittedDocs(),
+    //         .install_dir = .prefix,
+    //         .install_subdir = "docs",
+    //     });
+
+    //     const docs_step = b.step("docs", "Install docs into zig-out/docs");
+    //     docs_step.dependOn(&install_docs.step);
+    // }
 
 ## 비교
 
