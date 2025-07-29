@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>ch02 - buildyourownlisp-by-zig</title>
+        <title>ch02 HelloWorld - buildyourownlisp-by-zig</title>
 
 
         <!-- Custom HTML head -->
@@ -38,6 +38,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="theme/css/custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -198,13 +199,12 @@
 </ul>
 </li>
 </ul>
-<h2 id="zig-설치"><a class="header" href="#zig-설치">Zig 설치</a></h2>
+<h2 id="0x00"><a class="header" href="#0x00">0x00</a></h2>
 <ul>
-<li><a href="https://github.com/ziglang/zig/wiki/Install-Zig-from-a-Package-Manager#windows-winget">Window - winget</a></li>
+<li>텍스트 에디터 선택 및 C로 HelloWorld띄우기</li>
 </ul>
-<h2 id="vscode"><a class="header" href="#vscode">vscode</a></h2>
-<ul>
-<li>플러그인
+<h2 id="vs-code"><a class="header" href="#vs-code">VS Code</a></h2>
+<h3 id="플러그인"><a class="header" href="#플러그인">플러그인</a></h3>
 <ul>
 <li><a href="https://marketplace.visualstudio.com/items?itemName=ziglang.vscode-zig">ziglang.vscode-zig</a>
 <ul>
@@ -227,9 +227,12 @@
 </li>
 <li><a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack">ms-vscode-remote.vscode-remote-extensionpack</a></li>
 </ul>
-</li>
+<h2 id="zig-설치"><a class="header" href="#zig-설치">Zig 설치</a></h2>
+<ul>
+<li><a href="https://github.com/ziglang/zig/wiki/Install-Zig-from-a-Package-Manager#windows-winget">Window - winget</a></li>
+<li><a href="https://zig.guide/getting-started/hello-world">Hello World</a></li>
 </ul>
-<h3 id="vscode-1"><a class="header" href="#vscode-1">.vscode/</a></h3>
+<h3 id="vscode"><a class="header" href="#vscode">.vscode/</a></h3>
 <pre><code class="language-json">// file: .vscode/extensions.json
 {
     "recommendations": [
@@ -263,6 +266,7 @@
                 "ch13",
                 "ch14",
                 "ch15",
+                "hand_rolled_parser",
             ],
             "default": "ch02"
         }
@@ -316,6 +320,7 @@
                 "ch13",
                 "ch14",
                 "ch15",
+                "hand_rolled_parser",
             ],
             "default": "ch02"
         }
@@ -337,20 +342,34 @@
     ]
 }
 </code></pre>
-<h2 id="xxx"><a class="header" href="#xxx">xxx</a></h2>
-<p>zig
-https://pedropark99.github.io/zig-book/Chapters/01-zig-weird.html
-https://ziglang.org/learn/getting-started/</p>
-<p>build.zig
-build.zig.zon</p>
-<p>zon - Zig Object Notation
-json - JavaScript Object Notation</p>
-<p>"Hello World!"
-컴파일 방법 build.zig</p>
+<h2 id="srcch02zig"><a class="header" href="#srcch02zig">src/ch02.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
 pub fn main() void {
     std.debug.print("Hello, {s}!\n", .{"World"});
+}
+</code></pre>
+<h2 id="buildzig"><a class="header" href="#buildzig">build.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const exe = b.addExecutable(.{
+        .name = "ch03",
+        .root_source_file = b.path("src/ch03.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    // zig-out/bin/ 아래에 실행파일을 복사해 줌.
+    b.installArtifact(exe);
+
+    // zig build &lt;원하는 스탭이름&gt;을 하면 바이너리를 실행함.
+    const run_cmd = b.addRunArtifact(exe);
+    const run_step = b.step("run", "Run the application");
+    run_step.dependOn(&amp;run_cmd.step);
 }
 </code></pre>
 

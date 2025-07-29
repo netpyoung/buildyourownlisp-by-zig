@@ -39,6 +39,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="theme/css/custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -192,545 +193,26 @@
 <ul>
 <li><a href="https://www.buildyourownlisp.com/">Build Your Own Lisp - Learn C and build your own programming language in 1000 lines of code!</a>
 <ul>
-<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/tree/master/src">src</a></li>
-<li><a href="https://hn.algolia.com/?q=buildyourownlisp">https://hn.algolia.com/?q=buildyourownlisp</a></li>
-<li>Don’t Build Your Own Lisp
-<ul>
-<li><a href="https://gist.github.com/no-defun-allowed/7e3e238c959e27d4919bb4272487d7ad">https://gist.github.com/no-defun-allowed/7e3e238c959e27d4919bb4272487d7ad</a></li>
-<li><a href="https://news.ycombinator.com/item?id=27598424">https://news.ycombinator.com/item?id=27598424</a></li>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/">github</a></li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
-<p>c를 알고, lisp를 안다
-zig를 한번 테스트겸 lisp를 작성</p>
-<p>$ zig version
-0.14.1</p>
-<p>https://discord.com/invite/zig
-https://zig.guide/getting-started/running-tests
-https://zig.news/pm/zig-multi-project-workflow-in-vs-code-with-dynamic-debugbuild-and-one-tasksjson-to-rule-them-all-ka7</p>
-<p>:TODO console output test는 어떻게하지?</p>
-<p>https://rust-lang.github.io/mdBook/format/mdbook.html#including-files</p>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="지그"><a class="header" href="#지그">지그</a></h2>
-<p>https://zenn.dev/topics/zig?order=latest</p>
-<pre><code class="language-zig">u8            : one u8 value
-?u8           : one optional u8 value
-[2]u8         : array of 2 u8 values
-[2:0]u8       : zero-terminated array of 2 u8 values
-[2]*u8        : array of 2 u8 pointers
-*u8           : pointer to one u8 value
-*?u8          : pointer to one optional u8 value
-?*u8          : optional pointer to u8 value
-*const u8     : pointer to immutable u8 value
-*const ?u8    : pointer to immutable optional u8 value
-?*const u8    : optional pointer to immutable u8 value
-*[2]u8        : pointer to array of 2 u8 values      
-*[2:0]u8      : pointer to zero-terminated array of 2 u8 values      
-*const [2]u8  : pointer to immutable array of 2 u8 values      
-[]u8          : slice(pointer + runtime len) of u8 values
-[]?u8         : slice(pointer + runtime len) of optional u8 values
-?[]u8         : optional slice(pointer + runtime len) of u8 values
-[]*u8         : slice(pointer + runtime len) of pointers to u8 values      
-[]*const u8   : slice(pointer + runtime len) of pointers to immutable u8 values      
-[*]u8         : pointer(unknown len) to of u8
-[*:0]u8       : pointer(unknown len) to but zero-terminated of u8 values
-*[]const u8   : pointer to slice of immutable u8 values      
-*[]*const ?u8 : pointer to slice of pointers to immutable optional u8 values  
-
-var x: i32 = 4;
-var ptr: *i32 = &amp;x;
-ptr.* = 15;
+<p>Build Your Own Lisp가 c로 구현되어 있는데, zig로 한번 구현해보자.</p>
+<pre><code class="language-sh">$ zig version
+0.14.1
 </code></pre>
-<p>const assert = std.debug.assert;</p>
-<p>Normal Operator	Wrapping Operator</p>
-<ul>
-<li>+%</li>
-</ul>
-<ul>
-<li>-%</li>
-</ul>
-<ul>
-<li>*%
-+=	+%=
--=	-%=
-*=	*%=</li>
-</ul>
-<pre><code class="language-zig">[2]u8  -&gt; *[2]u8    : by using address operator (&amp;)
-[2]u8  -&gt; []u8      : by using slice operator [..]
-*[2]u8 -&gt; []u8      : automatic coercion from pointer to fixed size array to slice
-[]u8   -&gt; [*]u8     : by using .ptr
-any    -&gt; ?any      : automatic coercion from non-optional to optional
-any    -&gt; const any : automatic coercion from non-const to const
-</code></pre>
-<p>모던한 c와 c++의 중간쯤? 되는 언어같다.</p>
-<p>"필요할 때만 명시적으로 작성하고, 나머지는 생략해도 이해되게 만들자."
-Zig는 &amp;T라는 타입이 없습니다. 대신, 함수 인자를 받을 때 포인터 타입 *T 또는 *const T로 명시합니다.
-&amp;는 오직 "주소 취득" 연산자 → x: *T와 &amp;x는 확실하게 대응됨</p>
-<h2 id="흐음"><a class="header" href="#흐음">흐음</a></h2>
-<ul>
-<li>null 이 있다.</li>
-<li>bool 이 있다.</li>
-<li>뭐 c/cpp와는 달리 header안 만들어도 됨.</li>
-<li>@intFromBool - bool을 int로 캐스팅</li>
-<li>@cImport
-<ul>
-<li>ffi는 다루기 쉽지만. 그래도 ffi인지라 메뉴얼 살펴보기됨. 특히 c string 다룰때.</li>
-<li>https://github.com/ziglang/zig/issues/20630</li>
-</ul>
-</li>
-<li>@import
-<ul>
-<li>razy이기에 import time이 있는 python과 달리 circluar import가 가능.</li>
-<li>다만 구조체 포인트가 아닌 구조체 자체를 맴버로 circular import를 하면 크기를 추정할 수 없기에 depends on itself가 나타남</li>
-</ul>
-</li>
-</ul>
-<h3 id="오오"><a class="header" href="#오오">오오</a></h3>
-<ul>
-<li>go fmt처럼 zig fmt도 있네</li>
-<li>c헤더 생성 : export fn + -femit-h + zig build-lib</li>
-<li>exception 없는건 맘에듬</li>
-</ul>
-<h3 id="별로"><a class="header" href="#별로">별로</a></h3>
-<ul>
-<li>상속이 없다 - 치명적인거 같은데..</li>
-<li>string interpolation 없다</li>
-<li>interface가 없다
-<ul>
-<li>https://zig.news/yglcode/code-study-interface-idiomspatterns-in-zig-standard-libraries-4lkj</li>
-</ul>
-</li>
-<li>private가 없네</li>
-<li>함수 오버로딩 없다</li>
-<li>가변인자(Variadic Arguments) 도 없다.
-<ul>
-<li>c ffi를 위한 extern으로 된 c함수만 됨.</li>
-</ul>
-</li>
-<li>const Hello = struct { A: u8, B: u8 } 컴마로 나누는거 꼴받네, <code>;</code> 세미콜론으로 왜 안해.</li>
-<li>에러 스트링 안되네?
-<ul>
-<li>https://github.com/ziglang/zig/issues/2647</li>
-<li>@panic은 있다. https://ziglang.org/documentation/master/#panic</li>
-<li>https://dev.to/mustafif/a-little-panic-in-zig-5bo2</li>
-<li>https://dev.to/chrischtel/error-handling-in-zig-a-fresh-approach-to-reliability-19o2</li>
-</ul>
-</li>
-<li>타입이 뒤에 있으니 검색할때 불편하네
-<ul>
-<li>x = struct</li>
-<li>x: SomeStruct</li>
-</ul>
-</li>
-<li>std format 류가 쓰는 포맷문자열이 컴파일 타임만 지원
-<ul>
-<li>https://github.com/ziglang/zig/issues/17832</li>
-</ul>
-</li>
-<li>좀 껄끄러운 syntax
-<ul>
-<li>ex) switch 구문에 컴마(,)나 화살표 (=&gt;)</li>
-</ul>
-</li>
-</ul>
-<h2 id="x"><a class="header" href="#x">x</a></h2>
-<p>opaque : 전방 선언용  // const SomeType = opaque {};
-anytype : 함수가 컴파일 타임에 호출 시점에 타입을 결정하도록 하는 제네릭(generic) 역할을 해요.</p>
-<h2 id="에러"><a class="header" href="#에러">에러</a></h2>
-<p>https://zig.guide/language-basics/errors/</p>
-<h2 id="문자열"><a class="header" href="#문자열">문자열</a></h2>
-<p>https://ziglang.org/documentation/master/#Multiline-String-Literals
-<code>\\</code></p>
-<pre><code>    var buffer: [2048]u8 = undefined;
-    const line: []u8 = try stdin.readUntilDelimiter(&amp;buffer, '\n');
-
-    const result = try allocator.alloc(u8, line.len + 1);
-    @memcpy(result[0..line.len], line);
-    result[line.len] = 0;
-    return result[0..line.len :0] // “슬라이스 끝에 0(null terminator)이 이미 존재한다고 가정하고, 그 정보를 타입에 반영하겠다.”
-</code></pre>
-<pre><code>    c
-    "                                                    \
-      number : /-?[0-9]+/ ;                              \
-      symbol : \"list\" | \"head\" | \"tail\" | \"eval\" \
-             | \"join\" | '+' | '-' | '*' | '/' ;        \
-      sexpr  : '(' &lt;expr&gt;* ')' ;                         \
-      qexpr  : '{' &lt;expr&gt;* '}' ;                         \
-      expr   : &lt;number&gt; | &lt;symbol&gt; | &lt;sexpr&gt; | &lt;qexpr&gt; ; \
-      lispy  : /^/ &lt;expr&gt;* /$/ ;                         \
-    ",
-
-    zig
-    const lang =
-        \\ number : /-?[0-9]+/ ;
-        \\ symbol : "list" | "head" | "tail"
-        \\        | "join" | "eval" | '+' | '-' | '*' | '/' ;
-        \\ sexpr  : '(' &lt;expr&gt;* ')' ;
-        \\ qexpr  : '{' &lt;expr&gt;* '}' ;
-        \\ expr   : &lt;number&gt; | &lt;symbol&gt; | &lt;sexpr&gt; | &lt;qexpr&gt; ;
-        \\ lispy  : /^/ &lt;expr&gt;* /$/ ;
-    ;
-</code></pre>
-<p>https://zig.guide/standard-library/formatting</p>
-<pre><code class="language-zig">const msg = try std.fmt.allocPrint(
-    _ALLOCATOR,
-    "{d} + {d} = {d}",
-    .{ 9, 10, 19 },
-);
-defer _ALLOCATOR.free(msg);
-</code></pre>
-<pre><code class="language-zig">var buffer: [100]u8 = undefined;
-const name = "Zig";
-const msg = try std.fmt.bufPrint(&amp;buffer, "Hello, {s}", .{name});
-</code></pre>
-<div class="table-wrapper"><table><thead><tr><th>기능</th><th>C++</th><th>Zig 대응</th></tr></thead><tbody>
-<tr><td><code>char * const</code></td><td>포인터 고정, 내용 수정 가능</td><td>❌ 직접 불가 (우회 필요)</td></tr>
-<tr><td><code>const char *</code></td><td>포인터 수정 가능, 내용은 const</td><td><code>[]const u8</code></td></tr>
-<tr><td><code>const char * const</code></td><td>포인터도, 내용도 const</td><td><code>const x: []const u8</code></td></tr>
-</tbody></table>
-</div>
-<pre><code class="language-zig">const std = @import("std");
-
-pub fn main() !void {
-    var buffer1: [100]u8 = undefined;
-    var buffer2: [100]u8 = undefined;
-
-    var msg: []u8 = undefined;
-    msg = try std.fmt.bufPrint(&amp;buffer1, "Hello, {s}", .{"bob"});
-    msg = try std.fmt.bufPrint(&amp;buffer2, "Hello, {s}", .{"bob"});
-    buffer1 = buffer2; // &lt;&lt; 여기 부분을 막고싶은데
-
-    std.debug.print("{s}\n", .{msg});
-}
-</code></pre>
-<h2 id="c문자열"><a class="header" href="#c문자열">c문자열</a></h2>
-<p>[*c]u8</p>
-<p>https://gencmurat.com/en/posts/zig-strings/</p>
-<h2 id="뭐지"><a class="header" href="#뭐지">뭐지</a></h2>
-<p>error: expected type '[]const u8', found '[*c]u8'
-const parsed = std.fmt.parseInt(i64, t.contents, 10)</p>
-<p>const slice = std.mem.span(t.contents);
-const parsed = std.fmt.parseInt(i64, slice, 10) catch {
-return lval_err("invalid number", allocator);
-};</p>
-<p>👉 @intCast(usize, value) 를 사용해서 c_int를 usize로 변환하세요:
-zig
-Copy
-Edit</p>
-<h2 id="출력"><a class="header" href="#출력">출력</a></h2>
-<p>https://github.com/ziglang/zig/issues/17186</p>
-<p>const stdout = std.io.getStdOut().writer(); 전역(컴파일타임)으로하면 Windows에서 찾지못함. 런타임에 설정해야함.</p>
-<h2 id="디버그"><a class="header" href="#디버그">디버그</a></h2>
-<p>const std = @import("std");</p>
-<p>if (std.builtin.mode == .Debug) {
-std.debug.print("Debug build message\n", .{});
-}</p>
-<p>std.debug.print는 Release 빌드에서도 출력이 됩니다</p>
-<pre><code>std.debug.print // stderr
-</code></pre>
-<p>const stdout = std.io.getStdOut().writer();
-stdout.print // stdout</p>
-<p>std.log.info
-pub const log_level: std.log.Level = .info;
-pub const default_level: Level = switch (builtin.mode) {
-.Debug =&gt; .debug,
-.ReleaseSafe =&gt; .info,
-.ReleaseFast, .ReleaseSmall =&gt; .err,
-};</p>
-<p>@hasDecl(root, "log_level")
-이건 컴파일 타임 내장 함수입니다.</p>
-<p>root는 @import("root")와 동일한 의미이며, 현재 애플리케이션의 루트 파일(보통 main.zig)을 가리킵니다
-pub const level: Level = if (@hasDecl(root, "log_level"))
-root.log_level
-else
-default_level;</p>
-<p>https://stackoverflow.com/a/72609022</p>
-<h2 id="할당"><a class="header" href="#할당">할당</a></h2>
-<p>allocator.create(T)의 반환 타입은 *T</p>
-<div class="table-wrapper"><table><thead><tr><th></th><th>함수</th></tr></thead><tbody>
-<tr><td>생성 /소멸 (초기화 O)</td><td><code>allocator.create(T)</code> / <code>allocator.destroy(ptr)</code></td></tr>
-<tr><td>원시 메모리 블록 할당/해제 (초기화 X)</td><td><code>allocator.alloc(u8, n)</code> / <code>allocator.free(ptr)</code></td></tr>
-</tbody></table>
-</div>
-<p>const ret = allocator.create(Lenv) catch unreachable;
-ret.* = .{.A = 1}; // 디폴트 생성자 호출</p>
-<h2 id="배열"><a class="header" href="#배열">배열</a></h2>
-<p>v.Cell = std.ArrayList(*Lval).init(allocator);
-v.Cell.deinit();</p>
-<h2 id="슬라이스"><a class="header" href="#슬라이스">슬라이스</a></h2>
-<p>x[n..m]
-Slicing includes the first element (n), but excludes the last element (m).</p>
-<h2 id="이상하네"><a class="header" href="#이상하네">이상하네</a></h2>
-<p>타입이 붙었다 때였나</p>
-<p>const stdin = std.io.getStdIn().reader();</p>
-<p>@TypeOf(...)
-const Reader = @TypeOf(std.io.getStdIn().reader());
-const stdin: Reader = std.io.getStdIn().reader();</p>
-<p>제네릭 타입 인자로 함수 포인터(function pointer)를 넘기는 것도 가능해</p>
-<h2 id="출력-1"><a class="header" href="#출력-1">출력</a></h2>
-<p>const print = @import("std").debug.print;
-print("Hello, world!\n", .{}); // another comment</p>
-<p>const stdout = std.io.getStdOut().writer();
-try stdout.print("Lispy Version 0.0.0.0.1\n", .{});</p>
-<h2 id="ffi"><a class="header" href="#ffi">ffi</a></h2>
-<p>@import // 모듈 불러오기
-@cImport / @cInclude // C 라이브러리 가져오기
-exe.addIncludePath(.{ .cwd_relative = "/usr/include/" });
-exe.linkSystemLibrary("edit");</p>
-<p>exe.addIncludePath(.{ .cwd_relative = "src/origin_source" });
-exe.addCSourceFile(.{ .file = b.path("src/origin_source/mpc.c") });
-exe.linkLibC(); // To solve ( error: 'stdlib.h' file not found )</p>
-<p>// https://en.cppreference.com/w/c/memory/free.html
-// typedef void (<em>Callback)(void</em> user_data);
-const Callback = *const fn (?*anyopaque) callconv(.C) void;</p>
-<p>*const fn // 함수 포인터 (*const는 "상수 포인터)
-fn (?<em>anyopaque) // void</em>
-callconv(.C) // C calling convention을 따른다
-void // 반환값</p>
-<h2 id="vscode"><a class="header" href="#vscode">vscode</a></h2>
-<div class="table-wrapper"><table><thead><tr><th>설정</th><th>입력 지원</th><th>출력 위치</th><th>새 창 여부</th></tr></thead><tbody>
-<tr><td><code>internalConsole</code></td><td>❌</td><td>디버그 콘솔 (출력만)</td><td>X</td></tr>
-<tr><td><code>integratedTerminal</code></td><td>✅</td><td>VSCode 내 터미널</td><td>X</td></tr>
-<tr><td><code>externalTerminal</code></td><td>✅</td><td>OS 외부 터미널 창</td><td>O</td></tr>
-</tbody></table>
-</div>
-<h2 id="u8-문자열"><a class="header" href="#u8-문자열">u8 문자열</a></h2>
-<p>[]const u8	문자열 슬라이스 (zig는 char가 없음 u8로 처리) ( pointer + length)
-[:0]const u8 // https://ziglang.org/documentation/master/#Sentinel-Terminated-Slices</p>
-<p>[<em>]u8 = 길이 미상의 u8 배열 포인터 (null 종료 여부는 명시 안 됨)
-[</em>:0]u8 = 0(null)으로 종료되는 u8 배열 (equivalent to const char * in C) // https://ziglang.org/documentation/master/#Sentinel-Terminated-Pointers</p>
-<p>const new_msg: []u8 = try allocator.dupe(u8, msg);
-const new_msg: [:0]u8 = try allocator.dupeZ(u8, msg); // dupeZ (Duplicate null-terminated)</p>
-<p>const hello: [:0]const u8 = "Hello";
-const ptr: [*:0]const u8 = hello.ptr;</p>
-<h2 id="division--divtrunc-divfloor-or-divexact"><a class="header" href="#division--divtrunc-divfloor-or-divexact">division  @divTrunc, @divFloor, or @divExact</a></h2>
-<p>src\main.zig:172:18: error: division with 'i64' and 'i64': signed integers must use @divTrunc, @divFloor, or @divExact
-return x / y;
-<del>^</del>
-@divTrunc(-7, 3) == -2
-@divTrunc(7, 3) == 2</p>
-<p>@divFloor(-7, 3) == -3
-@divFloor(7, 3) == 2</p>
-<p>@divExact(6, 3) == 2   // OK
-@divExact(7, 3)        // 런타임 오류 (7은 3으로 정확히 나눠지지 않음)</p>
-<h2 id="format"><a class="header" href="#format">format</a></h2>
-<p>format https://zig.guide/standard-library/formatting-specifiers/</p>
-<p>const stdout = std.io.getStdOut().writer();
-try stdout.print("{d}\n", .{x});</p>
-<h2 id="stdin"><a class="header" href="#stdin">stdin</a></h2>
-<p>var buffer: [2048]u8 = undefined;
-const n: usize = try std.io.getStdIn().read(&amp;buffer);
-var end = n;
-if (end &gt; 0 and buffer[end - 1] == '\n') {
-end -= 1;
-}
-const result = try allocator.alloc(u8, end + 1);
-std.mem.copyForwards(u8, result[0..end], buffer[0..end]);
-result[end] = 0; // null terminator
-return result[0..end :0];</p>
-<p>const stdin = std.io.getStdIn();
-var buffer: [2048]u8 = undefined;
-const line: []u8 = try stdin.readUntilDelimiter(&amp;buffer, '\n');
-const result = try allocator.alloc(u8, line.len + 1);
-std.mem.copyForwards(u8, result[0..line.len], line); //     @memcpy(result[0..line.len], line);
-result[line.len] = 0;
-return result[0..line.len :0];</p>
-<p>https://www.openmymind.net/Zigs-memcpy-copyForwards-and-copyBackwards/</p>
-<h2 id="타입"><a class="header" href="#타입">타입</a></h2>
-<ul>
-<li>?T
-<ul>
-<li>nullable</li>
-<li>포인터 타입이라도 반환시 ?안해주면 null을 쓸 수 없다(컴파일 에러)</li>
-</ul>
-</li>
-<li>!T
-<ul>
-<li>이 함수가 오류를 반환할 수 있음을 뜻함</li>
-</ul>
-</li>
-<li><code>*T</code>
-<ul>
-<li>일반 포인터</li>
-</ul>
-</li>
-<li><code>?*T</code>
-<ul>
-<li>nullable 포인터</li>
-</ul>
-</li>
-<li>[*c]T
-<ul>
-<li>c 포인터 C-style 포인터 배열	길이 없는 배열 (null 종결)</li>
-</ul>
-</li>
-<li>.?
-<ul>
-<li>optional 값을 강제로 해제(unwrap) 하는 문법입니다.</li>
-<li>만약 null이라면 런타임 에러가 발생함.</li>
-</ul>
-</li>
-</ul>
-<p>if (x) |value| {
-}</p>
-<h2 id="arraylist"><a class="header" href="#arraylist">ArrayList</a></h2>
-<p>https://ziglang.org/documentation/master/std/#std.array_list.ArrayList</p>
-<h2 id="에러-try-"><a class="header" href="#에러-try-">에러 try !</a></h2>
-<p>Zig에서는 try를 쓰는 함수는 무조건 그 함수의 반환 타입에 !를 붙여야 해. 그래야 에러가 전파될 수 있거든.</p>
-<p>근데 dotnet의 try패턴이 없고 저런 함수들이 있음. 에러 반환할 수 있을거 같은데 그냥 T임..</p>
-<pre><code>    /// Remove the element at index `i`, shift elements after index
-    /// `i` forward, and return the removed element.
-    /// Invalidates element pointers to end of list.
-    /// This operation is O(N).
-    /// This preserves item order. Use `swapRemove` if order preservation is not important.
-    /// Asserts that the index is in bounds.
-    /// Asserts that the list is not empty.
-    pub fn orderedRemove(self: *Self, i: usize) T {
-        const old_item = self.items[i];
-        self.replaceRangeAssumeCapacity(i, 1, &amp;.{});
-        return old_item;
-    }
-</code></pre>
-<h2 id="defer"><a class="header" href="#defer">defer</a></h2>
-<ul>
-<li>defer
-<ul>
-<li>Zig에서 defer a.dispose();는 해당 시점의 a 값에 대해 dispose를 예약합니다.</li>
-<li>즉, 그 이후에 a에 다른 값을 할당해도, **defer는 원래 있었던 값의 dispose()**를 호출합니다.</li>
-<li>컨벤션으로 const 사용후 defer하거나 var사용하면 defer 사용 못하게 막아야 할듯.
-defer // errdefer
-defer   : 어떻게 종료되든 항상 정리가 필요한 리소스에 사용합니다.
-errdefer: 오류가 발생하는 경우에만 리소스를 정리해야 할 때 사용합니다.</li>
-</ul>
-</li>
-</ul>
-<p>errdefer는 와 유사 defer하지만, 오류로 인해 범위가 종료될 때만 실행됩니다.
-https://gencmurat.com/en/posts/defer-and-errdefer-in-zig/</p>
-<ul>
-<li>스코프를 조정할 수 있는 dotnet 의 using + IDisposable interface 방식이 더 맘에 든다.</li>
-</ul>
-<pre><code class="language-zig">const std = @import("std");
-
-const Thing = struct {
-    id: i32,
-    fn dispose(self: *Thing) void {
-        std.debug.print("Disposing {}\n", .{self.id});
-    }
-};
-
-pub fn main() void {
-    var a = Thing{ .id = 1 };
-    defer a.dispose(); // 여기서 a는 id = 1인 Thing
-
-    a = Thing{ .id = 2 }; // 새로운 Thing을 a에 덮어씀
-
-std.debug.print("{}", .{a});
-}
-</code></pre>
-<p>https://zig.guide/standard-library/allocators/
-https://www.openmymind.net/learning_zig/heap_memory/</p>
-<p>http://ithare.com/testing-memory-allocators-ptmalloc2-tcmalloc-hoard-jemalloc-while-trying-to-simulate-real-world-loads/
-<a href="https://hackmd.io/@sanxiyn/SkMgA04mo">신비한 malloc 사전</a></p>
-<div class="table-wrapper"><table><thead><tr><th>Allocator 종류</th><th>설명</th><th>특징 및 용도</th></tr></thead><tbody>
-<tr><td><strong>std.heap.c_allocator</strong></td><td>C <code>malloc</code>/<code>free</code> 기반 기본 할당자</td><td>시스템 기본 메모리 할당, 범용적</td></tr>
-<tr><td><strong>std.heap.page_allocator</strong></td><td>메모리 페이지 단위 할당자</td><td>페이지 단위 메모리 관리, 큰 블록 할당에 적합</td></tr>
-<tr><td><strong>std.heap.general_purpose_allocator</strong></td><td>jemalloc 스타일 범용 할당자</td><td>중간 ~ 큰 크기 메모리 효율적 관리, 쓰레드 안전 아님</td></tr>
-<tr><td></td><td></td><td></td></tr>
-<tr><td><strong>std.heap.FixedBufferAllocator</strong></td><td>고정 버퍼 내에서 할당, 할당 해제 불가</td><td>빠른 할당, 메모리 풀 용도</td></tr>
-<tr><td><strong>std.heap.ArenaAllocator</strong></td><td>Arena(풀) 방식 할당자</td><td>빠른 할당 및 해제, 전체 아레나 해제만 가능</td></tr>
-<tr><td><strong>std.heap.DebugAllocator</strong></td><td>디버깅용 래퍼 할당자</td><td>메모리 할당/해제 추적, 오버플로우 검사</td></tr>
-<tr><td><strong>std.heap.BuddyAllocator</strong></td><td>Buddy 메모리 할당자</td><td>단편화 감소, 큰 메모리 관리에 적합</td></tr>
-<tr><td><strong>std.heap.GeneralPurposeAllocator(.{})</strong></td><td>jemalloc 스타일 범용 할당자 (Zig 0.11+)</td><td>성능과 단편화 균형 맞춤 범용 할당자</td></tr>
-<tr><td><strong>std.testing.allocator</strong></td><td>테스트용 임시 할당자</td><td>테스트 중 메모리 할당 관리, 쉽게 리셋 가능, 메모리 누수 검출 도움</td></tr>
-</tbody></table>
-</div>
-<h2 id="키워드"><a class="header" href="#키워드">키워드</a></h2>
-<p>result.error는 안되고 result.@"error"</p>
-<h2 id="기타"><a class="header" href="#기타">기타</a></h2>
-<p>VS Code in the browser
-coder.com
-https://github.com/coder/code-server</p>
-<p>https://medium.com/codex/solving-the-crazy-zig-literal-strings-f2f692ae500b</p>
-<h2 id="struct"><a class="header" href="#struct">struct</a></h2>
-<p>@This()는 현재 선언 중인 구조체(struct), 유니언(union), 또는 enum 타입 자체를 참조할 때 사용하는 **내장 함수(builtin function</p>
-<h2 id=""><a class="header" href="#"></a></h2>
-<p>// build.zig
-if (target.result.os.tag != .windows) {
-exe.linkLibC();
-exe.addIncludePath(.{ .cwd_relative = "/usr/include/" });
-exe.linkSystemLibrary("edit");
-}</p>
-<p>// main.zig
-const c_libedit = if (!is_windows) @cImport({
-// https://salsa.debian.org/debian/libedit/-/blob/master/src/editline/readline.h
-@cInclude("editline/readline.h");
-}) else struct {};</p>
-<p>const input: [*:0]u8 = c_libedit.readline("lispy&gt; ");
-_ = c_libedit.add_history(input);
-defer std.c.free(input);</p>
-<hr />
-<p>zig
-ide - ZigBrains https://plugins.jetbrains.com/plugin/22456-zigbrains
-설치 https://ziglang.org/learn/getting-started/</p>
-<p>zig
-build.zig - https://ziglang.org/learn/build-system/
-build.zig.zon</p>
-<ul>
-<li>https://zig.news/edyu/zig-package-manager-wtf-is-zon-558e</li>
-<li>https://zig.news/edyu/zig-package-manager-wtf-is-zon-2-0110-update-1jo3</li>
-</ul>
-<p>타겟설정 Target
-최적화 / Optimization
-실행가능 Executable
-root_source_file
-root_module
-모듈 Module</p>
-<p>zig build-exe main.zig -femit-docs  // file emit
-zig build
-zig build run</p>
-<p>const std = @import("std");
-https://ziglang.org/documentation/master/std/</p>
-<p>const builtin = @import("builtin");
-https://ziglang.org/documentation/master/#Compile-Variables</p>
-<p>릴리즈모드 4개 https://zig.guide/build-system/build-modes/
-https://github.com/zigtools/zls
-https://ludwigabap.bearblog.dev/2024-collection-of-zig-resources/</p>
-<p>macro대신 그냥 compiletime이라는 키워드</p>
-<p><a href="https://www.youtube.com/watch?v=Gv2I7qTux7g">The Road to Zig 1.0 - Andrew Kelley</a></p>
-<p>Search Ziglang Packages
-https://zigistry.dev/</p>
-<p>Mach - Zig game engine &amp; graphics toolkit
-https://machengine.org/
-https://ziglang.org/learn/getting-started/
-https://zigtools.org/zls/editors/jetbrains/</p>
-<p>https://mitchellh.com/zig
-https://matklad.github.io/2023/02/10/how-a-zig-ide-could-work.html</p>
-<p>https://www.openmymind.net/learning_zig/</p>
-<ul>
-<li>
-<p>https://faultnote.github.io/posts/learning-zig/
-https://www.youtube.com/@dudethebuilder/videos</p>
-<p>// { // doc
-//     const install_docs = b.addInstallDirectory(.{
-//         .source_dir = exe.getEmittedDocs(),
-//         .install_dir = .prefix,
-//         .install_subdir = "docs",
-//     });</p>
-<p>//     const docs_step = b.step("docs", "Install docs into zig-out/docs");
-//     docs_step.dependOn(&amp;install_docs.step);
-// }</p>
-</li>
-</ul>
-<h2 id="비교"><a class="header" href="#비교">비교</a></h2>
-<p>strstr
-if (std.mem.indexOf(u8, std.mem.span(t.tag), "number") != null) {</p>
-<p>strcmp == 0
-if (std.mem.eql(u8, std.mem.span(t.tag), "&gt;")) {
-std.mem.orderZ(u8, t.tag, t.tag) == .eq</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="ch01"><a class="header" href="#ch01">ch01</a></h1>
 <ul>
 <li><a href="https://www.buildyourownlisp.com/chapter1_introduction">origin</a></li>
+</ul>
+<h2 id="0x00"><a class="header" href="#0x00">0x00</a></h2>
+<ul>
+<li>책이 누구를 위한 것인지, 왜 c로 lisp를 만드는지.</li>
+</ul>
+<h2 id="나는"><a class="header" href="#나는">나는?</a></h2>
+<ul>
+<li>c를 알고, lisp를 알고있다.</li>
+<li>lisp를 만들어봐야지 하는 생각만 하다 zig를 한번 테스트겸 lisp를 작성.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="ch02"><a class="header" href="#ch02">ch02</a></h1>
 <ul>
@@ -740,13 +222,12 @@ std.mem.orderZ(u8, t.tag, t.tag) == .eq</p>
 </ul>
 </li>
 </ul>
-<h2 id="zig-설치"><a class="header" href="#zig-설치">Zig 설치</a></h2>
+<h2 id="0x00-1"><a class="header" href="#0x00-1">0x00</a></h2>
 <ul>
-<li><a href="https://github.com/ziglang/zig/wiki/Install-Zig-from-a-Package-Manager#windows-winget">Window - winget</a></li>
+<li>텍스트 에디터 선택 및 C로 HelloWorld띄우기</li>
 </ul>
-<h2 id="vscode-1"><a class="header" href="#vscode-1">vscode</a></h2>
-<ul>
-<li>플러그인
+<h2 id="vs-code"><a class="header" href="#vs-code">VS Code</a></h2>
+<h3 id="플러그인"><a class="header" href="#플러그인">플러그인</a></h3>
 <ul>
 <li><a href="https://marketplace.visualstudio.com/items?itemName=ziglang.vscode-zig">ziglang.vscode-zig</a>
 <ul>
@@ -769,9 +250,12 @@ std.mem.orderZ(u8, t.tag, t.tag) == .eq</p>
 </li>
 <li><a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack">ms-vscode-remote.vscode-remote-extensionpack</a></li>
 </ul>
-</li>
+<h2 id="zig-설치"><a class="header" href="#zig-설치">Zig 설치</a></h2>
+<ul>
+<li><a href="https://github.com/ziglang/zig/wiki/Install-Zig-from-a-Package-Manager#windows-winget">Window - winget</a></li>
+<li><a href="https://zig.guide/getting-started/hello-world">Hello World</a></li>
 </ul>
-<h3 id="vscode-2"><a class="header" href="#vscode-2">.vscode/</a></h3>
+<h3 id="vscode"><a class="header" href="#vscode">.vscode/</a></h3>
 <pre><code class="language-json">// file: .vscode/extensions.json
 {
     "recommendations": [
@@ -805,6 +289,7 @@ std.mem.orderZ(u8, t.tag, t.tag) == .eq</p>
                 "ch13",
                 "ch14",
                 "ch15",
+                "hand_rolled_parser",
             ],
             "default": "ch02"
         }
@@ -858,6 +343,7 @@ std.mem.orderZ(u8, t.tag, t.tag) == .eq</p>
                 "ch13",
                 "ch14",
                 "ch15",
+                "hand_rolled_parser",
             ],
             "default": "ch02"
         }
@@ -879,29 +365,54 @@ std.mem.orderZ(u8, t.tag, t.tag) == .eq</p>
     ]
 }
 </code></pre>
-<h2 id="xxx"><a class="header" href="#xxx">xxx</a></h2>
-<p>zig
-https://pedropark99.github.io/zig-book/Chapters/01-zig-weird.html
-https://ziglang.org/learn/getting-started/</p>
-<p>build.zig
-build.zig.zon</p>
-<p>zon - Zig Object Notation
-json - JavaScript Object Notation</p>
-<p>"Hello World!"
-컴파일 방법 build.zig</p>
+<h2 id="srcch02zig"><a class="header" href="#srcch02zig">src/ch02.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
 pub fn main() void {
     std.debug.print("Hello, {s}!\n", .{"World"});
 }
 </code></pre>
+<h2 id="buildzig"><a class="header" href="#buildzig">build.zig</a></h2>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const exe = b.addExecutable(.{
+        .name = "ch03",
+        .root_source_file = b.path("src/ch03.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    // zig-out/bin/ 아래에 실행파일을 복사해 줌.
+    b.installArtifact(exe);
+
+    // zig build &lt;원하는 스탭이름&gt;을 하면 바이너리를 실행함.
+    const run_cmd = b.addRunArtifact(exe);
+    const run_step = b.step("run", "Run the application");
+    run_step.dependOn(&amp;run_cmd.step);
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="ch03"><a class="header" href="#ch03">ch03</a></h1>
 <ul>
 <li><a href="https://www.buildyourownlisp.com/chapter3_basics">origin</a></li>
 </ul>
-<p>chapter3_basics
-기본 타입들</p>
-<p>https://ziglang.org/documentation/master/#toc-Primitive-Types</p>
+<h2 id="0x00-2"><a class="header" href="#0x00-2">0x00</a></h2>
+<ul>
+<li>기본 타입들</li>
+<li>함수 정의</li>
+<li>구조체 정의</li>
+<li>포인터</li>
+<li>문자열</li>
+<li>조건문</li>
+<li>루프</li>
+</ul>
+<h2 id="zig"><a class="header" href="#zig">zig?</a></h2>
+<ul>
+<li><a href="https://ziglang.org/documentation/master/#toc-Primitive-Types">https://ziglang.org/documentation/master/#toc-Primitive-Types</a></li>
+</ul>
 <h2 id="srcch03zig"><a class="header" href="#srcch03zig">src/ch03.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
@@ -913,7 +424,7 @@ pub fn main() void {
     , .{});
 }
 </code></pre>
-<h2 id="buildzig"><a class="header" href="#buildzig">build.zig</a></h2>
+<h2 id="buildzig-1"><a class="header" href="#buildzig-1">build.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
 pub fn build(b: *std.Build) void {
@@ -944,22 +455,11 @@ pub fn build(b: *std.Build) void {
 </ul>
 </li>
 </ul>
-<h2 id="-1"><a class="header" href="#-1"></a></h2>
+<h2 id="0x00-3"><a class="header" href="#0x00-3">0x00</a></h2>
 <ul>
 <li>libedit을 사용하여 입력 히스토리를 저장.</li>
 <li>while루프를 돌면서 사용자와 인터렉티브 환경</li>
 </ul>
-<h2 id="zig-타입"><a class="header" href="#zig-타입">Zig 타입</a></h2>
-<div class="table-wrapper"><table><thead><tr><th>Zig 타입</th><th>C와의 대응</th><th>의미</th></tr></thead><tbody>
-<tr><td>u8</td><td>uint8_t 혹은 std::byte</td><td>unsigned 8-bit integer</td></tr>
-<tr><td><code>*u8</code></td><td><code>uint8_t*</code></td><td>단일 <code>u8</code>을 가리키는 포인터</td></tr>
-<tr><td><code>[]u8</code></td><td>C에는 직접 대응 없음 (Zig 슬라이스)</td><td>길이 포함한 슬라이스</td></tr>
-<tr><td><code>[*]u8</code></td><td>없음 (Zig 내부용)</td><td>길이 모르는 raw pointer</td></tr>
-<tr><td><code>[:0]u8</code></td><td><code>const char*</code></td><td>null-terminated C string (읽기 전용)</td></tr>
-<tr><td><code>[*c]u8</code></td><td><code>uint8_t*</code> 또는 <code>char*</code></td><td>C 호환 raw pointer</td></tr>
-<tr><td><code>*const [N]u8</code></td><td><code>const uint8_t[N]*</code></td><td>길이 고정된 배열의 포인터</td></tr>
-</tbody></table>
-</div>
 <h2 id="libedit"><a class="header" href="#libedit">libedit</a></h2>
 <h3 id="ubuntu"><a class="header" href="#ubuntu">Ubuntu</a></h3>
 <pre><code class="language-sh">snap install zig --classic --beta
@@ -1074,7 +574,7 @@ test "string test" {
     try expectEqualStrings(z_str, c_str);
 }
 </code></pre>
-<h2 id="buildzig-1"><a class="header" href="#buildzig-1">build.zig</a></h2>
+<h2 id="buildzig-2"><a class="header" href="#buildzig-2">build.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
 pub fn build(b: *std.Build) void {
@@ -1119,7 +619,7 @@ pub fn build(b: *std.Build) void {
 </ul>
 </li>
 </ul>
-<h2 id="-2"><a class="header" href="#-2"></a></h2>
+<h2 id="0x00-4"><a class="header" href="#0x00-4">0x00</a></h2>
 <p>저자가 작성한 <a href="https://github.com/orangeduck/mpc">mpc (Micro Parser Combinators)</a>의 사용 예.</p>
 <div class="table-wrapper"><table><thead><tr><th></th><th></th></tr></thead><tbody>
 <tr><td>Parser Combinator</td><td>파서들 =&gt; 새로운 파서</td></tr>
@@ -1197,7 +697,7 @@ pub fn main() !void {
     doge_grammar();
 }
 </code></pre>
-<h2 id="buildzig-2"><a class="header" href="#buildzig-2">build.zig</a></h2>
+<h2 id="buildzig-3"><a class="header" href="#buildzig-3">build.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
 pub fn build(b: *std.Build) void {
@@ -1251,7 +751,7 @@ pub fn build(b: *std.Build) void {
 </ul>
 </li>
 </ul>
-<h2 id="-3"><a class="header" href="#-3"></a></h2>
+<h2 id="0x00-5"><a class="header" href="#0x00-5">0x00</a></h2>
 <ul>
 <li>6장 mpc_parse로 mpc_result_t 를 얻어 mpc_ast_print로 출력</li>
 <li>mpc문법: 슬래시(/) 사이에 mpc정규 표현식을 넣어 작성</li>
@@ -1340,7 +840,7 @@ pub fn main() !void {
     }
 }
 </code></pre>
-<h2 id="buildzig-3"><a class="header" href="#buildzig-3">build.zig</a></h2>
+<h2 id="buildzig-4"><a class="header" href="#buildzig-4">build.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
 pub fn build(b: *std.Build) void {
@@ -1389,7 +889,7 @@ pub fn build(b: *std.Build) void {
 </ul>
 </li>
 </ul>
-<h2 id="-4"><a class="header" href="#-4"></a></h2>
+<h2 id="0x00-6"><a class="header" href="#0x00-6">0x00</a></h2>
 <p>파싱된 mpc_ast_t 를 가지고 children을 방문하면서 계산을 함.</p>
 <pre><code class="language-sh">Lispy Version 0.0.0.0.3
 Press Ctrl+c to Exit
@@ -1532,7 +1032,7 @@ pub fn main() void {
     }
 }
 </code></pre>
-<h2 id="buildzig-4"><a class="header" href="#buildzig-4">build.zig</a></h2>
+<h2 id="buildzig-5"><a class="header" href="#buildzig-5">build.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
 pub fn build(b: *std.Build) void {
@@ -1581,7 +1081,7 @@ pub fn build(b: *std.Build) void {
 </ul>
 </li>
 </ul>
-<h2 id="-5"><a class="header" href="#-5"></a></h2>
+<h2 id="0x00-7"><a class="header" href="#0x00-7">0x00</a></h2>
 <p>Lval을 정의하여 숫자와 에러를 다루도록 합.</p>
 <h2 id="srcch08zig"><a class="header" href="#srcch08zig">src/ch08.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
@@ -1777,7 +1277,7 @@ pub fn main() void {
     }
 }
 </code></pre>
-<h2 id="buildzig-5"><a class="header" href="#buildzig-5">build.zig</a></h2>
+<h2 id="buildzig-6"><a class="header" href="#buildzig-6">build.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
 pub fn build(b: *std.Build) void {
@@ -1826,7 +1326,7 @@ pub fn build(b: *std.Build) void {
 </ul>
 </li>
 </ul>
-<h2 id="-6"><a class="header" href="#-6"></a></h2>
+<h2 id="0x00-8"><a class="header" href="#0x00-8">0x00</a></h2>
 <p>lval_take는 lval_pop하면서 자신을 삭제</p>
 <pre><code class="language-c">typedef struct lval {
   int type;
@@ -1849,7 +1349,7 @@ mpca_lang(MPCA_LANG_DEFAULT,
   ",
   Number, Symbol, Sexpr, Expr, Lispy);
 </code></pre>
-<h2 id="c-함수-연습문제"><a class="header" href="#c-함수-연습문제">c 함수 연습문제</a></h2>
+<h2 id="todo-c-함수-연습문제"><a class="header" href="#todo-c-함수-연습문제">TODO c 함수 연습문제</a></h2>
 <p>› 이 realloc함수는 무슨 역할을 하나요?
 › 이 memmove함수는 무슨 역할을 하나요?
 › 와 어떻게 memmove다른가요 memcpy?</p>
@@ -2206,7 +1706,7 @@ pub fn main() void {
     }
 }
 </code></pre>
-<h2 id="buildzig-6"><a class="header" href="#buildzig-6">build.zig</a></h2>
+<h2 id="buildzig-7"><a class="header" href="#buildzig-7">build.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
 pub fn build(b: *std.Build) void {
@@ -2255,7 +1755,7 @@ pub fn build(b: *std.Build) void {
 </ul>
 </li>
 </ul>
-<h2 id="-7"><a class="header" href="#-7"></a></h2>
+<h2 id="0x00-9"><a class="header" href="#0x00-9">0x00</a></h2>
 <ul>
 <li>Q-Expressions: 인용된 표현식(quoted expression)을 의미하며, 표준 Lisp 메커니즘으로 계산되지 않는 Lisp 표현식의 한 유형
 <ul>
@@ -2772,7 +2272,7 @@ pub fn main() void {
     }
 }
 </code></pre>
-<h2 id="buildzig-7"><a class="header" href="#buildzig-7">build.zig</a></h2>
+<h2 id="buildzig-8"><a class="header" href="#buildzig-8">build.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
 pub fn build(b: *std.Build) void {
@@ -2821,7 +2321,7 @@ pub fn build(b: *std.Build) void {
 </ul>
 </li>
 </ul>
-<h2 id="-8"><a class="header" href="#-8"></a></h2>
+<h2 id="0x00-10"><a class="header" href="#0x00-10">0x00</a></h2>
 <pre><code class="language-txt">// c
   "
   symbol : /[a-zA-Z0-9_+\\-*\\/\\\\=&lt;&gt;!&amp;]+/ ;         \
@@ -2833,7 +2333,8 @@ pub fn build(b: *std.Build) void {
     \\
 </code></pre>
 <pre><code class="language-zig">const lbuiltin = fn(env: *lenv, val: *lval) *lval;
-Fun: *const lbuiltin,
+
+BuiltinOrNull: ?*const lbuiltin = null,
 </code></pre>
 <h2 id="srcch11zig"><a class="header" href="#srcch11zig">src/ch11.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
@@ -3495,11 +2996,11 @@ pub fn main() void {
         return;
     }
 
-    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
-    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
-
     const env = Lenv.Init();
     lenv_add_builtins(env);
+
+    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
+    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
 
     while (true) {
         const input: [*c]u8 = readLine("lispy&gt; ");
@@ -3523,7 +3024,7 @@ pub fn main() void {
     }
 }
 </code></pre>
-<h2 id="buildzig-8"><a class="header" href="#buildzig-8">build.zig</a></h2>
+<h2 id="buildzig-9"><a class="header" href="#buildzig-9">build.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
 pub fn build(b: *std.Build) void {
@@ -3572,10 +3073,15 @@ pub fn build(b: *std.Build) void {
 </ul>
 </li>
 </ul>
-<h2 id="-9"><a class="header" href="#-9"></a></h2>
-<p>def {add-together} (\ {x y} {+ x y})
-add-together 10 20</p>
-<p>lispy&gt; def {add-mul} (\ {x y} {+ x (* x y)})
+<h2 id="0x00-11"><a class="header" href="#0x00-11">0x00</a></h2>
+<ul>
+<li>함수 정의</li>
+</ul>
+<h2 id="repl"><a class="header" href="#repl">repl</a></h2>
+<pre><code class="language-sh">def {add-together} (\ {x y} {+ x y})
+add-together 10 20
+
+lispy&gt; def {add-mul} (\ {x y} {+ x (* x y)})
 ()
 lispy&gt; add-mul 10 20
 210
@@ -3585,7 +3091,8 @@ lispy&gt; def {add-mul-ten} (add-mul 10)
 ()
 lispy&gt; add-mul-ten 50
 510
-lispy&gt;</p>
+lispy&gt;
+</code></pre>
 <pre><code class="language-txt">def {fun} (\ {args body} {def (head args) (\ (tail args) body)})
 fun {unpack f xs} {eval (join (list f) xs)}
 fun {pack f &amp; xs} {f xs}
@@ -4435,11 +3942,11 @@ pub fn main() void {
         return;
     }
 
-    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
-    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
-
     const env = Lenv.Init();
     lenv_add_builtins(env);
+
+    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
+    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
 
     while (true) {
         const input: [*c]u8 = readLine("lispy&gt; ");
@@ -4463,7 +3970,7 @@ pub fn main() void {
     }
 }
 </code></pre>
-<h2 id="buildzig-9"><a class="header" href="#buildzig-9">build.zig</a></h2>
+<h2 id="buildzig-10"><a class="header" href="#buildzig-10">build.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
 pub fn build(b: *std.Build) void {
@@ -4512,7 +4019,11 @@ pub fn build(b: *std.Build) void {
 </ul>
 </li>
 </ul>
-<h2 id="-10"><a class="header" href="#-10"></a></h2>
+<h2 id="0x00-12"><a class="header" href="#0x00-12">0x00</a></h2>
+<ul>
+<li>조건문(if)</li>
+<li>비교문</li>
+</ul>
 <h2 id="srcch13zig"><a class="header" href="#srcch13zig">src/ch13.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 const module_builtin = @import("builtin");
@@ -5483,11 +4994,11 @@ pub fn main() void {
         return;
     }
 
-    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
-    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
-
     const env = Lenv.Init();
     lenv_add_builtins(env);
+
+    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
+    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
 
     while (true) {
         const input: [*c]u8 = readLine("lispy&gt; ");
@@ -5511,7 +5022,7 @@ pub fn main() void {
     }
 }
 </code></pre>
-<h2 id="buildzig-10"><a class="header" href="#buildzig-10">build.zig</a></h2>
+<h2 id="buildzig-11"><a class="header" href="#buildzig-11">build.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
 pub fn build(b: *std.Build) void {
@@ -5560,7 +5071,10 @@ pub fn build(b: *std.Build) void {
 </ul>
 </li>
 </ul>
-<h2 id="-11"><a class="header" href="#-11"></a></h2>
+<h2 id="0x00-13"><a class="header" href="#0x00-13">0x00</a></h2>
+<ul>
+<li>문자열 다루기</li>
+</ul>
 <h2 id="srcch14zig"><a class="header" href="#srcch14zig">src/ch14.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 const module_builtin = @import("builtin");
@@ -6673,14 +6187,14 @@ pub fn main() void {
         return;
     }
 
-    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
-    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
-
     const env = Lenv.Init();
     lenv_add_builtins(env);
 
     const argc = args.len;
     if (argc == 1) {
+        std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
+        std.debug.print("Press Ctrl+c to Exit\n\n", .{});
+
         while (true) {
             const input: [*c]u8 = readLine("lispy&gt; ");
             defer std.c.free(input);
@@ -6715,7 +6229,7 @@ pub fn main() void {
     }
 }
 </code></pre>
-<h2 id="buildzig-11"><a class="header" href="#buildzig-11">build.zig</a></h2>
+<h2 id="buildzig-12"><a class="header" href="#buildzig-12">build.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
 pub fn build(b: *std.Build) void {
@@ -6764,8 +6278,15 @@ pub fn build(b: *std.Build) void {
 </ul>
 </li>
 </ul>
-<h2 id="-12"><a class="header" href="#-12"></a></h2>
-<p>prelude.lspy를 불러와봄</p>
+<h2 id="0x00-14"><a class="header" href="#0x00-14">0x00</a></h2>
+<ul>
+<li>prelude.lspy를 불러와봄
+<ul>
+<li>prelude: 서곡</li>
+<li>기본 제공되는 최소한의 도구 모음</li>
+</ul>
+</li>
+</ul>
 <h2 id="srcch15zig"><a class="header" href="#srcch15zig">src/ch15.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 const module_builtin = @import("builtin");
@@ -7878,14 +7399,14 @@ pub fn main() void {
         return;
     }
 
-    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
-    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
-
     const env = Lenv.Init();
     lenv_add_builtins(env);
 
     const argc = args.len;
     if (argc == 1) {
+        std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
+        std.debug.print("Press Ctrl+c to Exit\n\n", .{});
+
         while (true) {
             const input: [*c]u8 = readLine("lispy&gt; ");
             defer std.c.free(input);
@@ -7920,7 +7441,7 @@ pub fn main() void {
     }
 }
 </code></pre>
-<h2 id="buildzig-12"><a class="header" href="#buildzig-12">build.zig</a></h2>
+<h2 id="buildzig-13"><a class="header" href="#buildzig-13">build.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
 pub fn build(b: *std.Build) void {
@@ -7963,19 +7484,12 @@ pub fn build(b: *std.Build) void {
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="ch16"><a class="header" href="#ch16">ch16</a></h1>
 <ul>
-<li>https://www.buildyourownlisp.com/chapter16_bonus_projects</li>
-<li>https://www.buildyourownlisp.com/appendix_a_hand_rolled_parser
+<li><a href="https://www.buildyourownlisp.com/chapter16_bonus_projects">origin</a></li>
+</ul>
+<h2 id="0x00-15"><a class="header" href="#0x00-15">0x00</a></h2>
 <ul>
-<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/hand_rolled_parser.c">hand_rolled_parser.c</a></li>
+<li>lispy를 더 확장시키기 위한 아이디어들 소개</li>
 </ul>
-</li>
-</ul>
-<h2 id="srcch16zig"><a class="header" href="#srcch16zig">src/ch16.zig</a></h2>
-<pre><code class="language-zig">{{#include ../../lispy-zig/ch16/src/ch16.zig}}
-</code></pre>
-<h2 id="buildzig-13"><a class="header" href="#buildzig-13">build.zig</a></h2>
-<pre><code class="language-zig">{{#include ../../lispy-zig/ch16/build.zig}}
-</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="appendix_a_hand_rolled_parser"><a class="header" href="#appendix_a_hand_rolled_parser">appendix_a_hand_rolled_parser</a></h1>
 <ul>
 <li><a href="https://www.buildyourownlisp.com/appendix_a_hand_rolled_parser">origin</a>
@@ -7984,14 +7498,1812 @@ pub fn build(b: *std.Build) void {
 </ul>
 </li>
 </ul>
-<h2 id="-13"><a class="header" href="#-13"></a></h2>
-<p>여기서는 mpc를 걷어내고 파서를 직접 제작한다.</p>
+<h2 id="0x00-16"><a class="header" href="#0x00-16">0x00</a></h2>
+<ul>
+<li>mpc를 사용한 것에 대한 불만에 대한 반박</li>
+<li>여기서는 mpc를 걷어내고 파서를 직접 제작한다.</li>
+</ul>
+<h2 id="zig로-포팅을-마치며---후기"><a class="header" href="#zig로-포팅을-마치며---후기">zig로 포팅을 마치며 - 후기</a></h2>
+<ul>
+<li>c로 된걸 zig로 포팅하며 zig에서 괜찮은점/별로인 점을 보다 직접적으로 느끼게 됨</li>
+<li>따라가기 식이지만 완성하니 드디어 끝냈다라는 안도감.</li>
+<li>저자의 mpc를 zig로 구현해보면 어떨까.</li>
+<li>lval.zig, lenv.zig식으로 나누어 봤는데 lazy import라 순환 임포트도 어느정도 커버되는.
+<ul>
+<li>다만 파일이 늘어나 관리가 힘드니 해보고 롤백.</li>
+</ul>
+</li>
+<li>mdbook의 highlight.js에 아직 zig를 지원안해 shiki로 대체</li>
+</ul>
 <h2 id="srchand_rolled_parserzig"><a class="header" href="#srchand_rolled_parserzig">src/hand_rolled_parser.zig</a></h2>
-<pre><code class="language-zig">{{#include ../../lispy-zig/hand_rolled_parser/src/hand_rolled_parser.zig}}
+<pre><code class="language-zig">const std = @import("std");
+const module_builtin = @import("builtin");
+
+const c_libedit = if (module_builtin.os.tag != .windows) @cImport({
+    // https://salsa.debian.org/debian/libedit/-/blob/master/src/editline/readline.h
+    @cInclude("editline/readline.h");
+}) else struct {};
+
+const c_string = @cImport({
+    @cInclude("string.h");
+});
+
+const assert = std.debug.assert;
+
+fn readLine(prompt: [:0]const u8) [*c]u8 {
+    if (module_builtin.os.tag != .windows) {
+        const input: [*c]u8 = c_libedit.readline(prompt);
+        return input;
+    }
+
+    std.debug.print("{s}", .{prompt});
+
+    const stdin = std.io.getStdIn().reader();
+
+    var buffer: [1024]u8 = undefined;
+    const line = (stdin.readUntilDelimiterOrEof(&amp;buffer, '\n') catch unreachable).?;
+
+    const len = line.len;
+    const total_len = len + 1; // +1 for null terminator
+
+    const mem = std.c.malloc(total_len).?;
+    const out: [*c]u8 = @ptrCast(mem);
+
+    @memcpy(out[0..len], line);
+    out[len] = 0; // null terminator
+
+    return out;
+}
+
+fn addHistory(input: [*c]u8) void {
+    if (module_builtin.os.tag != .windows) {
+        _ = c_libedit.add_history(input);
+    }
+}
+
+// ===================================================
+
+fn zstr_Equal(a: []const u8, b: []const u8) bool {
+    return std.mem.eql(u8, a, b);
+}
+
+fn zstr_Contains(a: []const u8, b: []const u8) bool {
+    return std.mem.indexOf(u8, a, b) != null;
+}
+
+fn cstr_Equal(a: [*:0]const u8, b: [:0]const u8) bool {
+    return std.mem.orderZ(u8, a, b) == .eq;
+}
+
+fn cstr_Contains(a: [*:0]const u8, b: [:0]const u8) bool {
+    return std.mem.indexOf(u8, std.mem.span(a), b) != null;
+}
+
+fn LASSERT(v: *Lval, condition: bool, comptime fmt: []const u8, args_fmt: anytype) ?*Lval {
+    if (condition) {
+        return null;
+    }
+
+    const err = lval_err_format(fmt, args_fmt);
+    v.Dispose();
+    return err;
+}
+
+fn LASSERT_TYPE(func: []const u8, v: *Lval, index: usize, expect: E_LVAL) ?*Lval {
+    return LASSERT(v, v.Cell.items[index].Type == expect, "Function '{s}' passed incorrect type for argument {d}. Got {s}, Expected {s}.", .{ func, index, v.Cell.items[index].Type.Name(), expect.Name() });
+}
+
+fn LASSERT_NUM(func: []const u8, v: *Lval, num: usize) ?*Lval {
+    return LASSERT(v, v.Cell.items.len == num, "Function '{s}' passed incorrect number of arguments. Got {d}, Expected {d}.", .{ func, v.Cell.items.len, num });
+}
+
+fn LASSERT_NOT_EMPTY(func: []const u8, v: *Lval, index: usize) ?*Lval {
+    return LASSERT(v, v.Cell.items[index].Cell.items.len != 0, "Function '{s}' passed {{}} for argument {d}.", .{ func, index });
+}
+
+// ===================================================
+
+const E_LVAL = enum(i32) {
+    ERR = 0,
+    NUM,
+    SYM,
+    SEXPR,
+    QEXPR,
+    FUN,
+    STR,
+
+    fn Name(t: E_LVAL) []const u8 {
+        switch (t) {
+            .FUN =&gt; return "Function",
+            .NUM =&gt; return "Number",
+            .ERR =&gt; return "Error",
+            .SYM =&gt; return "Symbol",
+            .SEXPR =&gt; return "S-Expression",
+            .QEXPR =&gt; return "Q-Expression",
+            .STR =&gt; return "String",
+            // else =&gt; return "Unknown",
+        }
+    }
+};
+
+const Lval = struct {
+    Type: E_LVAL = E_LVAL.ERR,
+
+    // basic
+    Num: i64 = 0,
+    Err: []const u8 = undefined,
+    Sym: []const u8 = undefined,
+    Str: []const u8 = undefined,
+
+    // function
+    BuiltinOrNull: ?*const lbuiltin,
+    Env: *Lenv,
+    Formals: *Lval,
+    Body: *Lval,
+
+    // expression
+    Cell: std.ArrayList(*Lval) = undefined,
+
+    pub fn Dispose(v: *Lval) void {
+        const allocator = std.heap.page_allocator;
+
+        switch (v.Type) {
+            .NUM =&gt; {},
+            .ERR =&gt; {
+                allocator.free(v.Err);
+            },
+            .SYM =&gt; {
+                allocator.free(v.Sym);
+            },
+            .SEXPR =&gt; {},
+            .QEXPR =&gt; {},
+            .FUN =&gt; {
+                if (v.BuiltinOrNull == null) {
+                    v.Env.Dispose();
+                    v.Formals.Dispose();
+                    v.Body.Dispose();
+                }
+            },
+            .STR =&gt; {
+                allocator.free(v.Str);
+            },
+        }
+
+        for (v.Cell.items) |item| {
+            item.Dispose();
+        }
+        v.Cell.deinit();
+        allocator.destroy(v);
+    }
+
+    pub fn Clone(v: *Lval) *Lval {
+        const allocator = std.heap.page_allocator;
+
+        const x: *Lval = allocator.create(Lval) catch unreachable;
+        x.Type = v.Type;
+
+        switch (v.Type) {
+            .NUM =&gt; {
+                x.Num = v.Num;
+            },
+            .ERR =&gt; {
+                x.Err = allocator.dupe(u8, v.Err) catch unreachable;
+            },
+            .SYM =&gt; {
+                x.Sym = allocator.dupe(u8, v.Sym) catch unreachable;
+            },
+            .SEXPR, .QEXPR =&gt; {},
+            .FUN =&gt; {
+                if (v.BuiltinOrNull) |builtin| {
+                    x.BuiltinOrNull = builtin;
+                } else {
+                    x.BuiltinOrNull = null;
+                    x.Env = v.Env.Clone();
+                    x.Formals = v.Formals.Clone();
+                    x.Body = v.Body.Clone();
+                }
+            },
+            .STR =&gt; {
+                x.Str = allocator.dupe(u8, v.Str) catch unreachable;
+            },
+        }
+        x.Cell = std.ArrayList(*Lval).init(allocator);
+        for (v.Cell.items) |item| {
+            const copied = item.Clone();
+            x.Cell.append(copied) catch unreachable;
+        }
+        return x;
+    }
+
+    pub fn Print(val: *const Lval) void {
+        switch (val.Type) {
+            .NUM =&gt; {
+                std.debug.print("{d}", .{val.Num});
+            },
+            .ERR =&gt; {
+                std.debug.print("Error: {s}", .{val.Err});
+            },
+            .SYM =&gt; {
+                std.debug.print("{s}", .{val.Sym});
+            },
+            .SEXPR =&gt; {
+                val.lval_expr_print('(', ')');
+            },
+            .QEXPR =&gt; {
+                val.lval_expr_print('{', '}');
+            },
+            .FUN =&gt; {
+                if (val.BuiltinOrNull != null) {
+                    std.debug.print("&lt;function&gt;", .{});
+                } else {
+                    std.debug.print("(\\ ", .{});
+                    val.Formals.Print();
+                    std.debug.print(" ", .{});
+                    val.Body.Print();
+                    std.debug.print(")", .{});
+                }
+            },
+            .STR =&gt; {
+                val.lval_print_str();
+            },
+        }
+    }
+
+    pub fn Println(val: *const Lval) void {
+        val.Print();
+        std.debug.print("\n", .{});
+    }
+
+    fn lval_expr_print(val: *const Lval, open: u8, close: u8) void {
+        std.debug.print("{c}", .{open});
+        for (val.Cell.items, 0..) |item, i| {
+            item.Print();
+            if (i != val.Cell.items.len - 1) {
+                std.debug.print(" ", .{});
+            }
+        }
+        std.debug.print("{c}", .{close});
+    }
+
+    fn Add(v: *Lval, x: *Lval) *Lval {
+        assert(v.Type == .SEXPR or v.Type == .QEXPR);
+
+        v.Cell.append(x) catch unreachable;
+        return v;
+    }
+
+    fn Pop(v: *Lval, i: usize) *Lval {
+        assert(v.Type == .SEXPR or v.Type == .QEXPR);
+
+        const ret = v.Cell.orderedRemove(i);
+        return ret;
+    }
+
+    fn Take(v: *Lval, i: usize) *Lval {
+        assert(v.Type == .SEXPR or v.Type == .QEXPR);
+
+        const x = v.Pop(i);
+        v.Dispose();
+        return x;
+    }
+
+    fn Join(x: *Lval, y: *Lval) *Lval {
+        assert(x.Type == .SEXPR or x.Type == .QEXPR);
+
+        for (y.Cell.items) |item| {
+            _ = x.Add(item.Clone());
+        }
+        y.Dispose();
+        return x;
+    }
+
+    pub fn IsSame(x: *Lval, y: *Lval) bool {
+        if (x.Type != y.Type) {
+            return false;
+        }
+
+        switch (x.Type) {
+            .NUM =&gt; {
+                return (x.Num == y.Num);
+            },
+            .ERR =&gt; {
+                return std.mem.eql(u8, x.Err, y.Err);
+            },
+            .SYM =&gt; {
+                return std.mem.eql(u8, x.Sym, y.Sym);
+            },
+            .FUN =&gt; {
+                if (x.BuiltinOrNull != null or y.BuiltinOrNull != null) {
+                    return x.BuiltinOrNull == y.BuiltinOrNull;
+                }
+
+                return IsSame(x.Formals, y.Formals) and IsSame(x.Body, y.Body);
+            },
+            .QEXPR, .SEXPR =&gt; {
+                if (x.Cell.items.len != y.Cell.items.len) {
+                    return false;
+                }
+                for (0..y.Cell.items.len) |i| {
+                    if (!IsSame(x.Cell.items[i], y.Cell.items[i])) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+            .STR =&gt; {
+                return zstr_Equal(x.Str, y.Str);
+            },
+        }
+        return false;
+    }
+
+    fn lval_print_str(v: *const Lval) void {
+        std.debug.print("\"", .{});
+        for (v.Str) |ch| {
+            if (std.mem.indexOfScalar(u8, lval_str_escapable, ch) != null) {
+                std.debug.print("{c}", .{lval_str_escape(ch)});
+            } else {
+                std.debug.print("{c}", .{ch});
+            }
+        }
+        std.debug.print("\"", .{});
+    }
+};
+
+fn lval_num(x: i64) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .NUM;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    v.Num = x;
+    return v;
+}
+
+fn lval_err(msg: []const u8) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .ERR;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    v.Err = allocator.dupe(u8, msg) catch unreachable;
+    return v;
+}
+
+fn lval_err_format(comptime fmt: []const u8, args_fmt: anytype) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .ERR;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    const formatted = std.fmt.allocPrint(allocator, fmt, args_fmt) catch unreachable;
+    v.Err = formatted;
+    return v;
+}
+
+fn lval_sym(msg: []const u8) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch undefined;
+    v.Type = .SYM;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+
+    v.Sym = allocator.dupe(u8, msg) catch unreachable;
+    return v;
+}
+
+fn lval_sexpr() *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .SEXPR;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    return v;
+}
+
+fn lval_qexpr() *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .QEXPR;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    return v;
+}
+
+fn lval_fun(func: *const lbuiltin) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .FUN;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    v.BuiltinOrNull = func;
+    return v;
+}
+
+fn lval_lambda(formals: *Lval, body: *Lval) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .FUN;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    v.BuiltinOrNull = null;
+    v.Env = Lenv.Init();
+    v.Formals = formals;
+    v.Body = body;
+    return v;
+}
+
+fn lval_str(s: []const u8) *Lval {
+    const allocator = std.heap.page_allocator;
+    const v = allocator.create(Lval) catch unreachable;
+    v.Type = .STR;
+    v.Cell = std.ArrayList(*Lval).init(allocator);
+    v.Str = allocator.dupe(u8, s) catch unreachable;
+    return v;
+}
+
+// ===================================================
+const lbuiltin = fn (env: *Lenv, val: *Lval) *Lval;
+
+const Lenv = struct {
+    ParentOrNull: ?*Lenv = null,
+
+    Syms: std.ArrayList([]const u8) = undefined,
+    Vals: std.ArrayList(*Lval) = undefined,
+
+    pub fn Init() *Lenv {
+        const allocator = std.heap.page_allocator;
+        const ret = allocator.create(Lenv) catch unreachable;
+        ret.Syms = std.ArrayList([]const u8).init(allocator);
+        ret.Vals = std.ArrayList(*Lval).init(allocator);
+        ret.ParentOrNull = null;
+        return ret;
+    }
+
+    fn Clone(e: *Lenv) *Lenv {
+        const allocator = std.heap.page_allocator;
+        const ret = Lenv.Init();
+        ret.ParentOrNull = e.ParentOrNull;
+
+        for (e.Syms.items) |item| {
+            const newSym = allocator.dupe(u8, item) catch unreachable;
+            ret.Syms.append(newSym) catch unreachable;
+        }
+
+        for (e.Vals.items) |item| {
+            const newVal = item.Clone();
+            ret.Vals.append(newVal) catch unreachable;
+        }
+
+        return ret;
+    }
+
+    pub fn Dispose(e: *Lenv) void {
+        const allocator = std.heap.page_allocator;
+
+        for (e.Syms.items) |item| {
+            allocator.free(item);
+        }
+        e.Syms.deinit();
+
+        for (e.Vals.items) |item| {
+            item.Dispose();
+        }
+        e.Vals.deinit();
+
+        allocator.destroy(e);
+    }
+
+    fn Get(e: *Lenv, k: *Lval) *Lval {
+        for (0.., e.Syms.items) |i, sym| {
+            if (zstr_Equal(sym, k.Sym)) {
+                const val = e.Vals.items[i];
+                const copied = val.Clone();
+                return copied;
+            }
+        }
+
+        if (e.ParentOrNull) |parent| {
+            return parent.Get(k);
+        }
+
+        return lval_err_format("unbound symbol '{s}'", .{k.Sym});
+    }
+
+    fn Put(e: *Lenv, k: *Lval, v: *Lval) void {
+        const allocator = std.heap.page_allocator;
+
+        const newVal = v.Clone();
+
+        for (0.., e.Syms.items) |i, sym| {
+            // override
+            if (zstr_Equal(sym, k.Sym)) {
+                const oldVal = e.Vals.items[i];
+                oldVal.Dispose();
+                e.Vals.items[i] = newVal;
+                return;
+            }
+        }
+
+        const newSym = allocator.dupe(u8, k.Sym) catch unreachable;
+        e.Vals.append(newVal) catch unreachable;
+        e.Syms.append(newSym) catch unreachable;
+    }
+
+    fn Def(e: *Lenv, k: *Lval, v: *Lval) void {
+        var curr = e;
+        while (curr.ParentOrNull) |parent| {
+            curr = parent;
+        }
+        curr.Put(k, v);
+    }
+
+    fn Eval(e: *Lenv, v: *Lval) *Lval {
+        if (v.Type == .SYM) {
+            const x = e.Get(v);
+            v.Dispose();
+            return x;
+        }
+
+        if (v.Type == .SEXPR) {
+            return e.EvalSexpr(v);
+        }
+        return v;
+    }
+
+    fn EvalSexpr(e: *Lenv, v: *Lval) *Lval {
+        for (0.., v.Cell.items) |i, item| {
+            const evaled = e.Eval(item);
+            v.Cell.items[i] = evaled;
+        }
+
+        for (0.., v.Cell.items) |i, item| {
+            if (item.Type == .ERR) {
+                return v.Take(i);
+            }
+        }
+
+        if (v.Cell.items.len == 0) {
+            return v;
+        }
+
+        if (v.Cell.items.len == 1) {
+            return v.Take(0);
+        }
+
+        const first = v.Pop(0);
+        defer first.Dispose();
+
+        if (first.Type != .FUN) {
+            v.Dispose();
+            return lval_err_format("S-Expression starts with incorrect type. Got {s}, Expected {s}.", .{ first.Type.Name(), E_LVAL.FUN.Name() });
+        }
+
+        const result = e.Call(first, v);
+        return result;
+    }
+
+    fn lenv_add_builtin(e: *Lenv, name: []const u8, func: lbuiltin) void {
+        const k = lval_sym(name);
+        const v = lval_fun(func);
+        e.Put(k, v);
+        k.Dispose();
+        v.Dispose();
+    }
+
+    fn Call(e: *Lenv, f: *Lval, a: *Lval) *Lval {
+        if (f.BuiltinOrNull) |builtin| {
+            const called = builtin(e, a);
+            return called;
+        }
+
+        const given = a.Cell.items.len;
+        const total = f.Formals.Cell.items.len;
+        while (a.Cell.items.len != 0) {
+            if (f.Formals.Cell.items.len == 0) {
+                a.Dispose();
+                return lval_err_format("Function passed too many arguments. Got {d}, Expected {d}.", .{ given, total });
+            }
+
+            const sym = f.Formals.Pop(0);
+            if (zstr_Equal(sym.Sym, "&amp;")) {
+                if (f.Formals.Cell.items.len != 1) {
+                    a.Dispose();
+                    return lval_err_format("Function format invalid. Symbol '&amp;' not followed by single symbol.", .{});
+                }
+
+                const nsym = f.Formals.Pop(0);
+                f.Env.Put(nsym, builtin_list(e, a));
+                sym.Dispose();
+                nsym.Dispose();
+                break;
+            }
+
+            const val = a.Pop(0);
+            f.Env.Put(sym, val);
+            sym.Dispose();
+            val.Dispose();
+        }
+
+        a.Dispose();
+
+        if (f.Formals.Cell.items.len &gt; 0 and zstr_Equal(f.Formals.Cell.items[0].Sym, "&amp;")) {
+            if (f.Formals.Cell.items.len != 2) {
+                return lval_err_format("Function format invalid. Symbol '&amp;' not followed by single symbol.", .{});
+            }
+
+            f.Formals.Pop(0).Dispose();
+
+            const sym = f.Formals.Pop(0);
+            const val = lval_qexpr();
+            f.Env.Put(sym, val);
+            sym.Dispose();
+            val.Dispose();
+        }
+
+        if (f.Formals.Cell.items.len == 0) {
+            f.Env.ParentOrNull = e;
+            return builtin_eval(f.Env, lval_sexpr().Add(f.Body.Clone()));
+        }
+
+        return f.Clone();
+    }
+};
+
+// ===================================================
+
+fn builtin_list(_: *Lenv, a: *Lval) *Lval {
+    a.Type = .QEXPR;
+    return a;
+}
+
+fn builtin_head(_: *Lenv, a: *Lval) *Lval {
+    if (LASSERT_NUM("head", a, 1)) |err| {
+        return err;
+    }
+    if (LASSERT_TYPE("head", a, 0, .QEXPR)) |err| {
+        return err;
+    }
+    if (LASSERT_NOT_EMPTY("head", a, 0)) |err| {
+        return err;
+    }
+
+    const v = a.Take(0);
+    while (v.Cell.items.len &gt; 1) {
+        v.Pop(1).Dispose();
+    }
+    return v;
+}
+
+fn builtin_tail(_: *Lenv, a: *Lval) *Lval {
+    if (LASSERT_NUM("tail", a, 1)) |err| {
+        return err;
+    }
+    if (LASSERT_TYPE("tail", a, 0, .QEXPR)) |err| {
+        return err;
+    }
+    if (LASSERT_NOT_EMPTY("tail", a, 0)) |err| {
+        return err;
+    }
+
+    const v = a.Take(0);
+    v.Pop(0).Dispose();
+    return v;
+}
+
+fn builtin_join(_: *Lenv, a: *Lval) *Lval {
+    for (0..a.Cell.items.len) |i| {
+        if (LASSERT_TYPE("join", a, i, .QEXPR)) |err| {
+            return err;
+        }
+    }
+
+    var x = a.Pop(0);
+    while (a.Cell.items.len &gt; 0) {
+        x = x.Join(a.Pop(0));
+    }
+    a.Dispose();
+    return x;
+}
+
+fn builtin_eval(e: *Lenv, a: *Lval) *Lval {
+    if (LASSERT_NUM("eval", a, 1)) |err| {
+        return err;
+    }
+
+    if (LASSERT_TYPE("eval", a, 0, .QEXPR)) |err| {
+        return err;
+    }
+
+    const x = a.Take(0);
+    x.Type = .SEXPR;
+    return e.Eval(x);
+}
+
+fn builtin_op(_: *Lenv, a: *Lval, op: []const u8) *Lval {
+    for (0..a.Cell.items.len) |i| {
+        if (LASSERT_TYPE(op, a, i, .NUM)) |err| {
+            return err;
+        }
+    }
+
+    const x = a.Pop(0);
+    if (zstr_Equal(op, "-") and a.Cell.items.len == 0) {
+        x.Num = -x.Num;
+    }
+
+    while (a.Cell.items.len &gt; 0) {
+        const y = a.Pop(0);
+
+        if (zstr_Equal(op, "+")) {
+            x.Num += y.Num;
+        } else if (zstr_Equal(op, "-")) {
+            x.Num -= y.Num;
+        } else if (zstr_Equal(op, "*")) {
+            x.Num *= y.Num;
+        } else if (zstr_Equal(op, "/")) {
+            if (y.Num == 0) {
+                return lval_err("Division By Zero.");
+            } else {
+                x.Num = @divTrunc(x.Num, y.Num);
+            }
+        }
+        y.Dispose();
+    }
+    a.Dispose();
+    return x;
+}
+
+fn builtin_lambda(_: *Lenv, a: *Lval) *Lval {
+    if (LASSERT_NUM("\\", a, 2)) |err| {
+        return err;
+    }
+
+    if (LASSERT_TYPE("\\", a, 0, .QEXPR)) |err| {
+        return err;
+    }
+
+    if (LASSERT_TYPE("\\", a, 1, .QEXPR)) |err| {
+        return err;
+    }
+
+    for (a.Cell.items[0].Cell.items) |item| {
+        const t = item.Type;
+        if (LASSERT(a, t == .SYM, "Cannot define non-symbol. Got {s}, Expected {s}.", .{ t.Name(), E_LVAL.SYM.Name() })) |err| {
+            return err;
+        }
+    }
+
+    const formals = a.Pop(0);
+    const body = a.Pop(0);
+    a.Dispose();
+
+    return lval_lambda(formals, body);
+}
+
+fn builtin_var(e: *Lenv, a: *Lval, func: []const u8) *Lval {
+    if (LASSERT_TYPE(func, a, 0, .QEXPR)) |err| {
+        return err;
+    }
+
+    const syms = a.Cell.items[0];
+
+    for (syms.Cell.items) |item| {
+        if (LASSERT(a, item.Type == .SYM, "Function 'def' cannot define non-symbol. Got {s}, Expected {s}.", .{ item.Type.Name(), E_LVAL.SYM.Name() })) |err| {
+            return err;
+        }
+    }
+
+    if (LASSERT(a, syms.Cell.items.len == a.Cell.items.len - 1, "Function 'def' passed too many arguments for symbols. Got {d}, Expected {d}.", .{ syms.Cell.items.len, a.Cell.items.len - 1 })) |err| {
+        return err;
+    }
+
+    for (0.., syms.Cell.items) |i, item| {
+        if (zstr_Equal(func, "def")) {
+            e.Def(item, a.Cell.items[i + 1]);
+        }
+
+        if (zstr_Equal(func, "=")) {
+            e.Put(item, a.Cell.items[i + 1]);
+        }
+    }
+
+    a.Dispose();
+    return lval_sexpr();
+}
+
+fn builtin_def(e: *Lenv, a: *Lval) *Lval {
+    return builtin_var(e, a, "def");
+}
+
+fn builtin_put(e: *Lenv, a: *Lval) *Lval {
+    return builtin_var(e, a, "put");
+}
+
+fn builtin_add(env: *Lenv, a: *Lval) *Lval {
+    return builtin_op(env, a, "+");
+}
+
+fn builtin_sub(env: *Lenv, a: *Lval) *Lval {
+    return builtin_op(env, a, "-");
+}
+
+fn builtin_mul(env: *Lenv, a: *Lval) *Lval {
+    return builtin_op(env, a, "*");
+}
+
+fn builtin_div(env: *Lenv, a: *Lval) *Lval {
+    return builtin_op(env, a, "/");
+}
+
+fn builtin_if(e: *Lenv, a: *Lval) *Lval {
+    if (LASSERT_NUM("if", a, 3)) |err| {
+        return err;
+    }
+    if (LASSERT_TYPE("if", a, 0, .NUM)) |err| {
+        return err;
+    }
+    if (LASSERT_TYPE("if", a, 1, .QEXPR)) |err| {
+        return err;
+    }
+    if (LASSERT_TYPE("if", a, 2, .QEXPR)) |err| {
+        return err;
+    }
+
+    a.Cell.items[1].Type = .SEXPR;
+    a.Cell.items[2].Type = .SEXPR;
+
+    var x: *Lval = undefined;
+    if (a.Cell.items[0].Num != 0) {
+        x = e.Eval(a.Pop(1));
+    } else {
+        x = e.Eval(a.Pop(2));
+    }
+
+    a.Dispose();
+    return x;
+}
+
+fn builtin_eq(e: *Lenv, a: *Lval) *Lval {
+    return builtin_cmp(e, a, "==");
+}
+
+fn builtin_ne(e: *Lenv, a: *Lval) *Lval {
+    return builtin_cmp(e, a, "!=");
+}
+
+fn builtin_cmp(_: *Lenv, a: *Lval, op: []const u8) *Lval {
+    if (LASSERT_NUM(op, a, 2)) |err| {
+        return err;
+    }
+
+    var r: i64 = 0;
+    if (zstr_Equal(op, "==")) {
+        r = @intFromBool(a.Cell.items[0].IsSame(a.Cell.items[1]));
+    } else if (zstr_Equal(op, "!=")) {
+        r = @intFromBool(!a.Cell.items[0].IsSame(a.Cell.items[1]));
+    }
+    a.Dispose();
+    return lval_num(r);
+}
+
+fn builtin_gt(e: *Lenv, a: *Lval) *Lval {
+    return builtin_ord(e, a, "&gt;");
+}
+fn builtin_lt(e: *Lenv, a: *Lval) *Lval {
+    return builtin_ord(e, a, "&lt;");
+}
+fn builtin_ge(e: *Lenv, a: *Lval) *Lval {
+    return builtin_ord(e, a, "&gt;=");
+}
+fn builtin_le(e: *Lenv, a: *Lval) *Lval {
+    return builtin_ord(e, a, "&lt;=");
+}
+
+fn builtin_ord(_: *Lenv, a: *Lval, op: []const u8) *Lval {
+    if (LASSERT_NUM(op, a, 2)) |err| {
+        return err;
+    }
+    if (LASSERT_TYPE(op, a, 0, .NUM)) |err| {
+        return err;
+    }
+    if (LASSERT_TYPE(op, a, 1, .NUM)) |err| {
+        return err;
+    }
+
+    var r: i64 = 0;
+    if (zstr_Equal(op, "&gt;")) {
+        r = @intFromBool(a.Cell.items[0].Num &gt; a.Cell.items[1].Num);
+    } else if (zstr_Equal(op, "&lt;")) {
+        r = @intFromBool(a.Cell.items[0].Num &lt; a.Cell.items[1].Num);
+    } else if (zstr_Equal(op, "&gt;=")) {
+        r = @intFromBool(a.Cell.items[0].Num &gt;= a.Cell.items[1].Num);
+    } else if (zstr_Equal(op, "&lt;=")) {
+        r = @intFromBool(a.Cell.items[0].Num &lt;= a.Cell.items[1].Num);
+    }
+
+    a.Dispose();
+    return lval_num(r);
+}
+
+fn builtin_load(e: *Lenv, a: *Lval) *Lval {
+    if (LASSERT_NUM("load", a, 1)) |err| {
+        return err;
+    }
+    if (LASSERT_TYPE("load", a, 0, .STR)) |err| {
+        return err;
+    }
+
+    const allocator = std.heap.page_allocator;
+    const filename = a.Cell.items[0].Str;
+
+    // 파일 열기
+    var file = std.fs.cwd().openFile(filename, .{}) catch {
+        const msg = std.fmt.allocPrint(allocator, "Could not load Library {s}", .{filename}) catch unreachable;
+        a.Dispose();
+        return lval_err(msg);
+    };
+    defer file.close();
+
+    // 파일 내용 읽기
+    const stat = file.stat() catch unreachable;
+    const file_len = stat.size;
+
+    var input_buf = allocator.alloc(u8, file_len + 1) catch unreachable;
+    defer allocator.free(input_buf);
+
+    const read_len = file.readAll(input_buf) catch unreachable;
+    input_buf[read_len] = 0; // null-terminator
+
+    // S-expression 읽기
+    var pos: usize = 0;
+    var expr = lval_read_expr(input_buf, &amp;pos, 0);
+    defer expr.Dispose();
+    a.Dispose();
+
+    if (expr.Type != .ERR) {
+        while (expr.Cell.items.len &gt; 0) {
+            const x = e.Eval(expr.Pop(0));
+            if (x.Type == .ERR) {
+                x.Println();
+            }
+            x.Dispose();
+        }
+    } else {
+        expr.Println();
+    }
+
+    return lval_sexpr();
+}
+
+fn builtin_error(_: *Lenv, a: *Lval) *Lval {
+    if (LASSERT_NUM("error", a, 1)) |err| {
+        return err;
+    }
+    if (LASSERT_TYPE("error", a, 0, .STR)) |err| {
+        return err;
+    }
+
+    const ret = lval_err(a.Cell.items[0].Str);
+    a.Dispose();
+    return ret;
+}
+
+fn builtin_print(_: *Lenv, a: *Lval) *Lval {
+    for (a.Cell.items) |item| {
+        item.Print();
+        std.debug.print(" ", .{});
+    }
+    std.debug.print("\n", .{});
+    a.Dispose();
+    return lval_sexpr();
+}
+
+fn lenv_add_builtins(e: *Lenv) void {
+    //* Variable Functions
+    e.lenv_add_builtin("\\", builtin_lambda);
+    e.lenv_add_builtin("def", builtin_def);
+    e.lenv_add_builtin("=", builtin_put);
+
+    // List Functions
+    e.lenv_add_builtin("list", builtin_list);
+    e.lenv_add_builtin("head", builtin_head);
+    e.lenv_add_builtin("tail", builtin_tail);
+    e.lenv_add_builtin("eval", builtin_eval);
+    e.lenv_add_builtin("join", builtin_join);
+
+    // Mathematical Functions
+    e.lenv_add_builtin("+", builtin_add);
+    e.lenv_add_builtin("-", builtin_sub);
+    e.lenv_add_builtin("*", builtin_mul);
+    e.lenv_add_builtin("/", builtin_div);
+
+    // Comparison Functions
+    e.lenv_add_builtin("if", builtin_if);
+    e.lenv_add_builtin("==", builtin_eq);
+    e.lenv_add_builtin("!=", builtin_ne);
+    e.lenv_add_builtin("&gt;", builtin_gt);
+    e.lenv_add_builtin("&lt;", builtin_lt);
+    e.lenv_add_builtin("&gt;=", builtin_ge);
+    e.lenv_add_builtin("&lt;=", builtin_le);
+
+    // String Functions
+    e.lenv_add_builtin("load", builtin_load);
+    e.lenv_add_builtin("error", builtin_error);
+    e.lenv_add_builtin("print", builtin_print);
+}
+
+// ===================================================
+
+fn lval_read_expr(s: []const u8, i: *usize, end: u8) *Lval {
+    var x: *Lval = undefined;
+    if (end == '}') {
+        x = lval_qexpr();
+    } else {
+        x = lval_sexpr();
+    }
+
+    while (i.* &lt; s.len) {
+        if (s[i.*] == end) {
+            break;
+        }
+
+        const y = lval_read(s, i);
+        if (y.Type == .ERR) {
+            x.Dispose();
+            return y;
+        }
+        _ = x.Add(y);
+    }
+
+    i.* += 1;
+    return x;
+}
+
+fn skipWhitespaceAndComments(s: []const u8, i: *usize) void {
+    const whitespaceAndComments = " \t\x11\r\n;";
+
+    while (i.* &lt; s.len) {
+        const yy = std.mem.indexOfScalar(u8, whitespaceAndComments, s[i.*]);
+        if (yy == null) {
+            return;
+        }
+
+        if (s[i.*] == ';') {
+            while (i.* &lt; s.len and s[i.*] != '\n') {
+                i.* += 1;
+            }
+        }
+        i.* += 1;
+    }
+}
+
+fn lval_read(s: []const u8, i: *usize) *Lval {
+    skipWhitespaceAndComments(s, i);
+
+    if (i.* &gt;= s.len) {
+        return lval_err("Unexpected end of input");
+    }
+
+    const ch = s[i.*];
+    var x: *Lval = undefined;
+
+    if (ch == '(') {
+        i.* += 1;
+        x = lval_read_expr(s, i, ')');
+    } else if (ch == '{') {
+        i.* += 1;
+        x = lval_read_expr(s, i, '}');
+    } else if (std.ascii.isAlphanumeric(ch) or std.mem.indexOfScalar(u8, "_+-*\\/=&lt;&gt;!&amp;", ch) != null) {
+        x = lval_read_sym(s, i);
+    } else if (ch == '"') {
+        x = lval_read_str(s, i);
+    } else {
+        return lval_err_format("Unexpected character: '{c}'", .{ch});
+    }
+
+    skipWhitespaceAndComments(s, i);
+    return x;
+}
+
+fn lval_read_sym(s: []const u8, i_ptr: *usize) *Lval {
+    const allocator = std.heap.page_allocator;
+    const valid_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_+-*\\/=&lt;&gt;!&amp;";
+
+    var part = std.ArrayList(u8).init(allocator);
+    defer part.deinit();
+
+    const len = s.len;
+    while (i_ptr.* &lt; len and std.mem.indexOfScalar(u8, valid_chars, s[i_ptr.*]) != null) {
+        part.append(s[i_ptr.*]) catch unreachable;
+        i_ptr.* += 1;
+    }
+
+    const part_str = part.toOwnedSlice() catch unreachable; // `[]u8` (not null-terminated)
+    defer allocator.free(part_str);
+
+    var is_num = false;
+    if (part_str.len &gt; 0) {
+        const first = part_str[0];
+        is_num = std.mem.indexOfScalar(u8, "-0123456789", first) != null;
+
+        if (is_num) {
+            for (1..part_str.len) |j| {
+                if (std.mem.indexOfScalar(u8, "0123456789", part_str[j]) == null) {
+                    is_num = false;
+                    break;
+                }
+            }
+            if (part_str.len == 1 and first == '-') {
+                is_num = false;
+            }
+        }
+    }
+
+    if (is_num) {
+        const str_val = std.fmt.parseInt(i64, part_str, 10) catch {
+            return lval_err("Invalid Number");
+        };
+        return lval_num(str_val);
+    }
+    return lval_sym(part_str); // Assume lval_sym duplicates the input string
+}
+
+fn lval_read_str(s: []const u8, i: *usize) *Lval {
+    const allocator = std.heap.page_allocator;
+    var part = std.ArrayList(u8).init(allocator);
+    defer part.deinit();
+
+    i.* += 1;
+
+    while (s[i.*] != '"') {
+        if (i.* &gt;= s.len) {
+            return lval_err("Unexpected end of input");
+        }
+
+        var c = s[i.*];
+
+        if (c == '\\') {
+            i.* += 1;
+            if (i.* &gt;= s.len) {
+                return lval_err("Unexpected end of input after \\");
+            }
+            const esc = s[i.*];
+            if (std.mem.indexOfScalar(u8, lval_str_unescapable, esc) == null) {
+                return lval_err_format("Invalid escape sequence \\{c}", .{esc});
+            }
+
+            c = lval_str_unescape(esc);
+        }
+
+        part.append(c) catch unreachable;
+        i.* += 1;
+    }
+
+    i.* += 1;
+
+    const ret = lval_str(part.items);
+    return ret;
+}
+
+const lval_str_escapable = "\x07\x08\x12\n\r\t\x11\\\'\"";
+const lval_str_unescapable = "abfnrtv\\\'\"";
+
+fn lval_str_escape(x: u8) []const u8 {
+    switch (x) {
+        0x07 =&gt; return "\\a", // '\a' Bell
+        0x08 =&gt; return "\\b", // '\b' Backspace
+        0x12 =&gt; return "\\f", // '\f' Form Feed
+        '\n' =&gt; return "\\n",
+        '\r' =&gt; return "\\r",
+        '\t' =&gt; return "\\t",
+        0x11 =&gt; return "\\v", // '\v' Vertical Tab
+        '\\' =&gt; return "\\\\",
+        '\'' =&gt; return "\\\'",
+        '\"' =&gt; return "\\\"",
+        else =&gt; return "",
+    }
+}
+
+fn lval_str_unescape(x: u8) u8 {
+    switch (x) {
+        'a' =&gt; return 0x07, // '\a' Bell
+        'b' =&gt; return 0x08, // '\b' Backspace
+        'f' =&gt; return 0x12, // '\f' Form Feed
+        'n' =&gt; return '\n',
+        'r' =&gt; return '\r',
+        't' =&gt; return '\t',
+        'v' =&gt; return 0x11, // '\v' Vertical Tab
+        '\\' =&gt; return '\\',
+        '\'' =&gt; return '\'',
+        '\"' =&gt; return '\"',
+        else =&gt; return 0x00,
+    }
+}
+// ===================================================
+
+pub fn main() void {
+    const allocator = std.heap.page_allocator;
+
+    const args = std.process.argsAlloc(allocator) catch unreachable;
+    defer std.process.argsFree(allocator, args);
+
+    const env = Lenv.Init();
+    lenv_add_builtins(env);
+
+    const argc = args.len;
+    if (argc == 1) {
+        std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
+        std.debug.print("Press Ctrl+c to Exit\n\n", .{});
+
+        while (true) {
+            const input: [*c]u8 = readLine("lispy&gt; ");
+            defer std.c.free(input);
+
+            var pos: usize = 0;
+            const r: *Lval = lval_read_expr(std.mem.span(input), &amp;pos, 0x00);
+            const e: *Lval = env.Eval(r);
+            e.Println();
+            e.Dispose();
+        }
+    }
+    if (argc &gt;= 2) {
+        for (args[1..]) |arg| {
+            const lval_args = lval_sexpr().Add(lval_str(arg));
+
+            const x = builtin_load(env, lval_args);
+            if (x.Type == .ERR) {
+                x.Println();
+            }
+            x.Dispose();
+        }
+    }
+}
 </code></pre>
 <h2 id="buildzig-14"><a class="header" href="#buildzig-14">build.zig</a></h2>
-<pre><code class="language-zig">{{#include ../../lispy-zig/hand_rolled_parser/build.zig}}
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const exe = b.addExecutable(.{
+        .name = "hand_rolled_parser",
+        .root_source_file = b.path("src/hand_rolled_parser.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    { // library: editline
+        if (target.result.os.tag != .windows) {
+            if (target.result.os.tag == .linux) {
+                exe.addIncludePath(.{ .cwd_relative = "/usr/include/" });
+            } else if (target.result.os.tag == .macos) {
+                exe.addIncludePath(.{ .cwd_relative = "/opt/homebrew/include" });
+                exe.addLibraryPath(.{ .cwd_relative = "/opt/homebrew/lib" });
+            }
+            exe.linkSystemLibrary("edit");
+        }
+    }
+    exe.linkLibC();
+
+    // zig-out/bin/ 아래에 실행파일을 복사해 줌.
+    b.installArtifact(exe);
+
+    // zig build &lt;원하는 스탭이름&gt;을 하면 바이너리를 실행함.
+    const run_cmd = b.addRunArtifact(exe);
+    const run_step = b.step("run", "Run the application");
+    run_step.dependOn(&amp;run_cmd.step);
+}
 </code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="지그"><a class="header" href="#지그">지그</a></h2>
+<p>https://zenn.dev/topics/zig?order=latest</p>
+<pre><code class="language-zig">u8            : one u8 value
+?u8           : one optional u8 value
+[2]u8         : array of 2 u8 values
+[2:0]u8       : zero-terminated array of 2 u8 values
+[2]*u8        : array of 2 u8 pointers
+*u8           : pointer to one u8 value
+*?u8          : pointer to one optional u8 value
+?*u8          : optional pointer to u8 value
+*const u8     : pointer to immutable u8 value
+*const ?u8    : pointer to immutable optional u8 value
+?*const u8    : optional pointer to immutable u8 value
+*[2]u8        : pointer to array of 2 u8 values      
+*[2:0]u8      : pointer to zero-terminated array of 2 u8 values      
+*const [2]u8  : pointer to immutable array of 2 u8 values      
+[]u8          : slice(pointer + runtime len) of u8 values
+[]?u8         : slice(pointer + runtime len) of optional u8 values
+?[]u8         : optional slice(pointer + runtime len) of u8 values
+[]*u8         : slice(pointer + runtime len) of pointers to u8 values      
+[]*const u8   : slice(pointer + runtime len) of pointers to immutable u8 values      
+[*]u8         : pointer(unknown len) to of u8
+[*:0]u8       : pointer(unknown len) to but zero-terminated of u8 values
+*[]const u8   : pointer to slice of immutable u8 values      
+*[]*const ?u8 : pointer to slice of pointers to immutable optional u8 values  
+
+var x: i32 = 4;
+var ptr: *i32 = &amp;x;
+ptr.* = 15;
+</code></pre>
+<p>const assert = std.debug.assert;</p>
+<p>Normal Operator	Wrapping Operator</p>
+<ul>
+<li>+%</li>
+</ul>
+<ul>
+<li>-%</li>
+</ul>
+<ul>
+<li>*%
++=	+%=
+-=	-%=
+*=	*%=</li>
+</ul>
+<pre><code class="language-zig">[2]u8  -&gt; *[2]u8    : by using address operator (&amp;)
+[2]u8  -&gt; []u8      : by using slice operator [..]
+*[2]u8 -&gt; []u8      : automatic coercion from pointer to fixed size array to slice
+[]u8   -&gt; [*]u8     : by using .ptr
+any    -&gt; ?any      : automatic coercion from non-optional to optional
+any    -&gt; const any : automatic coercion from non-const to const
+</code></pre>
+<p>모던한 c와 c++의 중간쯤? 되는 언어같다.</p>
+<p>"필요할 때만 명시적으로 작성하고, 나머지는 생략해도 이해되게 만들자."
+Zig는 &amp;T라는 타입이 없습니다. 대신, 함수 인자를 받을 때 포인터 타입 *T 또는 *const T로 명시합니다.
+&amp;는 오직 "주소 취득" 연산자 → x: *T와 &amp;x는 확실하게 대응됨</p>
+<h2 id="흐음"><a class="header" href="#흐음">흐음</a></h2>
+<ul>
+<li>null 이 있다.</li>
+<li>bool 이 있다.</li>
+<li>뭐 c/cpp와는 달리 header안 만들어도 됨.</li>
+<li>@intFromBool - bool을 int로 캐스팅</li>
+<li>@cImport
+<ul>
+<li>ffi는 다루기 쉽지만. 그래도 ffi인지라 메뉴얼 살펴보기됨. 특히 c string 다룰때.</li>
+<li>https://github.com/ziglang/zig/issues/20630</li>
+</ul>
+</li>
+<li>@import
+<ul>
+<li>razy이기에 import time이 있는 python과 달리 circluar import가 가능.</li>
+<li>다만 구조체 포인트가 아닌 구조체 자체를 맴버로 circular import를 하면 크기를 추정할 수 없기에 depends on itself가 나타남</li>
+</ul>
+</li>
+</ul>
+<h3 id="오오"><a class="header" href="#오오">오오</a></h3>
+<ul>
+<li>go fmt처럼 zig fmt도 있네</li>
+<li>c헤더 생성 : export fn + -femit-h + zig build-lib</li>
+<li>exception 없는건 맘에듬</li>
+</ul>
+<h3 id="별로"><a class="header" href="#별로">별로</a></h3>
+<ul>
+<li>상속이 없다 - 치명적인거 같은데..</li>
+<li>string interpolation 없다</li>
+<li>interface가 없다
+<ul>
+<li>https://zig.news/yglcode/code-study-interface-idiomspatterns-in-zig-standard-libraries-4lkj</li>
+</ul>
+</li>
+<li>private가 없네</li>
+<li>함수 오버로딩 없다</li>
+<li>가변인자(Variadic Arguments) 도 없다.
+<ul>
+<li>c ffi를 위한 extern으로 된 c함수만 됨.</li>
+</ul>
+</li>
+<li>const Hello = struct { A: u8, B: u8 } 컴마로 나누는거 꼴받네, <code>;</code> 세미콜론으로 왜 안해.</li>
+<li>에러 스트링 안되네?
+<ul>
+<li>https://github.com/ziglang/zig/issues/2647</li>
+<li>@panic은 있다. https://ziglang.org/documentation/master/#panic</li>
+<li>https://dev.to/mustafif/a-little-panic-in-zig-5bo2</li>
+<li>https://dev.to/chrischtel/error-handling-in-zig-a-fresh-approach-to-reliability-19o2</li>
+</ul>
+</li>
+<li>타입이 뒤에 있으니 검색할때 불편하네
+<ul>
+<li>x = struct</li>
+<li>x: SomeStruct</li>
+</ul>
+</li>
+<li>std format 류가 쓰는 포맷문자열이 컴파일 타임만 지원
+<ul>
+<li>https://github.com/ziglang/zig/issues/17832</li>
+</ul>
+</li>
+<li>좀 껄끄러운 syntax
+<ul>
+<li>ex) switch 구문에 컴마(,)나 화살표 (=&gt;)</li>
+</ul>
+</li>
+</ul>
+<h2 id="x"><a class="header" href="#x">x</a></h2>
+<p>opaque : 전방 선언용  // const SomeType = opaque {};
+anytype : 함수가 컴파일 타임에 호출 시점에 타입을 결정하도록 하는 제네릭(generic) 역할을 해요.</p>
+<h2 id="에러"><a class="header" href="#에러">에러</a></h2>
+<p>https://zig.guide/language-basics/errors/</p>
+<h2 id="문자열"><a class="header" href="#문자열">문자열</a></h2>
+<p>https://ziglang.org/documentation/master/#Multiline-String-Literals
+<code>\\</code></p>
+<pre><code>    var buffer: [2048]u8 = undefined;
+    const line: []u8 = try stdin.readUntilDelimiter(&amp;buffer, '\n');
+
+    const result = try allocator.alloc(u8, line.len + 1);
+    @memcpy(result[0..line.len], line);
+    result[line.len] = 0;
+    return result[0..line.len :0] // “슬라이스 끝에 0(null terminator)이 이미 존재한다고 가정하고, 그 정보를 타입에 반영하겠다.”
+</code></pre>
+<pre><code>    c
+    "                                                    \
+      number : /-?[0-9]+/ ;                              \
+      symbol : \"list\" | \"head\" | \"tail\" | \"eval\" \
+             | \"join\" | '+' | '-' | '*' | '/' ;        \
+      sexpr  : '(' &lt;expr&gt;* ')' ;                         \
+      qexpr  : '{' &lt;expr&gt;* '}' ;                         \
+      expr   : &lt;number&gt; | &lt;symbol&gt; | &lt;sexpr&gt; | &lt;qexpr&gt; ; \
+      lispy  : /^/ &lt;expr&gt;* /$/ ;                         \
+    ",
+
+    zig
+    const lang =
+        \\ number : /-?[0-9]+/ ;
+        \\ symbol : "list" | "head" | "tail"
+        \\        | "join" | "eval" | '+' | '-' | '*' | '/' ;
+        \\ sexpr  : '(' &lt;expr&gt;* ')' ;
+        \\ qexpr  : '{' &lt;expr&gt;* '}' ;
+        \\ expr   : &lt;number&gt; | &lt;symbol&gt; | &lt;sexpr&gt; | &lt;qexpr&gt; ;
+        \\ lispy  : /^/ &lt;expr&gt;* /$/ ;
+    ;
+</code></pre>
+<p>https://zig.guide/standard-library/formatting</p>
+<pre><code class="language-zig">const msg = try std.fmt.allocPrint(
+    _ALLOCATOR,
+    "{d} + {d} = {d}",
+    .{ 9, 10, 19 },
+);
+defer _ALLOCATOR.free(msg);
+</code></pre>
+<pre><code class="language-zig">var buffer: [100]u8 = undefined;
+const name = "Zig";
+const msg = try std.fmt.bufPrint(&amp;buffer, "Hello, {s}", .{name});
+</code></pre>
+<div class="table-wrapper"><table><thead><tr><th>기능</th><th>C++</th><th>Zig 대응</th></tr></thead><tbody>
+<tr><td><code>char * const</code></td><td>포인터 고정, 내용 수정 가능</td><td>❌ 직접 불가 (우회 필요)</td></tr>
+<tr><td><code>const char *</code></td><td>포인터 수정 가능, 내용은 const</td><td><code>[]const u8</code></td></tr>
+<tr><td><code>const char * const</code></td><td>포인터도, 내용도 const</td><td><code>const x: []const u8</code></td></tr>
+</tbody></table>
+</div>
+<pre><code class="language-zig">const std = @import("std");
+
+pub fn main() !void {
+    var buffer1: [100]u8 = undefined;
+    var buffer2: [100]u8 = undefined;
+
+    var msg: []u8 = undefined;
+    msg = try std.fmt.bufPrint(&amp;buffer1, "Hello, {s}", .{"bob"});
+    msg = try std.fmt.bufPrint(&amp;buffer2, "Hello, {s}", .{"bob"});
+    buffer1 = buffer2; // &lt;&lt; 여기 부분을 막고싶은데
+
+    std.debug.print("{s}\n", .{msg});
+}
+</code></pre>
+<h2 id="c문자열"><a class="header" href="#c문자열">c문자열</a></h2>
+<p>[*c]u8</p>
+<p>https://gencmurat.com/en/posts/zig-strings/</p>
+<h2 id="뭐지"><a class="header" href="#뭐지">뭐지</a></h2>
+<p>error: expected type '[]const u8', found '[*c]u8'
+const parsed = std.fmt.parseInt(i64, t.contents, 10)</p>
+<p>const slice = std.mem.span(t.contents);
+const parsed = std.fmt.parseInt(i64, slice, 10) catch {
+return lval_err("invalid number", allocator);
+};</p>
+<p>👉 @intCast(usize, value) 를 사용해서 c_int를 usize로 변환하세요:
+zig
+Copy
+Edit</p>
+<h2 id="출력"><a class="header" href="#출력">출력</a></h2>
+<p>https://github.com/ziglang/zig/issues/17186</p>
+<p>const stdout = std.io.getStdOut().writer(); 전역(컴파일타임)으로하면 Windows에서 찾지못함. 런타임에 설정해야함.</p>
+<h2 id="디버그"><a class="header" href="#디버그">디버그</a></h2>
+<p>const std = @import("std");</p>
+<p>if (std.builtin.mode == .Debug) {
+std.debug.print("Debug build message\n", .{});
+}</p>
+<p>std.debug.print는 Release 빌드에서도 출력이 됩니다</p>
+<pre><code>std.debug.print // stderr
+</code></pre>
+<p>const stdout = std.io.getStdOut().writer();
+stdout.print // stdout</p>
+<p>std.log.info
+pub const log_level: std.log.Level = .info;
+pub const default_level: Level = switch (builtin.mode) {
+.Debug =&gt; .debug,
+.ReleaseSafe =&gt; .info,
+.ReleaseFast, .ReleaseSmall =&gt; .err,
+};</p>
+<p>@hasDecl(root, "log_level")
+이건 컴파일 타임 내장 함수입니다.</p>
+<p>root는 @import("root")와 동일한 의미이며, 현재 애플리케이션의 루트 파일(보통 main.zig)을 가리킵니다
+pub const level: Level = if (@hasDecl(root, "log_level"))
+root.log_level
+else
+default_level;</p>
+<p>https://stackoverflow.com/a/72609022</p>
+<h2 id="할당"><a class="header" href="#할당">할당</a></h2>
+<p>allocator.create(T)의 반환 타입은 *T</p>
+<div class="table-wrapper"><table><thead><tr><th></th><th>함수</th></tr></thead><tbody>
+<tr><td>생성 /소멸 (초기화 O)</td><td><code>allocator.create(T)</code> / <code>allocator.destroy(ptr)</code></td></tr>
+<tr><td>원시 메모리 블록 할당/해제 (초기화 X)</td><td><code>allocator.alloc(u8, n)</code> / <code>allocator.free(ptr)</code></td></tr>
+</tbody></table>
+</div>
+<p>const ret = allocator.create(Lenv) catch unreachable;
+ret.* = .{.A = 1}; // 디폴트 생성자 호출</p>
+<h2 id="배열"><a class="header" href="#배열">배열</a></h2>
+<p>v.Cell = std.ArrayList(*Lval).init(allocator);
+v.Cell.deinit();</p>
+<h2 id="슬라이스"><a class="header" href="#슬라이스">슬라이스</a></h2>
+<p>x[n..m]
+Slicing includes the first element (n), but excludes the last element (m).</p>
+<h2 id="이상하네"><a class="header" href="#이상하네">이상하네</a></h2>
+<p>타입이 붙었다 때였나</p>
+<p>const stdin = std.io.getStdIn().reader();</p>
+<p>@TypeOf(...)
+const Reader = @TypeOf(std.io.getStdIn().reader());
+const stdin: Reader = std.io.getStdIn().reader();</p>
+<p>제네릭 타입 인자로 함수 포인터(function pointer)를 넘기는 것도 가능해</p>
+<h2 id="출력-1"><a class="header" href="#출력-1">출력</a></h2>
+<p>const print = @import("std").debug.print;
+print("Hello, world!\n", .{}); // another comment</p>
+<p>const stdout = std.io.getStdOut().writer();
+try stdout.print("Lispy Version 0.0.0.0.1\n", .{});</p>
+<h2 id="ffi"><a class="header" href="#ffi">ffi</a></h2>
+<p>@import // 모듈 불러오기
+@cImport / @cInclude // C 라이브러리 가져오기
+exe.addIncludePath(.{ .cwd_relative = "/usr/include/" });
+exe.linkSystemLibrary("edit");</p>
+<p>exe.addIncludePath(.{ .cwd_relative = "src/origin_source" });
+exe.addCSourceFile(.{ .file = b.path("src/origin_source/mpc.c") });
+exe.linkLibC(); // To solve ( error: 'stdlib.h' file not found )</p>
+<p>// https://en.cppreference.com/w/c/memory/free.html
+// typedef void (<em>Callback)(void</em> user_data);
+const Callback = *const fn (?*anyopaque) callconv(.C) void;</p>
+<p>*const fn // 함수 포인터 (*const는 "상수 포인터)
+fn (?<em>anyopaque) // void</em>
+callconv(.C) // C calling convention을 따른다
+void // 반환값</p>
+<h2 id="vscode-1"><a class="header" href="#vscode-1">vscode</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>설정</th><th>입력 지원</th><th>출력 위치</th><th>새 창 여부</th></tr></thead><tbody>
+<tr><td><code>internalConsole</code></td><td>❌</td><td>디버그 콘솔 (출력만)</td><td>X</td></tr>
+<tr><td><code>integratedTerminal</code></td><td>✅</td><td>VSCode 내 터미널</td><td>X</td></tr>
+<tr><td><code>externalTerminal</code></td><td>✅</td><td>OS 외부 터미널 창</td><td>O</td></tr>
+</tbody></table>
+</div>
+<h2 id="u8-문자열"><a class="header" href="#u8-문자열">u8 문자열</a></h2>
+<p>[]const u8	문자열 슬라이스 (zig는 char가 없음 u8로 처리) ( pointer + length)
+[:0]const u8 // https://ziglang.org/documentation/master/#Sentinel-Terminated-Slices</p>
+<p>[<em>]u8 = 길이 미상의 u8 배열 포인터 (null 종료 여부는 명시 안 됨)
+[</em>:0]u8 = 0(null)으로 종료되는 u8 배열 (equivalent to const char * in C) // https://ziglang.org/documentation/master/#Sentinel-Terminated-Pointers</p>
+<p>const new_msg: []u8 = try allocator.dupe(u8, msg);
+const new_msg: [:0]u8 = try allocator.dupeZ(u8, msg); // dupeZ (Duplicate null-terminated)</p>
+<p>const hello: [:0]const u8 = "Hello";
+const ptr: [*:0]const u8 = hello.ptr;</p>
+<h2 id="division--divtrunc-divfloor-or-divexact"><a class="header" href="#division--divtrunc-divfloor-or-divexact">division  @divTrunc, @divFloor, or @divExact</a></h2>
+<p>src\main.zig:172:18: error: division with 'i64' and 'i64': signed integers must use @divTrunc, @divFloor, or @divExact
+return x / y;
+<del>^</del>
+@divTrunc(-7, 3) == -2
+@divTrunc(7, 3) == 2</p>
+<p>@divFloor(-7, 3) == -3
+@divFloor(7, 3) == 2</p>
+<p>@divExact(6, 3) == 2   // OK
+@divExact(7, 3)        // 런타임 오류 (7은 3으로 정확히 나눠지지 않음)</p>
+<h2 id="format"><a class="header" href="#format">format</a></h2>
+<p>format https://zig.guide/standard-library/formatting-specifiers/</p>
+<p>const stdout = std.io.getStdOut().writer();
+try stdout.print("{d}\n", .{x});</p>
+<h2 id="stdin"><a class="header" href="#stdin">stdin</a></h2>
+<p>var buffer: [2048]u8 = undefined;
+const n: usize = try std.io.getStdIn().read(&amp;buffer);
+var end = n;
+if (end &gt; 0 and buffer[end - 1] == '\n') {
+end -= 1;
+}
+const result = try allocator.alloc(u8, end + 1);
+std.mem.copyForwards(u8, result[0..end], buffer[0..end]);
+result[end] = 0; // null terminator
+return result[0..end :0];</p>
+<p>const stdin = std.io.getStdIn();
+var buffer: [2048]u8 = undefined;
+const line: []u8 = try stdin.readUntilDelimiter(&amp;buffer, '\n');
+const result = try allocator.alloc(u8, line.len + 1);
+std.mem.copyForwards(u8, result[0..line.len], line); //     @memcpy(result[0..line.len], line);
+result[line.len] = 0;
+return result[0..line.len :0];</p>
+<p>https://www.openmymind.net/Zigs-memcpy-copyForwards-and-copyBackwards/</p>
+<h2 id="타입"><a class="header" href="#타입">타입</a></h2>
+<ul>
+<li>?T
+<ul>
+<li>nullable</li>
+<li>포인터 타입이라도 반환시 ?안해주면 null을 쓸 수 없다(컴파일 에러)</li>
+</ul>
+</li>
+<li>!T
+<ul>
+<li>이 함수가 오류를 반환할 수 있음을 뜻함</li>
+</ul>
+</li>
+<li><code>*T</code>
+<ul>
+<li>일반 포인터</li>
+</ul>
+</li>
+<li><code>?*T</code>
+<ul>
+<li>nullable 포인터</li>
+</ul>
+</li>
+<li>[*c]T
+<ul>
+<li>c 포인터 C-style 포인터 배열	길이 없는 배열 (null 종결)</li>
+</ul>
+</li>
+<li>.?
+<ul>
+<li>optional 값을 강제로 해제(unwrap) 하는 문법입니다.</li>
+<li>만약 null이라면 런타임 에러가 발생함.</li>
+</ul>
+</li>
+</ul>
+<p>if (x) |value| {
+}</p>
+<h2 id="arraylist"><a class="header" href="#arraylist">ArrayList</a></h2>
+<p>https://ziglang.org/documentation/master/std/#std.array_list.ArrayList</p>
+<h2 id="에러-try-"><a class="header" href="#에러-try-">에러 try !</a></h2>
+<p>Zig에서는 try를 쓰는 함수는 무조건 그 함수의 반환 타입에 !를 붙여야 해. 그래야 에러가 전파될 수 있거든.</p>
+<p>근데 dotnet의 try패턴이 없고 저런 함수들이 있음. 에러 반환할 수 있을거 같은데 그냥 T임..</p>
+<pre><code>    /// Remove the element at index `i`, shift elements after index
+    /// `i` forward, and return the removed element.
+    /// Invalidates element pointers to end of list.
+    /// This operation is O(N).
+    /// This preserves item order. Use `swapRemove` if order preservation is not important.
+    /// Asserts that the index is in bounds.
+    /// Asserts that the list is not empty.
+    pub fn orderedRemove(self: *Self, i: usize) T {
+        const old_item = self.items[i];
+        self.replaceRangeAssumeCapacity(i, 1, &amp;.{});
+        return old_item;
+    }
+</code></pre>
+<h2 id="defer"><a class="header" href="#defer">defer</a></h2>
+<ul>
+<li>defer
+<ul>
+<li>Zig에서 defer a.dispose();는 해당 시점의 a 값에 대해 dispose를 예약합니다.</li>
+<li>즉, 그 이후에 a에 다른 값을 할당해도, **defer는 원래 있었던 값의 dispose()**를 호출합니다.</li>
+<li>컨벤션으로 const 사용후 defer하거나 var사용하면 defer 사용 못하게 막아야 할듯.
+defer // errdefer
+defer   : 어떻게 종료되든 항상 정리가 필요한 리소스에 사용합니다.
+errdefer: 오류가 발생하는 경우에만 리소스를 정리해야 할 때 사용합니다.</li>
+</ul>
+</li>
+</ul>
+<p>errdefer는 와 유사 defer하지만, 오류로 인해 범위가 종료될 때만 실행됩니다.
+https://gencmurat.com/en/posts/defer-and-errdefer-in-zig/</p>
+<ul>
+<li>스코프를 조정할 수 있는 dotnet 의 using + IDisposable interface 방식이 더 맘에 든다.</li>
+</ul>
+<pre><code class="language-zig">const std = @import("std");
+
+const Thing = struct {
+    id: i32,
+    fn dispose(self: *Thing) void {
+        std.debug.print("Disposing {}\n", .{self.id});
+    }
+};
+
+pub fn main() void {
+    var a = Thing{ .id = 1 };
+    defer a.dispose(); // 여기서 a는 id = 1인 Thing
+
+    a = Thing{ .id = 2 }; // 새로운 Thing을 a에 덮어씀
+
+std.debug.print("{}", .{a});
+}
+</code></pre>
+<p>https://zig.guide/standard-library/allocators/
+https://www.openmymind.net/learning_zig/heap_memory/</p>
+<p>http://ithare.com/testing-memory-allocators-ptmalloc2-tcmalloc-hoard-jemalloc-while-trying-to-simulate-real-world-loads/
+<a href="https://hackmd.io/@sanxiyn/SkMgA04mo">신비한 malloc 사전</a></p>
+<div class="table-wrapper"><table><thead><tr><th>Allocator 종류</th><th>설명</th><th>특징 및 용도</th></tr></thead><tbody>
+<tr><td><strong>std.heap.c_allocator</strong></td><td>C <code>malloc</code>/<code>free</code> 기반 기본 할당자</td><td>시스템 기본 메모리 할당, 범용적</td></tr>
+<tr><td><strong>std.heap.page_allocator</strong></td><td>메모리 페이지 단위 할당자</td><td>페이지 단위 메모리 관리, 큰 블록 할당에 적합</td></tr>
+<tr><td><strong>std.heap.general_purpose_allocator</strong></td><td>jemalloc 스타일 범용 할당자</td><td>중간 ~ 큰 크기 메모리 효율적 관리, 쓰레드 안전 아님</td></tr>
+<tr><td></td><td></td><td></td></tr>
+<tr><td><strong>std.heap.FixedBufferAllocator</strong></td><td>고정 버퍼 내에서 할당, 할당 해제 불가</td><td>빠른 할당, 메모리 풀 용도</td></tr>
+<tr><td><strong>std.heap.ArenaAllocator</strong></td><td>Arena(풀) 방식 할당자</td><td>빠른 할당 및 해제, 전체 아레나 해제만 가능</td></tr>
+<tr><td><strong>std.heap.DebugAllocator</strong></td><td>디버깅용 래퍼 할당자</td><td>메모리 할당/해제 추적, 오버플로우 검사</td></tr>
+<tr><td><strong>std.heap.BuddyAllocator</strong></td><td>Buddy 메모리 할당자</td><td>단편화 감소, 큰 메모리 관리에 적합</td></tr>
+<tr><td><strong>std.heap.GeneralPurposeAllocator(.{})</strong></td><td>jemalloc 스타일 범용 할당자 (Zig 0.11+)</td><td>성능과 단편화 균형 맞춤 범용 할당자</td></tr>
+<tr><td><strong>std.testing.allocator</strong></td><td>테스트용 임시 할당자</td><td>테스트 중 메모리 할당 관리, 쉽게 리셋 가능, 메모리 누수 검출 도움</td></tr>
+</tbody></table>
+</div>
+<h2 id="키워드"><a class="header" href="#키워드">키워드</a></h2>
+<p>result.error는 안되고 result.@"error"</p>
+<h2 id="기타"><a class="header" href="#기타">기타</a></h2>
+<p>VS Code in the browser
+coder.com
+https://github.com/coder/code-server</p>
+<p>https://medium.com/codex/solving-the-crazy-zig-literal-strings-f2f692ae500b</p>
+<h2 id="struct"><a class="header" href="#struct">struct</a></h2>
+<p>@This()는 현재 선언 중인 구조체(struct), 유니언(union), 또는 enum 타입 자체를 참조할 때 사용하는 **내장 함수(builtin function</p>
+<h2 id=""><a class="header" href="#"></a></h2>
+<p>// build.zig
+if (target.result.os.tag != .windows) {
+exe.linkLibC();
+exe.addIncludePath(.{ .cwd_relative = "/usr/include/" });
+exe.linkSystemLibrary("edit");
+}</p>
+<p>// main.zig
+const c_libedit = if (!is_windows) @cImport({
+// https://salsa.debian.org/debian/libedit/-/blob/master/src/editline/readline.h
+@cInclude("editline/readline.h");
+}) else struct {};</p>
+<p>const input: [*:0]u8 = c_libedit.readline("lispy&gt; ");
+_ = c_libedit.add_history(input);
+defer std.c.free(input);</p>
+<hr />
+<p>zig
+ide - ZigBrains https://plugins.jetbrains.com/plugin/22456-zigbrains
+설치 https://ziglang.org/learn/getting-started/</p>
+<p>zig
+build.zig - https://ziglang.org/learn/build-system/
+build.zig.zon</p>
+<ul>
+<li>https://zig.news/edyu/zig-package-manager-wtf-is-zon-558e</li>
+<li>https://zig.news/edyu/zig-package-manager-wtf-is-zon-2-0110-update-1jo3</li>
+</ul>
+<p>타겟설정 Target
+최적화 / Optimization
+실행가능 Executable
+root_source_file
+root_module
+모듈 Module</p>
+<p>zig build-exe main.zig -femit-docs  // file emit
+zig build
+zig build run</p>
+<p>const std = @import("std");
+https://ziglang.org/documentation/master/std/</p>
+<p>const builtin = @import("builtin");
+https://ziglang.org/documentation/master/#Compile-Variables</p>
+<p>릴리즈모드 4개 https://zig.guide/build-system/build-modes/
+https://github.com/zigtools/zls
+https://ludwigabap.bearblog.dev/2024-collection-of-zig-resources/</p>
+<p>macro대신 그냥 compiletime이라는 키워드</p>
+<p><a href="https://www.youtube.com/watch?v=Gv2I7qTux7g">The Road to Zig 1.0 - Andrew Kelley</a></p>
+<p>Search Ziglang Packages
+https://zigistry.dev/</p>
+<p>Mach - Zig game engine &amp; graphics toolkit
+https://machengine.org/
+https://ziglang.org/learn/getting-started/
+https://zigtools.org/zls/editors/jetbrains/</p>
+<p>https://mitchellh.com/zig
+https://matklad.github.io/2023/02/10/how-a-zig-ide-could-work.html</p>
+<p>https://www.openmymind.net/learning_zig/</p>
+<ul>
+<li>
+<p>https://faultnote.github.io/posts/learning-zig/
+https://www.youtube.com/@dudethebuilder/videos</p>
+<p>// { // doc
+//     const install_docs = b.addInstallDirectory(.{
+//         .source_dir = exe.getEmittedDocs(),
+//         .install_dir = .prefix,
+//         .install_subdir = "docs",
+//     });</p>
+<p>//     const docs_step = b.step("docs", "Install docs into zig-out/docs");
+//     docs_step.dependOn(&amp;install_docs.step);
+// }</p>
+</li>
+</ul>
+<h2 id="비교"><a class="header" href="#비교">비교</a></h2>
+<p>strstr
+if (std.mem.indexOf(u8, std.mem.span(t.tag), "number") != null) {</p>
+<p>strcmp == 0
+if (std.mem.eql(u8, std.mem.span(t.tag), "&gt;")) {
+std.mem.orderZ(u8, t.tag, t.tag) == .eq</p>
 
                     </main>
 
