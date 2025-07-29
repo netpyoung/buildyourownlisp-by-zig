@@ -10,3 +10,5 @@ site-url = "/buildyourownlisp-by-zig/"
 git-repository-url = "https://github.com/netpyoung/buildyourownlisp-by-zig"
 git-repository-icon = "fa-github"
 edit-url-template = "https://github.com/netpyoung/buildyourownlisp-by-zig/edit/main/{path}"
+
+additional-css = ["theme/css/custom.css"]
