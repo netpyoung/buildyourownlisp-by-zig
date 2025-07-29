@@ -967,11 +967,11 @@ pub fn main() void {
         return;
     }
 
-    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
-    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
-
     const env = Lenv.Init();
     lenv_add_builtins(env);
+
+    std.debug.print("Lispy Version 0.0.0.0.2\n", .{});
+    std.debug.print("Press Ctrl+c to Exit\n\n", .{});
 
     while (true) {
         const input: [*c]u8 = readLine("lispy> ");
