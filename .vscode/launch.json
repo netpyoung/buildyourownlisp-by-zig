@@ -33,7 +33,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/lispy-zig/${input:targetProject}/zig-out/bin/${input:targetProject}",
             "args": [
-                "prelude.lspy"
+                // "hello_world.lspy",
+                "prelude.lspy",
             ],
             "cwd": "${workspaceFolder}/lispy-zig/${input:targetProject}",
             // "stopAtEntry": false,

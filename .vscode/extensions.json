@@ -4,5 +4,6 @@
         "ziglang.vscode-zig",
         "vadimcn.vscode-lldb",
         "ms-vscode.cpptools",
+        "ms-vscode-remote.vscode-remote-extensionpack",
     ]
 }
