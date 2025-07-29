@@ -199,6 +199,13 @@
 </ul>
 </li>
 </ul>
+<h2 id=""><a class="header" href="#"></a></h2>
+<p>저자가 작성한 <a href="https://github.com/orangeduck/mpc">mpc (Micro Parser Combinators)</a>의 사용 예.</p>
+<div class="table-wrapper"><table><thead><tr><th></th><th></th></tr></thead><tbody>
+<tr><td>Parser Combinator</td><td>파서들 =&gt; 새로운 파서</td></tr>
+<tr><td>Parser</td><td>텍스트 =&gt; 파싱된 결과</td></tr>
+</tbody></table>
+</div>
 <h2 id="srcch05zig"><a class="header" href="#srcch05zig">src/ch05.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
@@ -300,6 +307,22 @@ pub fn build(b: *std.Build) void {
     run_step.dependOn(&amp;run_cmd.step);
 }
 </code></pre>
+<h2 id="ref"><a class="header" href="#ref">Ref.</a></h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Parser_combinator">wiki: Parser Combinator</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Greenspun%27s_tenth_rule">wiki: Greenspun's tenth rule</a></li>
+<li><a href="https://www.youtube.com/playlist?list=PLP29wDx6QmW5yfO1LAgO8kU3aQEj8SIrU">youtube: Parser Combinators From Scratch</a>
+<ul>
+<li>javascript로 작성</li>
+</ul>
+</li>
+<li>zig
+<ul>
+<li><a href="https://devlog.hexops.com/2021/zig-parser-combinators-and-why-theyre-awesome/">https://devlog.hexops.com/2021/zig-parser-combinators-and-why-theyre-awesome/</a></li>
+<li><a href="https://github.com/Hejsil/mecha">https://github.com/Hejsil/mecha</a></li>
+</ul>
+</li>
+</ul>
 
                     </main>
 

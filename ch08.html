@@ -194,24 +194,12 @@
 <ul>
 <li><a href="https://www.buildyourownlisp.com/chapter8_error_handling">origin</a>
 <ul>
-<li>
-<p><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/error_handling.c">error_handling.c</a></p>
-<ul>
-<li>Lisp Value lval</li>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/error_handling.c">error_handling.c</a></li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
-<pre><code class="language-c">/* Declare New lval Struct */
-typedef struct {
-  int type;
-  long num;
-  int err;
-} lval;
-</code></pre>
-<p>LVAL_ // value
-LERR_ // error</p>
+<h2 id=""><a class="header" href="#"></a></h2>
+<p>Lval을 정의하여 숫자와 에러를 다루도록 합.</p>
 <h2 id="srcch08zig"><a class="header" href="#srcch08zig">src/ch08.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 const module_builtin = @import("builtin");

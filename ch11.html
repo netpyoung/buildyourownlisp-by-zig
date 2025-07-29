@@ -192,23 +192,26 @@
                     <main>
                         <h1 id="ch11"><a class="header" href="#ch11">ch11</a></h1>
 <ul>
-<li>https://www.buildyourownlisp.com/chapter11_variables
+<li><a href="https://www.buildyourownlisp.com/chapter11_variables">origin</a>
 <ul>
-<li>
-<p><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/variables.c">variables.c</a></p>
-</li>
-<li>
-<p>Chapter 11 • Variables</p>
-</li>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/variables.c">variables.c</a></li>
 </ul>
 </li>
 </ul>
-<pre><code>  symbol : /[a-zA-Z0-9_+\\-*\\/\\\\=&lt;&gt;!&amp;]+/ ;         \
+<h2 id=""><a class="header" href="#"></a></h2>
+<pre><code class="language-txt">// c
+  "
+  symbol : /[a-zA-Z0-9_+\\-*\\/\\\\=&lt;&gt;!&amp;]+/ ;         \
+  "
+
+// zig
+    \\
+    \\ symbol : /[a-zA-Z0-9_+\-*\/\\=&lt;&gt;!&amp;]+/ ;
+    \\
 </code></pre>
-<pre><code>    \\ symbol : /[a-zA-Z0-9_+\-*\/\\=&lt;&gt;!&amp;]+/ ;
+<pre><code class="language-zig">const lbuiltin = fn(env: *lenv, val: *lval) *lval;
+Fun: *const lbuiltin,
 </code></pre>
-<p>const lbuiltin = fn(env: *lenv, val: *lval) *lval;</p>
-<p>Fun: *const lbuiltin,</p>
 <h2 id="srcch11zig"><a class="header" href="#srcch11zig">src/ch11.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 const module_builtin = @import("builtin");
@@ -324,7 +327,7 @@ const Lval = struct {
     Err: []const u8 = undefined,
     Sym: []const u8 = undefined,
     Cell: std.ArrayList(*Lval) = undefined,
-    Fun: *const lbuiltin,
+    BuiltinOrNull: ?*const lbuiltin = null,
 
     pub fn Dispose(v: *Lval) void {
         const allocator = std.heap.page_allocator;
@@ -367,7 +370,7 @@ const Lval = struct {
             },
             .SEXPR, .QEXPR =&gt; {},
             .FUN =&gt; {
-                x.Fun = v.Fun;
+                x.BuiltinOrNull = v.BuiltinOrNull;
             },
         }
         x.Cell = std.ArrayList(*Lval).init(allocator);
@@ -510,7 +513,7 @@ fn lval_fun(func: *const lbuiltin) *Lval {
     const v = allocator.create(Lval) catch unreachable;
     v.Type = .FUN;
     v.Cell = std.ArrayList(*Lval).init(allocator);
-    v.Fun = func;
+    v.BuiltinOrNull = func;
     return v;
 }
 
@@ -618,7 +621,7 @@ const Lenv = struct {
             return lval_err_format("S-Expression starts with incorrect type. Got {s}, Expected {s}.", .{ first.Type.Name(), E_LVAL.FUN.Name() });
         }
 
-        const result = first.Fun(e, v);
+        const result = first.BuiltinOrNull.?(e, v);
         return result;
     }
 

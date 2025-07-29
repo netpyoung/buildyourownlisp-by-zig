@@ -194,32 +194,16 @@
 <ul>
 <li><a href="https://www.buildyourownlisp.com/chapter4_interactive_prompt">origin</a>
 <ul>
-<li>
-<p><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/prompt.c">prompt.c</a></p>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/prompt.c">prompt.c</a></li>
+</ul>
 </li>
-<li>
-<p>4장 <a href="https://github.com/orangeduck/mpc">mpc (Micro Parser Combinators)</a></p>
+</ul>
+<h2 id=""><a class="header" href="#"></a></h2>
 <ul>
-<li><a href="https://en.wikipedia.org/wiki/Parser_combinator">wiki: Parser Combinator</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Greenspun%27s_tenth_rule">wiki: Greenspun's tenth rule</a></li>
-<li>Parser: 텍스트 =&gt; 파싱된 결과</li>
-<li>Parser Combinator: 파서들 =&gt; 새로운 파서</li>
-<li><a href="https://www.youtube.com/playlist?list=PLP29wDx6QmW5yfO1LAgO8kU3aQEj8SIrU">youtube: Parser Combinators From Scratch</a>
-<ul>
-<li>javascript로 작성</li>
+<li>libedit을 사용하여 입력 히스토리를 저장.</li>
+<li>while루프를 돌면서 사용자와 인터렉티브 환경</li>
 </ul>
-</li>
-<li>zig
-<ul>
-<li>https://devlog.hexops.com/2021/zig-parser-combinators-and-why-theyre-awesome/</li>
-<li>https://github.com/Hejsil/mecha</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+<h2 id="zig-타입"><a class="header" href="#zig-타입">Zig 타입</a></h2>
 <div class="table-wrapper"><table><thead><tr><th>Zig 타입</th><th>C와의 대응</th><th>의미</th></tr></thead><tbody>
 <tr><td>u8</td><td>uint8_t 혹은 std::byte</td><td>unsigned 8-bit integer</td></tr>
 <tr><td><code>*u8</code></td><td><code>uint8_t*</code></td><td>단일 <code>u8</code>을 가리키는 포인터</td></tr>
@@ -230,9 +214,6 @@
 <tr><td><code>*const [N]u8</code></td><td><code>const uint8_t[N]*</code></td><td>길이 고정된 배열의 포인터</td></tr>
 </tbody></table>
 </div>
-<ul>
-<li>3장 &lt;editline/readline.h&gt;를 사용한 <a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/prompt.c">prompt.c</a></li>
-</ul>
 <h2 id="libedit"><a class="header" href="#libedit">libedit</a></h2>
 <h3 id="ubuntu"><a class="header" href="#ubuntu">Ubuntu</a></h3>
 <pre><code class="language-sh">snap install zig --classic --beta
@@ -257,7 +238,7 @@ sudo apt install libedit-dev
 <li>/usr/local/include, /usr/local/lib로</li>
 </ul>
 </li>
-<li>brew install libedit
+<li>혹은 brew install libedit
 <ul>
 <li><a href="https://formulae.brew.sh/formula/libedit">https://formulae.brew.sh/formula/libedit</a></li>
 <li><a href="https://thrysoee.dk/editline/">https://thrysoee.dk/editline/</a>
@@ -268,7 +249,6 @@ sudo apt install libedit-dev
 </ul>
 </li>
 </ul>
-<p>[*c]u8 []u8을 가리키는 *c c의 포인터</p>
 <h2 id="srcch04zig"><a class="header" href="#srcch04zig">src/ch04.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 const module_builtin = @import("builtin");

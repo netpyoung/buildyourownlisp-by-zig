@@ -225,6 +225,7 @@
 </li>
 </ul>
 </li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack">ms-vscode-remote.vscode-remote-extensionpack</a></li>
 </ul>
 </li>
 </ul>
@@ -235,6 +236,7 @@
         "ziglang.vscode-zig",
         "vadimcn.vscode-lldb",
         "ms-vscode.cpptools",
+        "ms-vscode-remote.vscode-remote-extensionpack",
     ]
 }
 </code></pre>
@@ -273,7 +275,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/lispy-zig/${input:targetProject}/zig-out/bin/${input:targetProject}",
             "args": [
-                "prelude.lspy"
+                // "hello_world.lspy",
+                "prelude.lspy",
             ],
             "cwd": "${workspaceFolder}/lispy-zig/${input:targetProject}",
             // "stopAtEntry": false,

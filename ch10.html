@@ -192,23 +192,22 @@
                     <main>
                         <h1 id="ch10"><a class="header" href="#ch10">ch10</a></h1>
 <ul>
-<li>https://www.buildyourownlisp.com/chapter10_q_expressions
+<li><a href="https://www.buildyourownlisp.com/chapter10_q_expressions">origin</a>
 <ul>
-<li>
-<p><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/q_expressions.c">q_expressions.c</a></p>
+<li><a href="https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/q_expressions.c">q_expressions.c</a></li>
+</ul>
 </li>
-<li>
-<p>Chapter 10 • Q-Expressions</p>
+</ul>
+<h2 id=""><a class="header" href="#"></a></h2>
 <ul>
-<li>인용된 표현식(quoted expression)을 의미하며 , 표준 Lisp 메커니즘으로 계산되지 않는 Lisp 표현식의 한 유형입니다
-()로 감싸는게 아닌 {} 로 감쌈</li>
+<li>Q-Expressions: 인용된 표현식(quoted expression)을 의미하며, 표준 Lisp 메커니즘으로 계산되지 않는 Lisp 표현식의 한 유형
+<ul>
+<li><code>( )</code>로 감싸는게 아닌 <code>{ }</code> 로 감쌈</li>
 </ul>
 </li>
+<li>qexpr을 eval하면 그때서야 child 에서 꺼내옴</li>
 </ul>
-</li>
-</ul>
-<p>qexpr을 eval하면 그때서야 child에서 꺼내옴</p>
-<pre><code>        \\ symbol : "list" | "head" | "tail" | "eval" | "join"
+<pre><code class="language-txt">        \\ symbol : "list" | "head" | "tail" | "eval" | "join"
         \\        | '+' | '-' | '*' | '/' ;
 </code></pre>
 <h2 id="srcch10zig"><a class="header" href="#srcch10zig">src/ch10.zig</a></h2>
