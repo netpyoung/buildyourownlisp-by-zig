@@ -721,8 +721,8 @@ fn builtin_lambda(_: *Lenv, a: *Lval) *Lval {
         return err;
     }
 
-    for (0..a.Cell.items.len) |i| {
-        const t = a.Cell.items[0].Cell.items[i].Type;
+    for (a.Cell.items[0].Cell.items) |item| {
+        const t = item.Type;
         if (LASSERT(a, t == .SYM, "Cannot define non-symbol. Got {s}, Expected {s}.", .{ t.Name(), E_LVAL.SYM.Name() })) |err| {
             return err;
         }
