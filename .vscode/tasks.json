@@ -21,6 +21,7 @@
                 "ch13",
                 "ch14",
                 "ch15",
+                "hand_rolled_parser",
             ],
             "default": "ch02"
         }
