@@ -18,3 +18,4 @@
 - [ch14](./ch14.md)
 - [ch15](./ch15.md)
 - [ch16](./ch16.md)
+- [appendix_a_hand_rolled_parser](./appendix_a_hand_rolled_parser.md)

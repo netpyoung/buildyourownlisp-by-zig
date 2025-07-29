@@ -202,6 +202,8 @@ pub fn main() !void {
 
 [*c]u8
 
+https://gencmurat.com/en/posts/zig-strings/
+
 ## 뭐지
 error: expected type '[]const u8', found '[*c]u8'
     const parsed = std.fmt.parseInt(i64, t.contents, 10)
