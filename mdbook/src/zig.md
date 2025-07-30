@@ -1,25 +1,163 @@
-## 지그
+# 지그 노트
+
+- Zig는 "모던한 C와 C++ 사이"쯤 되는 언어로 설계됨
+  - [discord](https://discord.com/invite/zig)에서 정보/질답이 활발이 일어나는듯 하다
+  - [공식 가이드](https://ziglang.org/learn/getting-started/)
+  - [zig.guide 문서](https://zig.guide/)
+  - [관련 블로그](https://zenn.dev/topics/zig?order=latest)
+  - [한국어 학습자료](https://pedropark99.github.io/zig-book/Chapters/01-zig-weird.html) 
+  - [OpenMyMind 학습 블로그](https://www.openmymind.net/learning_zig/)
+  - [Zig 게임 엔진 Mach](https://machengine.org/)
+  - [패키지 검색](https://zigistry.dev/)
+  - 영상
+    - [The Road to Zig 1.0 - Andrew Kelley](https://www.youtube.com/watch?v=Gv2I7qTux7g)
+
+## 느낌
+
+- 모던한 c와 c++의 중간쯤? 되는 언어같다.
+  - "필요할 때만 명시적으로 작성하고, 나머지는 생략해도 이해되게 만들자."
+
+### 흐음
+
+- null 이 있다.
+- bool 이 있다.
+- 뭐 c/cpp와는 달리 header안 만들어도 됨.
+- @intFromBool - bool을 int로 캐스팅
+- @cImport
+  - ffi는 다루기 쉽지만. 그래도 ffi인지라 메뉴얼 살펴보기됨. 특히 c string 다룰때.
+  - <https://github.com/ziglang/zig/issues/20630>
+- @import
+  - razy이기에 import time이 있는 python과 달리 circluar import가 가능.
+  - 다만 구조체 포인트가 아닌 구조체 자체를 맴버로 circular import를 하면 크기를 추정할 수 없기에 depends on itself가 나타남
+- &T라는 타입이 없음
+  - &는 오직 "주소 취득"
+  - 함수 인자를 받을 때 포인터 타입 *T 또는 *const T로 명시합니다.
+
+### 오오
+
+- go fmt처럼 zig fmt도 있네
+- c헤더 생성 : export fn + -femit-h + zig build-lib
+- exception 없는건 맘에듬
+
+### 별로
+
+- 상속이 없다 - 치명적인거 같은데..
+- string interpolation 없다
+- interface가 없다
+  - <https://zig.news/yglcode/code-study-interface-idiomspatterns-in-zig-standard-libraries-4lkj>
+- private가 없네
+- 함수 오버로딩 없다
+- 가변인자(Variadic Arguments) 도 없다.
+  - c ffi를 위한 extern으로 된 c함수만 됨.
+- const Hello = struct { A: u8, B: u8 } 컴마로 나누는거 꼴받네, `;` 세미콜론으로 왜 안해.
+- 에러 스트링 안되네?
+  - <https://github.com/ziglang/zig/issues/2647>
+  - @panic은 있다. <https://ziglang.org/documentation/master/#panic>
+  - <https://dev.to/mustafif/a-little-panic-in-zig-5bo2>
+  - <https://dev.to/chrischtel/error-handling-in-zig-a-fresh-approach-to-reliability-19o2>
+- 타입이 뒤에 있으니 검색할때 불편하네
+  - x = struct
+  - x: SomeStruct
+- std format 류가 쓰는 포맷문자열이 컴파일 타임만 지원
+  - <https://github.com/ziglang/zig/issues/17832>
+- 좀 껄끄러운 syntax
+  - ex) switch 구문에 컴마(,)나 화살표 (=>)
+- defer
+  - Zig에서 defer a.dispose();는 해당 시점의 a 값에 대해 dispose를 예약합니다.
+  - 즉, 그 이후에 a에 다른 값을 할당해도, **defer는 원래 있었던 값의 dispose()**를 호출합니다.
+  - 컨벤션으로 const 사용후 defer하거나 var사용하면 defer 사용 못하게 막아야 할듯.
+  - defer   : 어떻게 종료되든 항상 정리가 필요한 리소스에 사용합니다.
+  - errdefer: 오류가 발생하는 경우에만 리소스를 정리해야 할 때 사용합니다.
+    - <https://gencmurat.com/en/posts/defer-and-errdefer-in-zig/>
+  - 스코프를 조정할 수 있는 dotnet 의 using + IDisposable interface 방식이 더 맘에 든다.
+
+## Zig 설치
+
+- [Window - winget](https://github.com/ziglang/zig/wiki/Install-Zig-from-a-Package-Manager#windows-winget)
+- [Hello World](https://zig.guide/getting-started/hello-world)
+
+
+## IDE 및 도구
+
+- [ZLS (Zig Language Server)](https://github.com/zigtools/zls) 
+- [ZigBrains (JetBrains plugin)](https://plugins.jetbrains.com/plugin/22456-zigbrains) 
+
+
+---
+
+
+- 빌드 모드: Debug / ReleaseSafe / ReleaseFast / ReleaseSmall
+
+
+- https://zig.guide/getting-started/running-tests
+- https://zig.news/pm/zig-multi-project-workflow-in-vs-code-with-dynamic-debugbuild-and-one-tasksjson-to-rule-them-all-ka7
+
+
+## TODO
+
+- console output test는 어떻게하지?
+
+https://rust-lang.github.io/mdBook/format/mdbook.html#including-files
+
+
+## xxx
+
+zig
+https://pedropark99.github.io/zig-book/Chapters/01-zig-weird.html
+https://ziglang.org/learn/getting-started/
+
+build.zig
+build.zig.zon
+
+zon - Zig Object Notation
+json - JavaScript Object Notation
+
+"Hello World!"
+컴파일 방법 build.zig
+
+
+  - 포인터 문법, 기타 문자열 다루는데 있어 어색함.
+  - cffi가 엄청 단순해서 맘에듬.
 
 https://zenn.dev/topics/zig?order=latest
+
+
+## Zig 타입
+
+| Zig 타입       | C와의 대응                          | 의미                                 |
+| -------------- | ----------------------------------- | ------------------------------------ |
+| u8             | uint8_t 혹은 std::byte              | unsigned 8-bit integer               |
+| `*u8`          | `uint8_t*`                          | 단일 `u8`을 가리키는 포인터          |
+| `[]u8`         | C에는 직접 대응 없음 (Zig 슬라이스) | 길이 포함한 슬라이스                 |
+| `[*]u8`        | 없음 (Zig 내부용)                   | 길이 모르는 raw pointer              |
+| `[:0]u8`       | `const char*`                       | null-terminated C string (읽기 전용) |
+| `[*c]u8`       | `uint8_t*` 또는 `char*`             | C 호환 raw pointer                   |
+| `*const [N]u8` | `const uint8_t[N]*`                 | 길이 고정된 배열의 포인터            |
+
 
 ``` zig
 u8            : one u8 value
 ?u8           : one optional u8 value
 [2]u8         : array of 2 u8 values
 [2:0]u8       : zero-terminated array of 2 u8 values
-[2]*u8        : array of 2 u8 pointers
-*u8           : pointer to one u8 value
-*?u8          : pointer to one optional u8 value
-?*u8          : optional pointer to u8 value
-*const u8     : pointer to immutable u8 value
-*const ?u8    : pointer to immutable optional u8 value
-?*const u8    : optional pointer to immutable u8 value
-*[2]u8        : pointer to array of 2 u8 values      
-*[2:0]u8      : pointer to zero-terminated array of 2 u8 values      
-*const [2]u8  : pointer to immutable array of 2 u8 values      
 []u8          : slice(pointer + runtime len) of u8 values
 []?u8         : slice(pointer + runtime len) of optional u8 values
 ?[]u8         : optional slice(pointer + runtime len) of u8 values
+
+
+*u8           : pointer to one u8 value
+*?u8          : pointer to one optional u8 value
+?*u8          : optional pointer to u8 value
+
+*const u8     : pointer to immutable u8 value
+*const ?u8    : pointer to immutable optional u8 value
+?*const u8    : optional pointer to immutable u8 value
+
+[2]*u8        : array of 2 u8 pointers
+*[2]u8        : pointer to array of 2 u8 values      
+*[2:0]u8      : pointer to zero-terminated array of 2 u8 values      
+*const [2]u8  : pointer to immutable array of 2 u8 values      
+
 []*u8         : slice(pointer + runtime len) of pointers to u8 values      
 []*const u8   : slice(pointer + runtime len) of pointers to immutable u8 values      
 [*]u8         : pointer(unknown len) to of u8
@@ -54,56 +192,6 @@ any    -> ?any      : automatic coercion from non-optional to optional
 any    -> const any : automatic coercion from non-const to const
 ```
 
-
-모던한 c와 c++의 중간쯤? 되는 언어같다.
-
-"필요할 때만 명시적으로 작성하고, 나머지는 생략해도 이해되게 만들자."
-Zig는 &T라는 타입이 없습니다. 대신, 함수 인자를 받을 때 포인터 타입 *T 또는 *const T로 명시합니다.
-&는 오직 "주소 취득" 연산자 → x: *T와 &x는 확실하게 대응됨
-
-## 흐음
-
-- null 이 있다.
-- bool 이 있다.
-- 뭐 c/cpp와는 달리 header안 만들어도 됨.
-- @intFromBool - bool을 int로 캐스팅
-- @cImport
-  - ffi는 다루기 쉽지만. 그래도 ffi인지라 메뉴얼 살펴보기됨. 특히 c string 다룰때.
-  - https://github.com/ziglang/zig/issues/20630
-- @import
-  - razy이기에 import time이 있는 python과 달리 circluar import가 가능.
-  - 다만 구조체 포인트가 아닌 구조체 자체를 맴버로 circular import를 하면 크기를 추정할 수 없기에 depends on itself가 나타남
-
-### 오오
-
-- go fmt처럼 zig fmt도 있네
-- c헤더 생성 : export fn + -femit-h + zig build-lib
-- exception 없는건 맘에듬
-
-
-### 별로
-
-- 상속이 없다 - 치명적인거 같은데..
-- string interpolation 없다
-- interface가 없다
-  - https://zig.news/yglcode/code-study-interface-idiomspatterns-in-zig-standard-libraries-4lkj
-- private가 없네
-- 함수 오버로딩 없다
-- 가변인자(Variadic Arguments) 도 없다.
-  - c ffi를 위한 extern으로 된 c함수만 됨.
-- const Hello = struct { A: u8, B: u8 } 컴마로 나누는거 꼴받네, `;` 세미콜론으로 왜 안해.
-- 에러 스트링 안되네?
-  - https://github.com/ziglang/zig/issues/2647
-  - @panic은 있다. https://ziglang.org/documentation/master/#panic
-  - https://dev.to/mustafif/a-little-panic-in-zig-5bo2
-  - https://dev.to/chrischtel/error-handling-in-zig-a-fresh-approach-to-reliability-19o2
-- 타입이 뒤에 있으니 검색할때 불편하네
-  - x = struct
-  - x: SomeStruct
-- std format 류가 쓰는 포맷문자열이 컴파일 타임만 지원
-  - https://github.com/ziglang/zig/issues/17832
-- 좀 껄끄러운 syntax
-  - ex) switch 구문에 컴마(,)나 화살표 (=>)
 ## x
 
 opaque : 전방 선언용  // const SomeType = opaque {};
@@ -328,14 +416,6 @@ callconv(.C) // C calling convention을 따른다
 void // 반환값
 
 
-## vscode
-
-| 설정                 | 입력 지원 | 출력 위치            | 새 창 여부 |
-| -------------------- | --------- | -------------------- | ---------- |
-| `internalConsole`    | ❌         | 디버그 콘솔 (출력만) | X          |
-| `integratedTerminal` | ✅         | VSCode 내 터미널     | X          |
-| `externalTerminal`   | ✅         | OS 외부 터미널 창    | O          |
-
 
 
 ## u8 문자열
@@ -445,41 +525,6 @@ Zig에서는 try를 쓰는 함수는 무조건 그 함수의 반환 타입에 !�
         }
 
 
-## defer
-
-- defer
-  - Zig에서 defer a.dispose();는 해당 시점의 a 값에 대해 dispose를 예약합니다.
-  - 즉, 그 이후에 a에 다른 값을 할당해도, **defer는 원래 있었던 값의 dispose()**를 호출합니다.
-  - 컨벤션으로 const 사용후 defer하거나 var사용하면 defer 사용 못하게 막아야 할듯.
-defer // errdefer
-defer   : 어떻게 종료되든 항상 정리가 필요한 리소스에 사용합니다.
-errdefer: 오류가 발생하는 경우에만 리소스를 정리해야 할 때 사용합니다.
-
-errdefer는 와 유사 defer하지만, 오류로 인해 범위가 종료될 때만 실행됩니다.
-https://gencmurat.com/en/posts/defer-and-errdefer-in-zig/
-
-- 스코프를 조정할 수 있는 dotnet 의 using + IDisposable interface 방식이 더 맘에 든다.
-
-``` zig
-const std = @import("std");
-
-const Thing = struct {
-    id: i32,
-    fn dispose(self: *Thing) void {
-        std.debug.print("Disposing {}\n", .{self.id});
-    }
-};
-
-pub fn main() void {
-    var a = Thing{ .id = 1 };
-    defer a.dispose(); // 여기서 a는 id = 1인 Thing
-
-    a = Thing{ .id = 2 }; // 새로운 Thing을 a에 덮어씀
-
-std.debug.print("{}", .{a});
-}
-```
-
 
 https://zig.guide/standard-library/allocators/
 https://www.openmymind.net/learning_zig/heap_memory/
@@ -541,7 +586,6 @@ defer std.c.free(input);
 ---
 
 zig
-ide - ZigBrains https://plugins.jetbrains.com/plugin/22456-zigbrains
 설치 https://ziglang.org/learn/getting-started/
 
 zig
@@ -563,12 +607,10 @@ zig build
 zig build run
 
 
-const std = @import("std");
-https://ziglang.org/documentation/master/std/
-
-const builtin = @import("builtin");
-https://ziglang.org/documentation/master/#Compile-Variables
-
+``` zig
+const std = @import("std"); // https://ziglang.org/documentation/master/std/
+const builtin = @import("builtin"); // https://ziglang.org/documentation/master/#Compile-Variables
+```
 
 
 릴리즈모드 4개 https://zig.guide/build-system/build-modes/
@@ -578,14 +620,6 @@ https://ludwigabap.bearblog.dev/2024-collection-of-zig-resources/
 macro대신 그냥 compiletime이라는 키워드
 
 
-[The Road to Zig 1.0 - Andrew Kelley](https://www.youtube.com/watch?v=Gv2I7qTux7g)
-
-Search Ziglang Packages
-https://zigistry.dev/
-
-
-Mach - Zig game engine & graphics toolkit
-https://machengine.org/
 https://ziglang.org/learn/getting-started/
   https://zigtools.org/zls/editors/jetbrains/
 
@@ -613,12 +647,14 @@ https://www.youtube.com/@dudethebuilder/videos
     //     docs_step.dependOn(&install_docs.step);
     // }
 
-## 비교
+## 비교 (c string)
 
-strstr
-    if (std.mem.indexOf(u8, std.mem.span(t.tag), "number") != null) {
+``` zig
+// strstr
+std.mem.indexOf(u8, std.mem.span(t.tag), "number") != null
 
 
-strcmp == 0
-    if (std.mem.eql(u8, std.mem.span(t.tag), ">")) {
-    std.mem.orderZ(u8, t.tag, t.tag) == .eq
+//strcmp == 0
+std.mem.eql(u8, std.mem.span(t.tag), ">")
+std.mem.orderZ(u8, t.tag, t.tag) == .eq
+```
