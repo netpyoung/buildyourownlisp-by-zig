@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>ch10 Q-Expression - buildyourownlisp-by-zig</title>
+        <title>10. Q-Expression - buildyourownlisp-by-zig</title>
 
 
         <!-- Custom HTML head -->
@@ -208,8 +208,27 @@
 </li>
 <li>qexpr을 eval하면 그때서야 child 에서 꺼내옴</li>
 </ul>
-<pre><code class="language-txt">        \\ symbol : "list" | "head" | "tail" | "eval" | "join"
-        \\        | '+' | '-' | '*' | '/' ;
+<pre><code class="language-c">    // c
+    "                                                    \
+      number : /-?[0-9]+/ ;                              \
+      symbol : \"list\" | \"head\" | \"tail\" | \"eval\" \
+             | \"join\" | '+' | '-' | '*' | '/' ;        \
+      sexpr  : '(' &lt;expr&gt;* ')' ;                         \
+      qexpr  : '{' &lt;expr&gt;* '}' ;                         \
+      expr   : &lt;number&gt; | &lt;symbol&gt; | &lt;sexpr&gt; | &lt;qexpr&gt; ; \
+      lispy  : /^/ &lt;expr&gt;* /$/ ;                         \
+    ",
+</code></pre>
+<pre><code class="language-zig">//    zig
+    const lang =
+        \\ number : /-?[0-9]+/ ;
+        \\ symbol : "list" | "head" | "tail"
+        \\        | "join" | "eval" | '+' | '-' | '*' | '/' ;
+        \\ sexpr  : '(' &lt;expr&gt;* ')' ;
+        \\ qexpr  : '{' &lt;expr&gt;* '}' ;
+        \\ expr   : &lt;number&gt; | &lt;symbol&gt; | &lt;sexpr&gt; | &lt;qexpr&gt; ;
+        \\ lispy  : /^/ &lt;expr&gt;* /$/ ;
+    ;
 </code></pre>
 <h2 id="srcch10zig"><a class="header" href="#srcch10zig">src/ch10.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");

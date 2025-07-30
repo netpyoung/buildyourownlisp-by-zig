@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>ch09 S-Expression - buildyourownlisp-by-zig</title>
+        <title>09. S-Expression - buildyourownlisp-by-zig</title>
 
 
         <!-- Custom HTML head -->
@@ -223,9 +223,23 @@ mpca_lang(MPCA_LANG_DEFAULT,
   Number, Symbol, Sexpr, Expr, Lispy);
 </code></pre>
 <h2 id="todo-c-함수-연습문제"><a class="header" href="#todo-c-함수-연습문제">TODO c 함수 연습문제</a></h2>
-<p>› 이 realloc함수는 무슨 역할을 하나요?
-› 이 memmove함수는 무슨 역할을 하나요?
-› 와 어떻게 memmove다른가요 memcpy?</p>
+<ul>
+<li>alloc &amp; realloc</li>
+</ul>
+<pre><code class="language-zig">var buffer = try allocator.alloc(u8, 4);
+buffer = try allocator.realloc(buffer, 4, 8);
+</code></pre>
+<ul>
+<li>memcpy &amp; memmove
+<ul>
+<li>memcpy목적지가 소스와 전혀 겹칠 수 없습니다.</li>
+<li>memmove를 사용하면 가능합니다</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-zig">std.mem.copy(u8, dst, src);  // memcpy
+std.mem.move(u8, dst, src);  // memmove
+</code></pre>
 <h2 id="srcch09zig"><a class="header" href="#srcch09zig">src/ch09.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 const module_builtin = @import("builtin");

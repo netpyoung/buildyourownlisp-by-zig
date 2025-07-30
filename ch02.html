@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>ch02 HelloWorld - buildyourownlisp-by-zig</title>
+        <title>02. HelloWorld - buildyourownlisp-by-zig</title>
 
 
         <!-- Custom HTML head -->
@@ -203,145 +203,25 @@
 <ul>
 <li>텍스트 에디터 선택 및 C로 HelloWorld띄우기</li>
 </ul>
-<h2 id="vs-code"><a class="header" href="#vs-code">VS Code</a></h2>
-<h3 id="플러그인"><a class="header" href="#플러그인">플러그인</a></h3>
-<ul>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=ziglang.vscode-zig">ziglang.vscode-zig</a>
-<ul>
-<li><a href="https://zigtools.org/zls/editors/vscode/">https://zigtools.org/zls/editors/vscode/</a></li>
-</ul>
-</li>
-<li>Window라면
-<ul>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools">ms-vscode.cpptools</a></li>
-</ul>
-</li>
-<li>Linux 혹은 macOs
-<ul>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb">vadimcn.vscode-lldb</a>
-<ul>
-<li><a href="https://github.com/vadimcn/codelldb/wiki/Windows">https://github.com/vadimcn/codelldb/wiki/Windows</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack">ms-vscode-remote.vscode-remote-extensionpack</a></li>
-</ul>
-<h2 id="zig-설치"><a class="header" href="#zig-설치">Zig 설치</a></h2>
-<ul>
-<li><a href="https://github.com/ziglang/zig/wiki/Install-Zig-from-a-Package-Manager#windows-winget">Window - winget</a></li>
-<li><a href="https://zig.guide/getting-started/hello-world">Hello World</a></li>
-</ul>
-<h3 id="vscode"><a class="header" href="#vscode">.vscode/</a></h3>
-<pre><code class="language-json">// file: .vscode/extensions.json
-{
-    "recommendations": [
-        "ziglang.vscode-zig",
-        "vadimcn.vscode-lldb",
-        "ms-vscode.cpptools",
-        "ms-vscode-remote.vscode-remote-extensionpack",
-    ]
+<table><tr><th>C</th><th>Zig</th></tr><tr><td>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(int argc, char** argv) {
+  puts("Hello, world!");
+  return 0;
 }
 </code></pre>
-<pre><code class="language-json">// file: .vscode/launch.json
-{
-    "version": "0.2.0",
-    "inputs": [
-        {
-            "id": "targetProject",
-            "type": "pickString",
-            "description": "DEBUG: Choose project to debug...",
-            "options": [
-                "ch02",
-                "ch03",
-                "ch04",
-                "ch05",
-                "ch06",
-                "ch07",
-                "ch08",
-                "ch09",
-                "ch10",
-                "ch11",
-                "ch12",
-                "ch13",
-                "ch14",
-                "ch15",
-                "hand_rolled_parser",
-            ],
-            "default": "ch02"
-        }
-    ],
-    "configurations": [
-        {
-            "name": "Launch",
-            // "type": "cppvsdbg", // for Windows
-            "type": "lldb", // for Linux | macOs
-            "request": "launch",
-            "program": "${workspaceFolder}/lispy-zig/${input:targetProject}/zig-out/bin/${input:targetProject}",
-            "args": [
-                // "hello_world.lspy",
-                "prelude.lspy",
-            ],
-            "cwd": "${workspaceFolder}/lispy-zig/${input:targetProject}",
-            // "stopAtEntry": false,
-            // "environment": [],
-            "internalConsoleOptions": "openOnSessionStart",
-            "preLaunchTask": "build",
-            "console": "integratedTerminal",
-        }
-    ],
+</td><td>
+<pre><code class="language-zig">const std = @import("std");
+pub fn main() void {
+    std.debug.print("Hello, Zig!\n", .{});
 }
 </code></pre>
-<pre><code class="language-json">// file: .vscode/settings.json
-{
-    "zig.zls.enabled": "on"
-}
-</code></pre>
-<pre><code class="language-json">// file: .vscode/tasks.json
-{
-    "version": "2.0.0",
-    "inputs": [
-        {
-            "id": "targetProject",
-            "type": "pickString",
-            "description": "DEBUG: Choose project to debug...",
-            "options": [
-                "ch02",
-                "ch03",
-                "ch04",
-                "ch05",
-                "ch06",
-                "ch07",
-                "ch08",
-                "ch09",
-                "ch10",
-                "ch11",
-                "ch12",
-                "ch13",
-                "ch14",
-                "ch15",
-                "hand_rolled_parser",
-            ],
-            "default": "ch02"
-        }
-    ],
-    "tasks": [
-        {
-            "label": "build",
-            "type": "shell",
-            "command": "zig build",
-            "options": {
-                "cwd": "${workspaceFolder}/lispy-zig/${input:targetProject}",
-            },
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        }
-    ]
-}
-</code></pre>
+</td></tr></table>
+<h2 id="에디터"><a class="header" href="#에디터">에디터</a></h2>
+<ul>
+<li><a href="./vscode">vscode</a> 참고</li>
+</ul>
 <h2 id="srcch02zig"><a class="header" href="#srcch02zig">src/ch02.zig</a></h2>
 <pre><code class="language-zig">const std = @import("std");
 
