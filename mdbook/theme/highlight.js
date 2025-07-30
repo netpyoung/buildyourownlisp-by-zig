@@ -1,5 +1,9 @@
 // ref: https://github.com/rust-lang/mdBook/issues/2467#issuecomment-2857375717
 
+// shiki vs prismjs 
+//   - shiki: https://shiki.style/languages
+//   - prismjs: https://prismjs.com/#supported-languages
+
 let shikiModule
 
 window.hljs = {
