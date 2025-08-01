@@ -1,4 +1,4 @@
-# Build Your Own Lisp by Zig
+# Build Your Own Lisp in Zig
 
 ## mdBook
 

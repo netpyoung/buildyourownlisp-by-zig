@@ -2,7 +2,7 @@
 
 - [들어가며](./Index.md)
 
-# Build Own Your Lisp by Zig
+# Build Own Your Lisp in Zig
 
 - [01. 들어가며](./ch01.md)
 - [02. HelloWorld](./ch02.md)

@@ -1,14 +1,14 @@
 [book]
-title = "buildyourownlisp-by-zig"
-description = "buildyourownlisp by zig"
+title = "buildyourownlisp-in-zig"
+description = "buildyourownlisp in zig"
 language = "ko"
 src = "src"
 
 [output.html]
 no-section-label = true
-site-url = "/buildyourownlisp-by-zig/"
-git-repository-url = "https://github.com/netpyoung/buildyourownlisp-by-zig"
+site-url = "/buildyourownlisp-in-zig/"
+git-repository-url = "https://github.com/netpyoung/buildyourownlisp-in-zig"
 git-repository-icon = "fa-github"
-edit-url-template = "https://github.com/netpyoung/buildyourownlisp-by-zig/edit/main/{path}"
+edit-url-template = "https://github.com/netpyoung/buildyourownlisp-in-zig/edit/main/{path}"
 
 additional-css = ["theme/css/custom.css"]
